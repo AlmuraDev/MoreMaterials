@@ -1,0 +1,350 @@
+/*
+ The MIT License
+
+ Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
+ Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
+package net.spoutmaterials.spoutmaterials;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import javax.imageio.ImageIO;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.material.MaterialData;
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
+import org.getspout.spoutapi.block.design.Texture;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
+import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
+import org.getspout.spoutapi.material.Material;
+
+public class SmpPackage {
+
+	private SmpManager smpManager = null;
+	public String name = "";
+	private ZipFile smpFile = null;
+	private Map<String, SMCustomBlock> customBlocksList = new HashMap<String, SMCustomBlock>();
+	private Map<String, SMCustomItem> customItemsList = new HashMap<String, SMCustomItem>();
+	private List<FurnaceRecipe> furnaceRecipeList = new ArrayList<FurnaceRecipe>();
+	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
+
+	public SmpPackage(SmpManager smpManager, String smpName) {
+		this.name = smpName;
+		this.smpManager = smpManager;
+		Map<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
+		try {
+			// Open the smp file.
+			this.smpFile = new ZipFile(this.smpManager.getPlugin().getDataFolder().getPath()
+							+ File.separator + "materials" + File.separator + this.name + ".smp");
+
+			// Getting all materials.
+			Enumeration<? extends ZipEntry> entries = this.smpFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				if (entry.getName().matches("^.+\\.yml$")) {
+					String materialName = entry.getName().replaceAll("\\.yml$", "");
+					materials.put(materialName, new YamlConfiguration());
+					try {
+						materials.get(materialName).load(this.smpFile.getInputStream(entry));
+					} catch (Exception e) {
+						String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+						logMessage += " SpoutMaterials: Error loading YML " + materialName + " from " + this.name + ".";
+						Logger.getLogger("Minecraft").info(logMessage);
+					}
+				}
+			}
+
+			// Initialize all materials
+			for (String materialName : materials.keySet()) {
+				this.loadMaterial(materialName, materials.get(materialName), this.smpFile);
+			}
+
+			// Initialize all crafting recipes
+			for (String materialName : this.customBlocksList.keySet()) {
+				if (materials.get(materialName).contains("Recipes")) {
+					this.loadCraftingRecipe(materialName, this.customBlocksList.get(materialName), materials.get(materialName));
+				}
+			}
+			for (String materialName : this.customItemsList.keySet()) {
+				if (materials.get(materialName).contains("Recipes")) {
+					this.loadCraftingRecipe(materialName, this.customItemsList.get(materialName), materials.get(materialName));
+				}
+			}
+
+			// Initialize all block-break drops
+			for (String materialName : this.customBlocksList.keySet()) {
+				this.setDrops(materials.get(materialName), materialName);
+			}
+
+			// Initialize all item actions
+		} catch (Exception e) {
+			String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+			logMessage += " SpoutMaterials: Couldn't load " + this.name + ".";
+			Logger.getLogger("Minecraft").info(logMessage);
+		}
+	}
+
+	public void unload() {
+		this.customBlocksList.clear();
+		this.customItemsList.clear();
+		this.craftingRecipeList.clear();
+		this.furnaceRecipeList.clear();
+	}
+
+	private void loadMaterial(String materialName, YamlConfiguration config, ZipFile smpFile) {
+		try {
+			File textureFile = this.cacheFile(materialName + ".png");
+			try {
+				if (config.getString("Type", "").equals("Block")) {
+					// Initialize a block.
+					GenericCuboidBlockDesign design = this.getCuboidDesign(textureFile);
+					float brightness = (float) config.getDouble("Brightness", 0.2);
+					design.setBrightness(brightness);
+					design.setMinBrightness(brightness);
+					design.setMaxBrightness(brightness);
+					SMCustomBlock customBlock = new SMCustomBlock(
+									this, config.getString("Title", materialName), !config.getBoolean("Transparency", false), design);
+					customBlock.setConfig(config);
+					this.customBlocksList.put(materialName, customBlock);
+				} else if (config.getString("Type", "").equals("Item")) {
+					// Initialize an item.
+					SMCustomItem customItem = new SMCustomItem(
+									this, config.getString("Title", materialName), textureFile.getName());
+					customItem.setConfig(config);
+					this.customItemsList.put(materialName, customItem);
+				}
+			} catch (Exception e) {
+				String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+				logMessage += " SpoutMaterials: Couldn't load material " + materialName + ".png from " + this.name + ".";
+				Logger.getLogger("Minecraft").info(logMessage);
+			}
+		} catch (Exception e) {
+			String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+			logMessage += " SpoutMaterials: Couldn't load texture " + materialName + ".png from " + this.name + ".";
+			Logger.getLogger("Minecraft").info(logMessage);
+		}
+	}
+
+	private void loadCraftingRecipe(String materialName, Material material, YamlConfiguration config) {
+		//FIXME if someone gets this warning removed here, i would be thankful!
+		List<Object> recipes = config.getList("Recipes");
+		// Make sure we have a valid list.
+		if (recipes == null) {
+			return;
+		}
+		// This allows us to have multiple recipes.
+		for (Object orecipe : recipes) {
+			Map<String, Object> recipe = (Map<String, Object>) orecipe;
+			String type = (String) recipe.get("type");
+			Integer amount = (Integer) recipe.get("amount");
+			amount = amount == null ? 1 : amount;
+			if (type.equalsIgnoreCase("furnace")) {
+				String ingredientName = (String) recipe.get("ingredients");
+				Material ingredient;
+				if (ingredientName.matches("^[0-9]+$")) {
+					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
+				} else if (materialName.split("\\.").length == 1) {
+					ingredient = (Material) this.getMaterial(materialName);
+				} else {
+					Map<String, Object> materialList = this.smpManager.getMaterial(materialName);
+					ingredient = (Material) materialList.get((String) materialList.keySet().toArray()[0]);
+				}
+				FurnaceRecipe fRecipe;
+				fRecipe = new FurnaceRecipe(
+								new SpoutItemStack(material, amount),
+								new MaterialData(new MaterialData(ingredient.getRawId()).getItemType()));
+				this.smpManager.getPlugin().getServer().addRecipe(fRecipe);
+				this.furnaceRecipeList.add(fRecipe);
+			} else if (type.equalsIgnoreCase("shaped")) {
+				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
+								new SpoutItemStack(material, amount)).shape("abc", "def", "ghi");
+				String ingredients = (String) recipe.get("ingredients");
+				this.doRecipe(sRecipe, ingredients);
+			} else if (type.equalsIgnoreCase("shapeless")) {
+				SpoutShapelessRecipe sRecipe = new SpoutShapelessRecipe(new SpoutItemStack(material, amount));
+				String ingredients = (String) recipe.get("ingredients");
+				this.doRecipe(sRecipe, ingredients);
+			} else {
+				String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+				logMessage += " SpoutMaterials: Couldn't load crafting recipe for " + materialName + ".png from " + this.name + ".";
+				Logger.getLogger("Minecraft").info(logMessage);
+			}
+		}
+	}
+
+	private GenericCuboidBlockDesign getCuboidDesign(File textureFile) throws IOException {
+		GenericCuboidBlockDesign design;
+		BufferedImage bufferedImage = ImageIO.read(textureFile);
+
+		// for different textures on each block side
+		if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
+			Texture texture = new Texture(
+							this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth() * 8,
+							bufferedImage.getWidth(), bufferedImage.getWidth());
+			int[] idMap = new int[6];
+			for (int i = 0; i < 6; i++) {
+				idMap[i] = i;
+			}
+			design = new GenericCuboidBlockDesign(
+							this.smpManager.getPlugin(), texture, idMap, 0, 0, 0, 1, 1, 1);
+			// default block, with same texture on each side
+		} else {
+			design = new GenericCuboidBlockDesign(
+							this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth(),
+							0, 0, 0, 1, 1, 1);
+		}
+		return design;
+	}
+
+	private void doRecipe(Recipe recipe, String ingredients) {
+		Integer currentLine = 0;
+		Integer currentColumn = 0;
+
+		ingredients = ingredients.replaceAll("\\s{2,}", " ");
+		for (String line : ingredients.split("\\r?\\n")) {
+			// make sure we stop at the third line
+			if (currentLine >= 3) {
+				continue;
+			}
+			for (String ingredientitem : line.split(" ")) {
+				// make sure we stop at the third entry in this line
+				if (currentColumn >= 3) {
+					continue;
+				}
+
+				// this character is required for matching the current material into the recipe
+				char a = (char) ('a' + currentColumn + currentLine * 3);
+
+				// getting the correct material
+				Material ingredient;
+				if (ingredientitem.matches("^[0-9]+$")) {
+					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientitem));
+				} else if (ingredientitem.split("\\.").length == 1) {
+					ingredient = (Material) this.getMaterial(ingredientitem);
+				} else {
+					Map<String, Object> materialList = this.smpManager.getMaterial(ingredientitem);
+					ingredient = (Material) materialList.get((String) materialList.keySet().toArray()[0]);
+				}
+
+				// Do not require an "air-block" in empty fields :D
+				if (ingredient == null || ingredientitem.equals("0")) {
+					currentColumn++;
+					continue;
+				}
+
+				// adding the ingredient
+				if (recipe instanceof SpoutShapedRecipe) {
+					((SpoutShapedRecipe) recipe).setIngredient(a, ingredient);
+				} else {
+					((SpoutShapelessRecipe) recipe).addIngredient(ingredient);
+				}
+
+				currentColumn++;
+			}
+			currentColumn = 0;
+			currentLine++;
+		}
+
+		// Putting the recipe into the register
+		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
+		this.craftingRecipeList.add(recipe);
+	}
+
+	public File cacheFile(String fileName) throws IOException {
+		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
+		File cacheFile = File.createTempFile(
+						this.smpManager.getPlugin().getDescription().getName(), fileName);
+		OutputStream out = new FileOutputStream(cacheFile);
+		int read;
+		byte[] bytes = new byte[1024];
+		while ((read = inputStream.read(bytes)) != -1) {
+			out.write(bytes, 0, read);
+		}
+		out.flush();
+		out.close();
+		cacheFile.deleteOnExit();
+		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
+		return cacheFile;
+	}
+
+	private void setDrops(YamlConfiguration config, String name) {
+		String objectType = config.getString("Type", "");
+		if (objectType.equalsIgnoreCase("Block")) {
+			String dropItem = config.getString("ItemDrop", name);
+			int dropAmount = config.getInt("ItemDropAmount", 1);
+
+			Material dropMaterial;
+			if (dropItem.matches("^[0-9]+$")) {
+				dropMaterial = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(dropItem));
+			} else if (dropItem.split("\\.").length == 1) {
+				dropMaterial = (Material) this.getMaterial(dropItem);
+			} else {
+				Map<String, Object> materialList = this.smpManager.getMaterial(dropItem);
+				dropMaterial = (Material) materialList.get((String) materialList.keySet().toArray()[0]);
+			}
+			this.customBlocksList.get(name).setItemDrop(new SpoutItemStack(dropMaterial, dropAmount));
+		}
+	}
+
+	public Object getMaterial(String materialName) {
+		if (this.customBlocksList.containsKey(materialName)) {
+			return this.customBlocksList.get(materialName);
+		} else if (this.customItemsList.containsKey(materialName)) {
+			return this.customItemsList.get(materialName);
+		}
+		return null;
+	}
+
+	public Object getMaterial(SpoutItemStack itemStack) {
+		for (String itemName : this.customBlocksList.keySet()) {
+			SMCustomBlock tempBlock = this.customBlocksList.get(itemName);
+			if (tempBlock.getRawData() == itemStack.getMaterial().getRawData()) {
+				return tempBlock;
+			}
+		}
+		for (String itemName : this.customItemsList.keySet()) {
+			SMCustomItem tempItem = this.customItemsList.get(itemName);
+			if (tempItem.getRawData() == itemStack.getMaterial().getRawData()) {
+				return tempItem;
+			}
+		}
+		return null;
+	}
+
+	public SmpManager getSmpManager() {
+		return this.smpManager;
+	}
+}
