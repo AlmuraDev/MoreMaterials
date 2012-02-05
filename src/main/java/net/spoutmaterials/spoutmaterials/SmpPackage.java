@@ -159,7 +159,6 @@ public class SmpPackage {
 	}
 
 	private void loadCraftingRecipe(String materialName, Material material, YamlConfiguration config) {
-		//FIXME if someone gets this warning removed here, i would be thankful!
 		List<Object> recipes = config.getList("Recipes");
 		// Make sure we have a valid list.
 		if (recipes == null) {

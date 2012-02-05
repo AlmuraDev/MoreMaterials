@@ -18,9 +18,6 @@ permissions:
   spoutmaterials.*:
     description: Allows access to all of SpoutMaterials' functionality.
     default: op
-    children:
-      spoutmaterials.debug: true
-      spoutmaterials.give: true
   spoutmaterials.debug:
     description: Experimental features, for fast debugging.
     default: op

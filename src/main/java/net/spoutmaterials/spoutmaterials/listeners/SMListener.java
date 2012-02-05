@@ -213,8 +213,7 @@ public class SMListener implements Listener{
 		// Does it return another item?
 		if (itemAction.getReturnedItem() != null) {
 			player.getInventory().addItem(new SpoutItemStack(itemAction.getReturnedItem(), 1));
-			//FIXME if someone gets this warning removed here, i would be thankful!
-			player.updateInventory();
+		  player.updateInventory();
 		}
 
 		// Playing sounds for items.
