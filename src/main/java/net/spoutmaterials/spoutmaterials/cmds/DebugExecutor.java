@@ -43,7 +43,7 @@ public class DebugExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
 		if (!instance.hasPermission(sender, "spoutmaterials.debug")) {
-			sender.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+ " You don't have permission to do that!");
 			return true;
 		}
 		

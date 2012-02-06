@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.material.Material;
 
 public class SmpManager {
 	private JavaPlugin plugin;
@@ -139,20 +140,20 @@ public class SmpManager {
 		}
 	}
 	
-	public Map<String, Object> getMaterial(String materialName) {
-		Map<String, Object> materials = new HashMap<String, Object>();
+	public Map<String, Material> getMaterial(String materialName) {
+		Map<String, Material> materials = new HashMap<String, Material>();
 		String[] parts = materialName.split("\\.");
 		// in case we provide just an item name
 		if (parts.length == 1) {
 			for (String smpPackage : this.smpPackages.keySet()) {
-				Object found = this.smpPackages.get(smpPackage).getMaterial(parts[0]);
+				Material found = this.smpPackages.get(smpPackage).getMaterial(parts[0]);
 				if (found != null) {
 					materials.put(smpPackage + "." + parts[0], found);
 				}
 			}
 		// in case we also provide the package name
 		} else if (this.smpPackages.containsKey(parts[0])) {
-			Object found = this.smpPackages.get(parts[0]).getMaterial(parts[1]);
+			Material found = this.smpPackages.get(parts[0]).getMaterial(parts[1]);
 			if (found != null) {
 				materials.put(parts[0] + "." + parts[1], found);
 			}

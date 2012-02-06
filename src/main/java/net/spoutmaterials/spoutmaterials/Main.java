@@ -40,6 +40,10 @@ public class Main extends JavaPlugin {
 	public PluginDescriptionFile pdfile;
 	// Used for handling smp files.
 	public SmpManager smpManager = null;
+	
+	/*
+	 * sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+" message!");
+	 */
 
 	@Override
 	public void onDisable() {

@@ -176,10 +176,10 @@ public class SmpPackage {
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
 				} else if (materialName.split("\\.").length == 1) {
-					ingredient = (Material) this.getMaterial(materialName);
+					ingredient = this.getMaterial(materialName);
 				} else {
-					Map<String, Object> materialList = this.smpManager.getMaterial(materialName);
-					ingredient = (Material) materialList.get((String) materialList.keySet().toArray()[0]);
+					Map<String, Material> materialList = this.smpManager.getMaterial(materialName);
+					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 				FurnaceRecipe fRecipe;
 				fRecipe = new FurnaceRecipe(
@@ -252,10 +252,10 @@ public class SmpPackage {
 				if (ingredientitem.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientitem));
 				} else if (ingredientitem.split("\\.").length == 1) {
-					ingredient = (Material) this.getMaterial(ingredientitem);
+					ingredient = this.getMaterial(ingredientitem);
 				} else {
-					Map<String, Object> materialList = this.smpManager.getMaterial(ingredientitem);
-					ingredient = (Material) materialList.get((String) materialList.keySet().toArray()[0]);
+					Map<String, Material> materialList = this.smpManager.getMaterial(ingredientitem);
+					ingredient =  materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 
 				// Do not require an "air-block" in empty fields :D
@@ -309,16 +309,16 @@ public class SmpPackage {
 			if (dropItem.matches("^[0-9]+$")) {
 				dropMaterial = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(dropItem));
 			} else if (dropItem.split("\\.").length == 1) {
-				dropMaterial = (Material) this.getMaterial(dropItem);
+				dropMaterial =  this.getMaterial(dropItem);
 			} else {
-				Map<String, Object> materialList = this.smpManager.getMaterial(dropItem);
-				dropMaterial = (Material) materialList.get((String) materialList.keySet().toArray()[0]);
+				Map<String, Material> materialList = this.smpManager.getMaterial(dropItem);
+				dropMaterial = materialList.get((String) materialList.keySet().toArray()[0]);
 			}
 			this.customBlocksList.get(name).setItemDrop(new SpoutItemStack(dropMaterial, dropAmount));
 		}
 	}
 
-	public Object getMaterial(String materialName) {
+	public Material getMaterial(String materialName) {
 		if (this.customBlocksList.containsKey(materialName)) {
 			return this.customBlocksList.get(materialName);
 		} else if (this.customItemsList.containsKey(materialName)) {

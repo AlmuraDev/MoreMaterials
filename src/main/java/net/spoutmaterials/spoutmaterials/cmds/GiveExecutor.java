@@ -66,22 +66,25 @@ public class GiveExecutor implements CommandExecutor {
 
 		// Permission check
 		if (!instance.hasPermission(sender, "spoutmaterials.give")) {
-			sender.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+ "You don't have permission to do that!");
 			return true;
 		}
 		
 		SpoutPlayer player = (SpoutPlayer) sender;
-		Map<String, Object> material = instance.smpManager.getMaterial(args[0]);
-		
+		Map<String, Material> material = instance.smpManager.getMaterial(args[0]);
+		if (!(instance.hasPermission(sender, "spoutmaterials.give")|| instance.hasPermission(sender, "spoutmaterials.give."+args[0]))) {
+			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+" You do not have permission to do that!");
+			return true;
+		}
 		if (material.isEmpty()) {
-			sender.sendMessage("Material " + args[0] + " not found!");
+			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.YELLOW+" Material " + args[0] + " not found!");
 		} else if (material.size() == 1) {
 			for (String key : material.keySet()) {
-				player.getInventory().addItem(new SpoutItemStack((Material) material.get(key), amount));
-				player.sendMessage("You receieved " + amount + " object(s) of " + args[0] + ".");
+				player.getInventory().addItem(new SpoutItemStack( material.get(key), amount));
+				player.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.YELLOW+"You received " + amount + " object(s) of " + args[0] + ".");
 			}
 		} else {
-			sender.sendMessage("Material " + args[0] + " multiple times found, please specify!");
+			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.YELLOW+"Material " + args[0] + " multiple times found, please specify!");
 			for (String key : material.keySet()) {
 				player.sendMessage("- " + key);
 			}

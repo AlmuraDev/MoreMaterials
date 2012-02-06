@@ -22,5 +22,14 @@ permissions:
     description: Experimental features, for fast debugging.
     default: op
   spoutmaterials.give:
-    description: Allows access to all of SpoutMaterials' give commands.
+    description: Allows spawning SpoutMaterials blocks and items.
     default: op
+    children:
+      spoutmaterials.give.package.name: Allows spawning of the specified material, if there are multiple materials with the same name!
+      spoutmaterials.give.name: Allows spawning of the specified material, if there is only one!
+  spoutmaterials.craft:
+    description: Allows crafting of SpoutMaterials blocks and items.
+    default: op
+    children:
+      spoutmaterials.give.package.name: Allows crafting of the specified material, if there are multiple materials with the same name!
+      spoutmaterials.give.name: Allows crafting of the specified material, if there is only one!

@@ -4,10 +4,12 @@
  */
 package net.spoutmaterials.spoutmaterials.listeners;
 
+import java.util.Map;
 import net.spoutmaterials.spoutmaterials.ItemAction;
 import net.spoutmaterials.spoutmaterials.SMCustomBlock;
 import net.spoutmaterials.spoutmaterials.SMCustomItem;
 import net.spoutmaterials.spoutmaterials.SmpManager;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +22,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
+import org.getspout.spoutapi.event.inventory.InventoryCraftEvent;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
@@ -33,6 +37,23 @@ public class SMListener implements Listener{
 		smpManager=aThis;
 	}
 	
+	@EventHandler
+	public void InventoryCraft(InventoryCraftEvent event) {
+		ItemStack is=event.getResult();
+		SpoutItemStack sis = new SpoutItemStack(is);
+		Map<String, Material>  a=smpManager.getMaterial(sis.getMaterial().getName());
+		for(String s:a.keySet()) {
+			Material m =  a.get(s);
+			if(m==sis.getMaterial()) {
+				if(!event.getPlayer().hasPermission("spoutmaterials.craft."+s)) {
+					event.getPlayer().sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+" You do not have permission to do that!");
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
+		
+	}
 	
 	@EventHandler
 	public void EntityDamage(EntityDamageEvent event) {
