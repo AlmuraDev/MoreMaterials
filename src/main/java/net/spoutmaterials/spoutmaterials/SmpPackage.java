@@ -24,8 +24,6 @@
  */
 package net.spoutmaterials.spoutmaterials;
 
-import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
-import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,6 +39,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
+import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
+import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;

@@ -31,9 +31,12 @@ import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.cmds.DebugExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GeneralExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
+import net.spoutmaterials.spoutmaterials.other.LegacyCrafting;
+import net.spoutmaterials.spoutmaterials.other.WGenConfig;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,12 +60,17 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		pdfile = this.getDescription();
-		checkIntegrityAndUpdate();
-		//TODO automatically extract default.smp from inside the jar file!
+		try {
+			checkIntegrityAndUpdate();
+		} catch (IOException ex) {
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 		// Initialize all custom objects. This is all a plugin must do to have custom materials implemented.
 		this.smpManager = new SmpManager(this);
 		webmanager = new WebManager(this);
+		LegacyCrafting.loadCraftingRecipes(this, YamlConfiguration.loadConfiguration(new File(this.getDataFolder()+File.separator+"legacyrecipes.yml")));
+		WGenConfig.addBlocks(this, YamlConfiguration.loadConfiguration(new File(this.getDataFolder()+File.separator+"wgen.yml")));
 
 		// Chat command stuff
 		getCommand("sm").setExecutor(new GeneralExecutor(this));
@@ -81,9 +89,13 @@ public class Main extends JavaPlugin {
 		return false;
 	}
 
-	private void checkIntegrityAndUpdate() {
+	private void checkIntegrityAndUpdate() throws IOException {
 		File f = new File(this.getDataFolder()+File.separator+"materials");
 		f.mkdirs();
+		f = new File(this.getDataFolder()+File.separator+"wgen.yml");
+		f.createNewFile();
+		f = new File(this.getDataFolder()+File.separator+"legacyrecipes.yml");
+		f.createNewFile();
 		f = new File(this.getDataFolder()+File.separator+"update");
 		f.mkdir();
 		//Done checking folder integrity, now update!
