@@ -47,13 +47,12 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		log.log(Level.INFO, "{0} was disabled!", pdfile.getFullName());
 	}
 
 	@Override
 	public void onEnable() {
 		pdfile = this.getDescription();
-		log.log(Level.INFO, "{0} was enabled!", pdfile.getFullName());
+		//TODO automatically extract default.smp from inside the jar file!
 
 		// Initialize all custom objects. This is all a plugin must do to have custom materials implemented.
 		this.smpManager = new SmpManager(this);

@@ -185,6 +185,7 @@ public class SmpPackage {
 				fRecipe = new FurnaceRecipe(
 								new SpoutItemStack(material, amount),
 								new MaterialData(new MaterialData(ingredient.getRawId()).getItemType()));
+				
 				this.smpManager.getPlugin().getServer().addRecipe(fRecipe);
 				this.furnaceRecipeList.add(fRecipe);
 			} else if (type.equalsIgnoreCase("shaped")) {
