@@ -24,11 +24,15 @@
  */
 package net.spoutmaterials.spoutmaterials;
 
+import net.spoutmaterials.spoutmaterials.utils.WebManager;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.cmds.DebugExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GeneralExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -38,6 +42,7 @@ public class Main extends JavaPlugin {
 
 	public static final Logger log = Logger.getLogger("Minecraft");
 	public PluginDescriptionFile pdfile;
+	public WebManager webmanager;
 	// Used for handling smp files.
 	public SmpManager smpManager = null;
 	
@@ -52,10 +57,12 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		pdfile = this.getDescription();
+		checkIntegrityAndUpdate();
 		//TODO automatically extract default.smp from inside the jar file!
 
 		// Initialize all custom objects. This is all a plugin must do to have custom materials implemented.
 		this.smpManager = new SmpManager(this);
+		webmanager = new WebManager(this);
 
 		// Chat command stuff
 		getCommand("sm").setExecutor(new GeneralExecutor(this));
@@ -72,5 +79,24 @@ public class Main extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+
+	private void checkIntegrityAndUpdate() {
+		File f = new File(this.getDataFolder()+File.separator+"materials");
+		f.mkdirs();
+		f = new File(this.getDataFolder()+File.separator+"update");
+		f.mkdir();
+		//Done checking folder integrity, now update!
+		File[] fl=f.listFiles();
+		for(File curf:fl) {
+			if(!curf.getName().endsWith(".smp")) continue;
+			File dest = new File(this.getDataFolder()+File.separator+"update"+curf.getName());
+			dest.delete();
+			try {
+				FileUtils.copyFile(curf, dest);
+			} catch (IOException ex) {
+				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
 	}
 }

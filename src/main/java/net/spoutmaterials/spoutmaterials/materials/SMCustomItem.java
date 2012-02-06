@@ -23,8 +23,9 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials;
+package net.spoutmaterials.spoutmaterials.materials;
 
+import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 

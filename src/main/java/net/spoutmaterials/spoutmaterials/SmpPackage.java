@@ -24,6 +24,8 @@
  */
 package net.spoutmaterials.spoutmaterials;
 
+import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
+import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -346,5 +348,9 @@ public class SmpPackage {
 
 	public SmpManager getSmpManager() {
 		return this.smpManager;
+	}
+
+	public void reDownload() {
+		//TODO this
 	}
 }

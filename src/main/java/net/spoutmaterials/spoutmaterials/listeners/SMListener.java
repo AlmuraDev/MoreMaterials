@@ -5,9 +5,9 @@
 package net.spoutmaterials.spoutmaterials.listeners;
 
 import java.util.Map;
-import net.spoutmaterials.spoutmaterials.ItemAction;
-import net.spoutmaterials.spoutmaterials.SMCustomBlock;
-import net.spoutmaterials.spoutmaterials.SMCustomItem;
+import net.spoutmaterials.spoutmaterials.materials.ItemAction;
+import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
+import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
 import net.spoutmaterials.spoutmaterials.SmpManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;

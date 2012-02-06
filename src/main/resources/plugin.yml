@@ -11,6 +11,9 @@ commands:
   smdebug:
     description: Internal helper functions.
     usage: /<command> [ask dev ^^]
+  smupdate:
+    description: Update functions
+    usage: /<command> [packageName]
   sm:
     description: General plugin informations.
     usage: /sm

@@ -32,8 +32,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -173,5 +175,15 @@ public class SmpManager {
 	
 	public JavaPlugin getPlugin() {
 		return this.plugin;
+	}
+
+	public Collection<SmpPackage> getAllPackages() {
+		return smpPackages.values();
+	}
+
+	public SmpPackage getPackage(String string) {
+		if(smpPackages.containsKey(string))
+		return smpPackages.get(string);
+		return null;
 	}
 }
