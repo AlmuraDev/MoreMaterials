@@ -180,7 +180,9 @@ public class SMListener implements Listener{
 		if (itemAction == null) {
 			return;
 		}
-
+		//the action starts
+		if(itemAction.getPermissionsBypass()!=null)
+			player.addAttachment(smpManager.getPlugin(), itemAction.getPermissionsBypass(), true);
 		// Does it heal or damage the player?
 		if (itemAction.getHealth() != 0) {
 			int newHealth = player.getHealth() + itemAction.getHealth();
@@ -258,5 +260,9 @@ public class SMListener implements Listener{
 			}
 			player.setItemInHand(itemInHand);
 		}
+		
+		if(itemAction.getPermissionsBypass()!=null)
+			player.addAttachment(smpManager.getPlugin(), itemAction.getPermissionsBypass(), false);
+		//action ends, remove attachment!
 	}
 }

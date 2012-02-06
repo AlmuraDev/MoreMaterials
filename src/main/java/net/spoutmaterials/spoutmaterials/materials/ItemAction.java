@@ -43,6 +43,7 @@ public class ItemAction {
 	private Integer air = 0;
 	private Integer experience = 0;
 	private String returnedItem = null;
+	private String permissionsBypass;
 
 	public ItemAction(ConfigurationSection config, SmpPackage smpPackage) {
 		this.smpPackage = smpPackage;
@@ -55,6 +56,7 @@ public class ItemAction {
 		Integer lair = config.getInt("Air", 0);
 		Integer lexperience = config.getInt("Experience", 0);
 		String lreturnedItem = config.getString("Give", "");
+		String permBypass = config.getString("PermissionsBypass","");
 
 		if (!lsound.equals("")) {
 			try {
@@ -86,6 +88,9 @@ public class ItemAction {
 		if (!lreturnedItem.equals("")) {
 			this.returnedItem = lreturnedItem;
 		}
+		if(!permBypass.equals("")) {
+			this.permissionsBypass = permBypass;
+		}
 	}
 
 	public String getSound() {
@@ -114,6 +119,10 @@ public class ItemAction {
 
 	public Integer getExperience() {
 		return this.experience;
+	}
+	
+	public String getPermissionsBypass() {
+		return this.permissionsBypass;
 	}
 
 	public Material getReturnedItem() {

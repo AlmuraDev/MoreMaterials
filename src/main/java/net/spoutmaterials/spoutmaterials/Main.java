@@ -24,7 +24,6 @@
  */
 package net.spoutmaterials.spoutmaterials;
 
-import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,6 +31,7 @@ import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.cmds.DebugExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GeneralExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
+import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
