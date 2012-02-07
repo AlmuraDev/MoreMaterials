@@ -41,10 +41,10 @@ import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
+import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipe;
+import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.material.MaterialData;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
@@ -60,7 +60,7 @@ public class SmpPackage {
 	private ZipFile smpFile = null;
 	private Map<String, SMCustomBlock> customBlocksList = new HashMap<String, SMCustomBlock>();
 	private Map<String, SMCustomItem> customItemsList = new HashMap<String, SMCustomItem>();
-	private List<FurnaceRecipe> furnaceRecipeList = new ArrayList<FurnaceRecipe>();
+	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 
 	public SmpPackage(SmpManager smpManager, String smpName) {
@@ -183,12 +183,12 @@ public class SmpPackage {
 					Map<String, Material> materialList = this.smpManager.getMaterial(materialName);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
-				FurnaceRecipe fRecipe;
-				fRecipe = new FurnaceRecipe(
-								new SpoutItemStack(material, amount),
-								new MaterialData(new MaterialData(ingredient.getRawId()).getItemType()));
+				SpoutFurnaceRecipe fRecipe;
+				fRecipe = new SpoutFurnaceRecipe(
+								new SpoutItemStack(ingredient,1),
+								new SpoutItemStack(material,1));
 				
-				this.smpManager.getPlugin().getServer().addRecipe(fRecipe);
+				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
 				this.furnaceRecipeList.add(fRecipe);
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
@@ -298,7 +298,7 @@ public class SmpPackage {
 		out.flush();
 		out.close();
 		cacheFile.deleteOnExit();
-		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
+		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile); 
 		return cacheFile;
 	}
 

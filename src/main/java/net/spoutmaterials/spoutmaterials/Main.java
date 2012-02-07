@@ -33,6 +33,7 @@ import net.spoutmaterials.spoutmaterials.cmds.GeneralExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
 import net.spoutmaterials.spoutmaterials.other.LegacyCrafting;
 import net.spoutmaterials.spoutmaterials.other.WGenConfig;
+import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
@@ -65,7 +66,7 @@ public class Main extends JavaPlugin {
 		} catch (IOException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
-
+		SpoutFurnaceRecipes sfr = new SpoutFurnaceRecipes();
 		// Initialize all custom objects. This is all a plugin must do to have custom materials implemented.
 		this.smpManager = new SmpManager(this);
 		webmanager = new WebManager(this);
