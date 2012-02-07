@@ -11,7 +11,7 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 	/*
 	 * This is a reflection fix for allowing custom item furnace recipes...
 	 */
-	private static Map<String, ItemStack> spoutMap = new HashMap<String, ItemStack>();
+	private static Map<String, net.minecraft.server.ItemStack> spoutMap = new HashMap<String, net.minecraft.server.ItemStack>();
 
 	
 	
@@ -23,19 +23,27 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 	@Override
 	public net.minecraft.server.ItemStack a(net.minecraft.server.ItemStack i) {
 		String str = i.getData()+"000"+i.id;
-		System.out.println("Called! "+str);
 		if (spoutMap.containsKey(str)) {
-			return (new CraftItemStack(spoutMap.get(str))).getHandle();
+			return spoutMap.get(str);
 			
 		}
 		return super.a(i);
 	}
 
 	public static void registerSpoutRecipe(ItemStack ingredient, ItemStack result) {
-		spoutMap.put(ingredient.getData().getData()+"000"+ingredient.getTypeId(), result);
+		registerSpoutRecipe(getNotchStack(ingredient),getNotchStack(result));
+	}
+	
+	private static void registerSpoutRecipe(net.minecraft.server.ItemStack i, net.minecraft.server.ItemStack result) {
+		String str = i.getData()+"000"+i.id;
+		spoutMap.put(str, result);
+		
+	}
+	
+	private static net.minecraft.server.ItemStack getNotchStack(ItemStack is) {
+		return (new CraftItemStack(is)).getHandle();
 	}
 	public static void registerSpoutRecipe(SpoutFurnaceRecipe fRecipe) {
-		System.out.println("Registered "+fRecipe.getIngredient().getMaterial().getName());
 		registerSpoutRecipe(fRecipe.getIngredient(),fRecipe.getResult());
 	}
 }
