@@ -54,6 +54,8 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		this.webmanager = new WebManager(this);
+		
 		try {
 			// Let the plugin check for updates and initialize all files and folders.
 			checkIntegrityAndUpdate();
@@ -67,7 +69,6 @@ public class Main extends JavaPlugin {
 		// Initialize all managers we need.
 		this.smpManager = new SmpManager(this);
 		this.legacyManager = new LegacyManager(this);
-		this.webmanager = new WebManager(this);
 		new WGenManager(this);
 
 		// Registered events for all Materials in this manager.

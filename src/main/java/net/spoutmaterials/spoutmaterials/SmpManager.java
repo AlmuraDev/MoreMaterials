@@ -59,7 +59,7 @@ public class SmpManager {
 					}
 				
 					// Getting smp version.
-					InputStream versionStream = smpFile.getInputStream(smpFile.getEntry("_version"));
+					InputStream versionStream = smpFile.getInputStream(smpFile.getEntry("_version_plugin"));
 					String version = "";
 					int rChar;
 					while ((rChar = versionStream.read()) != -1) {
