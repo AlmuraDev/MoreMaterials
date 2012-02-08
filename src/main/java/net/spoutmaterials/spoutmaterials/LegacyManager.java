@@ -67,7 +67,7 @@ public class LegacyManager {
 	}
 
 	public final void load() {
-		File materials = new File(plugin.getDataFolder().getPath() + File.separator + "materials.yml");
+		File materials = new File(plugin.getDataFolder().getPath() + File.separator + "legacyrecipes.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(materials);
 		for (String itemId : config.getKeys(false)) {
 			if (itemId.matches("^[0-9]+$")) {
