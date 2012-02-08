@@ -8,15 +8,12 @@ commands:
   smgive:
     description: Gives you a custom object.
     usage: /<command> [custom blockname] {number of blocks}
-  smdebug:
+  smadmin:
     description: Internal helper functions.
-    usage: /<command> [ask dev ^^]
+    usage: /<command> [load|unload|reload] [smpPackage]
   smupdate:
     description: Update functions
     usage: /<command> [packageName]
-  sm:
-    description: General plugin informations.
-    usage: /sm
 permissions:
   spoutmaterials.*:
     description: Allows access to all of SpoutMaterials' functionality.

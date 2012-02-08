@@ -33,8 +33,8 @@ public class SMCustomItem extends GenericCustomItem {
 	
 	private Integer damage = null;
 	private Integer maxDurability = null;
-	private ItemAction actionL = null;
-	private ItemAction actionR = null;
+	private MaterialAction actionL = null;
+	private MaterialAction actionR = null;
 	private boolean stackable = true;
 	private SmpPackage smpPackage = null;
 
@@ -59,21 +59,21 @@ public class SMCustomItem extends GenericCustomItem {
 		}
 		
 		if (config.isConfigurationSection("Lclick")) {
-			this.actionL = new ItemAction(config.getConfigurationSection("Lclick"), this.smpPackage);
+			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
 		}
 		
 		if (config.isConfigurationSection("Rclick")) {
-			this.actionR = new ItemAction(config.getConfigurationSection("Rclick"), this.smpPackage);
+			this.actionR = new MaterialAction(config.getConfigurationSection("Rclick"), this.smpPackage);
 		}
 		
 		this.stackable = lstackable;
 	}
 	
-	public ItemAction getActionL() {
+	public MaterialAction getActionL() {
 		return this.actionL;
 	}
 	
-	public ItemAction getActionR() {
+	public MaterialAction getActionR() {
 		return this.actionR;
 	}
 	

@@ -8,16 +8,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class SpoutFurnaceRecipes extends FurnaceRecipes {
 
-	/*
-	 * This is a reflection fix for allowing custom item furnace recipes...
-	 */
 	private static Map<String, net.minecraft.server.ItemStack> spoutMap = new HashMap<String, net.minecraft.server.ItemStack>();
 
 	
 	
 	public SpoutFurnaceRecipes() {
-		super();
-		FurnaceRecipes.a=this;
+		super();//Important to do, to preserve original furnace recipes!
 	}
 
 	@Override
@@ -45,5 +41,10 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 	}
 	public static void registerSpoutRecipe(SpoutFurnaceRecipe fRecipe) {
 		registerSpoutRecipe(fRecipe.getIngredient(),fRecipe.getResult());
+	}
+	
+	public static void hook() {
+		if(FurnaceRecipes.a instanceof SpoutFurnaceRecipes) return;
+		FurnaceRecipes.a=new SpoutFurnaceRecipes();
 	}
 }

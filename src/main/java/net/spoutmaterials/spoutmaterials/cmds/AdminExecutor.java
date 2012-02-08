@@ -31,11 +31,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class DebugExecutor implements CommandExecutor {
+public class AdminExecutor implements CommandExecutor {
 
 	private Main instance;
 
-	public DebugExecutor(Main plugin) {
+	public AdminExecutor(Main plugin) {
 		instance = plugin;
 	}
 
@@ -50,11 +50,13 @@ public class DebugExecutor implements CommandExecutor {
 		// Parameter is "load"
 		if ("load".equals(args[0]) && args.length == 2) {
 			this.instance.smpManager.loadSmp(args[1]);
+			this.instance.getLegacyManager().reload();
 		}
 		
 		// Parameter is "unload"
 		if ("unload".equals(args[0]) && args.length == 2) {
 			this.instance.smpManager.unloadSmp(args[1]);
+			this.instance.getLegacyManager().reload();
 		}
 		
 		// Parameter is "reload"

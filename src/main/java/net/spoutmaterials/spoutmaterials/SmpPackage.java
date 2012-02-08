@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -69,7 +70,8 @@ public class SmpPackage {
 		Map<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
 		try {
 			// Open the smp file.
-			this.smpFile = new ZipFile(this.smpManager.getPlugin().getDataFolder().getPath()
+			this.smpFile = new ZipFile(
+							this.smpManager.getPlugin().getDataFolder().getPath()
 							+ File.separator + "materials" + File.separator + this.name + ".smp");
 
 			// Getting all materials.
@@ -111,7 +113,7 @@ public class SmpPackage {
 				this.setDrops(materials.get(materialName), materialName);
 			}
 
-			// Initialize all item actions
+			this.smpFile.close();
 		} catch (Exception e) {
 			String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
 			logMessage += " SpoutMaterials: Couldn't load " + this.name + ".";
@@ -185,9 +187,9 @@ public class SmpPackage {
 				}
 				SpoutFurnaceRecipe fRecipe;
 				fRecipe = new SpoutFurnaceRecipe(
-								new SpoutItemStack(ingredient,1),
-								new SpoutItemStack(material,1));
-				
+								new SpoutItemStack(ingredient, 1),
+								new SpoutItemStack(material, 1));
+
 				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
 				this.furnaceRecipeList.add(fRecipe);
 			} else if (type.equalsIgnoreCase("shaped")) {
@@ -213,9 +215,7 @@ public class SmpPackage {
 
 		// for different textures on each block side
 		if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
-			Texture texture = new Texture(
-							this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth() * 8,
-							bufferedImage.getWidth(), bufferedImage.getWidth());
+			Texture texture = new Texture(this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth());
 			int[] idMap = new int[6];
 			for (int i = 0; i < 6; i++) {
 				idMap[i] = i;
@@ -224,9 +224,7 @@ public class SmpPackage {
 							this.smpManager.getPlugin(), texture, idMap, 0, 0, 0, 1, 1, 1);
 			// default block, with same texture on each side
 		} else {
-			design = new GenericCuboidBlockDesign(
-							this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth(),
-							0, 0, 0, 1, 1, 1);
+			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
 		}
 		return design;
 	}
@@ -258,7 +256,7 @@ public class SmpPackage {
 					ingredient = this.getMaterial(ingredientitem);
 				} else {
 					Map<String, Material> materialList = this.smpManager.getMaterial(ingredientitem);
-					ingredient =  materialList.get((String) materialList.keySet().toArray()[0]);
+					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 
 				// Do not require an "air-block" in empty fields :D
@@ -285,10 +283,29 @@ public class SmpPackage {
 		this.craftingRecipeList.add(recipe);
 	}
 
-	public File cacheFile(String fileName) throws IOException {
+	public File cacheFile(String fileName) throws Exception {
+		// Getting the hash of the file.
+		InputStream fis = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
+		byte[] buffer = new byte[1024];
+		MessageDigest complete = MessageDigest.getInstance("MD5");
+		int numRead;
+		do {
+			numRead = fis.read(buffer);
+			if (numRead > 0) {
+				complete.update(buffer, 0, numRead);
+			}
+		} while (numRead != -1);
+		fis.close();
+		byte[] b = complete.digest();
+		String result = "";
+		for (int i = 0; i < b.length; i++) {
+			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+		}
+
+		// Saving the file.
 		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
-		File cacheFile = File.createTempFile(
-						this.smpManager.getPlugin().getDescription().getName(), fileName);
+		File cacheFile = new File(
+						System.getProperty("java.io.tmpdir") + result + fileName.substring(fileName.lastIndexOf(".")));
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
 		byte[] bytes = new byte[1024];
@@ -297,8 +314,9 @@ public class SmpPackage {
 		}
 		out.flush();
 		out.close();
+		inputStream.close();
 		cacheFile.deleteOnExit();
-		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile); 
+		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
 		return cacheFile;
 	}
 
@@ -312,7 +330,7 @@ public class SmpPackage {
 			if (dropItem.matches("^[0-9]+$")) {
 				dropMaterial = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(dropItem));
 			} else if (dropItem.split("\\.").length == 1) {
-				dropMaterial =  this.getMaterial(dropItem);
+				dropMaterial = this.getMaterial(dropItem);
 			} else {
 				Map<String, Material> materialList = this.smpManager.getMaterial(dropItem);
 				dropMaterial = materialList.get((String) materialList.keySet().toArray()[0]);

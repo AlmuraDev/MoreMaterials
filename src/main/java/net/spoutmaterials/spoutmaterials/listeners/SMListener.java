@@ -1,14 +1,34 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ The MIT License
+
+ Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
+ Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
 package net.spoutmaterials.spoutmaterials.listeners;
 
 import java.util.Map;
-import net.spoutmaterials.spoutmaterials.materials.ItemAction;
+import net.spoutmaterials.spoutmaterials.SmpManager;
+import net.spoutmaterials.spoutmaterials.materials.MaterialAction;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
-import net.spoutmaterials.spoutmaterials.SmpManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -31,30 +51,32 @@ import org.getspout.spoutapi.player.SpoutPlayer;
  *
  * @author Nickq
  */
-public class SMListener implements Listener{
+public class SMListener implements Listener {
+
 	private SmpManager smpManager;
+
 	public SMListener(SmpManager aThis) {
-		smpManager=aThis;
+		smpManager = aThis;
 	}
-	
+
 	@EventHandler
 	public void InventoryCraft(InventoryCraftEvent event) {
-		ItemStack is=event.getResult();
-		SpoutItemStack sis = new SpoutItemStack(is);
-		Map<String, Material>  a=smpManager.getMaterial(sis.getMaterial().getName());
-		for(String s:a.keySet()) {
-			Material m =  a.get(s);
-			if(m==sis.getMaterial()) {
-				if(!event.getPlayer().hasPermission("spoutmaterials.craft."+s)) {
-					event.getPlayer().sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+" You do not have permission to do that!");
+		ItemStack itemStack = event.getResult();
+		SpoutItemStack spoutItemStack = new SpoutItemStack(itemStack);
+		Map<String, Material> a = smpManager.getMaterial(spoutItemStack.getMaterial().getName());
+		for (String s : a.keySet()) {
+			Material m = a.get(s);
+			if (m == spoutItemStack.getMaterial()) {
+				if (!event.getPlayer().hasPermission("spoutmaterials.craft." + s)) {
+					event.getPlayer().sendMessage(ChatColor.GREEN + "[SpoutMaterials]" + ChatColor.RED + " You do not have permission to do that!");
 					event.setCancelled(true);
 					return;
 				}
 			}
 		}
-		
+
 	}
-	
+
 	@EventHandler
 	public void EntityDamage(EntityDamageEvent event) {
 		// If any other plugin already canceled this event
@@ -65,14 +87,13 @@ public class SMListener implements Listener{
 		// Only applies for falldamage of players!
 		if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL) && event.getEntity() instanceof SpoutPlayer) {
 			SpoutPlayer player = (SpoutPlayer) event.getEntity();
-			
+
 			// Getting the block below the player
 			SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-				player.getLocation().getBlockX(),
-				player.getLocation().getBlockY() - 1,
-				player.getLocation().getBlockZ()
-			);
-	
+							player.getLocation().getBlockX(),
+							player.getLocation().getBlockY() - 1,
+							player.getLocation().getBlockZ());
+
 			// This only applies for custom blocks
 			if (block.isCustomBlock()) {
 				Object item = this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock(), 1));
@@ -81,7 +102,7 @@ public class SMListener implements Listener{
 				}
 			}
 		}
-		
+
 		// Make sure an entity does damage
 		if (!(event instanceof EntityDamageByEntityEvent)) {
 			return;
@@ -97,43 +118,41 @@ public class SMListener implements Listener{
 
 		SpoutPlayer player = (SpoutPlayer) damager;
 		SpoutItemStack itemStack = new SpoutItemStack(player.getItemInHand());
-		
+
 		// Make sure the player holds an custom item in hand
 		if (!itemStack.isCustomItem()) {
 			return;
 		}
-		
+
 		Object item = this.smpManager.getMaterial(itemStack);
-		
+
 		// Do damage if valid.
 		if (item != null && item instanceof SMCustomItem && ((SMCustomItem) item).getDamage() != null) {
 			event.setDamage(((SMCustomItem) item).getDamage());
 		}
 	}
-	
-	
+
 	@EventHandler
 	public void PlayerMove(PlayerMoveEvent event) {
 		// If any other plugin already canceled this event
 		if (event.isCancelled()) {
 			return;
 		}
-		
+
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
 		// Getting the block below the player
 		SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-			player.getLocation().getBlockX(),
-			player.getLocation().getBlockY() - 1,
-			player.getLocation().getBlockZ()
-		);
-		
+						player.getLocation().getBlockX(),
+						player.getLocation().getBlockY() - 1,
+						player.getLocation().getBlockZ());
+
 		// This only applies for custom blocks
 		Object item = null;
 		if (block.isCustomBlock()) {
 			item = this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
 		}
-		
+
 		// Setting the player walkspeed.
 		if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getSpeedMultiplier() != 1) {
 			player.setAirSpeedMultiplier(((SMCustomBlock) item).getSpeedMultiplier());
@@ -142,7 +161,7 @@ public class SMListener implements Listener{
 			player.setAirSpeedMultiplier(1);
 			player.setWalkingMultiplier(1);
 		}
-		
+
 		// Setting the player jumpheight.
 		if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getJumpMultiplier() != 1) {
 			player.setJumpingMultiplier(((SMCustomBlock) item).getJumpMultiplier());
@@ -150,7 +169,7 @@ public class SMListener implements Listener{
 			player.setJumpingMultiplier(1);
 		}
 	}
-	
+
 	@EventHandler
 	public void PlayerInteract(PlayerInteractEvent event) {
 		// If any other plugin already canceled this event
@@ -161,108 +180,141 @@ public class SMListener implements Listener{
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 		Object object = this.smpManager.getMaterial(new SpoutItemStack(player.getItemInHand()));
 
-		// We only check things for custom items.
-		if (object == null || !(object instanceof SMCustomItem)) {
-			return;
-		}
-		SMCustomItem item = (SMCustomItem) object;
+		SMCustomItem item = null;
 		
+		if (object instanceof SMCustomItem) {
+			item = (SMCustomItem) object;
+		}
+		SMCustomBlock block = null;
+
 		// Getting the correct item action.
 		Action action = event.getAction();
-		ItemAction itemAction = null;
+		MaterialAction useAction = null;
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			itemAction = item.getActionL();
+			if (item != null) {
+				useAction = item.getActionL();
+			}
+			if (action == Action.LEFT_CLICK_BLOCK) {
+				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
+					Object blockMaterial = this.smpManager.getMaterial(
+									new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1));
+					if (blockMaterial instanceof SMCustomBlock) {
+						block = (SMCustomBlock) blockMaterial;
+						useAction = block.getActionL();
+					}
+				}
+			}
 		} else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-			itemAction = item.getActionR();
+			if (item != null) {
+				useAction = item.getActionR();
+			}
+			if (action == Action.RIGHT_CLICK_BLOCK) {
+				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
+					Object blockMaterial = this.smpManager.getMaterial(
+									new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1));
+					if (blockMaterial instanceof SMCustomBlock) {
+						block = (SMCustomBlock) blockMaterial;
+						useAction = block.getActionR();
+					}
+				}
+			}
 		}
-		
+
 		// We dont need to go further, if there is no action
-		if (itemAction == null) {
+		if (useAction == null) {
 			return;
 		}
-		//the action starts
-		if(itemAction.getPermissionsBypass()!=null)
-			player.addAttachment(smpManager.getPlugin(), itemAction.getPermissionsBypass(), true);
+
+		// Adding bypass permission
+		if (useAction.getPermissionsBypass() != null) {
+			player.addAttachment(smpManager.getPlugin(), useAction.getPermissionsBypass(), true);
+		}
+
 		// Does it heal or damage the player?
-		if (itemAction.getHealth() != 0) {
-			int newHealth = player.getHealth() + itemAction.getHealth();
-			
+		if (useAction.getHealth() != 0) {
+			int newHealth = player.getHealth() + useAction.getHealth();
+
 			// Make sure player has valid health information.
 			if (newHealth > player.getMaxHealth()) {
 				newHealth = player.getMaxHealth();
 			} else if (newHealth < 0) {
 				newHealth = 0;
 			}
-			
+
 			// Setting the new player health.
 			player.setHealth(newHealth);
 		}
-		
+
 		// Does it affect hunger?
-		if (itemAction.getHunger() != 0) {
-			int newHunger = player.getFoodLevel() + itemAction.getHunger();
-			
+		if (useAction.getHunger() != 0) {
+			int newHunger = player.getFoodLevel() + useAction.getHunger();
+
 			// Make sure player has valid hunger information.
 			if (newHunger > 20) {
 				newHunger = 20;
 			} else if (newHunger < 0) {
 				newHunger = 0;
 			}
-			
+
 			// Setting the new player hunger.
 			player.setFoodLevel(newHunger);
 		}
-		
+
 		// Does it affect air?
-		if (itemAction.getAir() != 0) {
-			int newAir = player.getRemainingAir() + itemAction.getAir();
-			
+		if (useAction.getAir() != 0) {
+			int newAir = player.getRemainingAir() + useAction.getAir();
+
 			// Make sure player has valid air information.
 			if (newAir > player.getMaximumAir()) {
 				newAir = player.getMaximumAir();
 			} else if (newAir < 0) {
 				newAir = 0;
 			}
-			
+
 			// Setting the new player air.
 			player.setRemainingAir(newAir);
 		}
-		
+
 		// Does it affect Experience?
-		if (itemAction.getExperience() != 0) {
-			player.giveExp(itemAction.getExperience());
+		if (useAction.getExperience() != 0) {
+			//TODO when using negative xp, we should also substract player level!
+			player.giveExp(useAction.getExperience());
 		}
 
 		// Does it return another item?
-		if (itemAction.getReturnedItem() != null) {
-			player.getInventory().addItem(new SpoutItemStack(itemAction.getReturnedItem(), 1));
-		  player.updateInventory();
+		if (useAction.getReturnedItem() != null) {
+			player.getInventory().addItem(new SpoutItemStack(useAction.getReturnedItem(), 1));
+			//TODO deprecated but required - remove asap
+			player.updateInventory();
 		}
 
 		// Playing sounds for items.
-		if (itemAction.getSound() != null) {
-			SpoutManager.getSoundManager().playGlobalCustomSoundEffect(
-				this.smpManager.getPlugin(), itemAction.getSound(), false, player.getLocation(), 25
-			);
+		if (useAction.getSound() != null) {
+			SpoutManager.getSoundManager().playCustomSoundEffect(this.smpManager.getPlugin(), player, useAction.getSound(), false);
 		}
 
 		// Let the player use a specific chat command.
-		if (itemAction.getAction() != null) {
-			player.chat(itemAction.getAction());
+		if (useAction.getAction() != null) {
+			player.chat(useAction.getAction());
 		}
-		
+
 		// Items can be consumed.
-		if (itemAction.getConsume()) {
-			ItemStack itemInHand = player.getItemInHand();
-			itemInHand.setAmount(itemInHand.getAmount() - 1);
-			if (itemInHand.getAmount() == 0) {
-				itemInHand = null;
+		if (useAction.getConsume()) {
+			if (block != null) {
+				event.getClickedBlock().setType(org.bukkit.Material.AIR);
+			} else {
+				ItemStack itemInHand = player.getItemInHand();
+				itemInHand.setAmount(itemInHand.getAmount() - 1);
+				if (itemInHand.getAmount() == 0) {
+					itemInHand = null;
+				}
+				player.setItemInHand(itemInHand);
 			}
-			player.setItemInHand(itemInHand);
 		}
-		
-		if(itemAction.getPermissionsBypass()!=null)
-			player.addAttachment(smpManager.getPlugin(), itemAction.getPermissionsBypass(), false);
-		//action ends, remove attachment!
+
+		// Removing bypass permission
+		if (useAction.getPermissionsBypass() != null) {
+			player.addAttachment(smpManager.getPlugin(), useAction.getPermissionsBypass(), false);
+		}
 	}
 }

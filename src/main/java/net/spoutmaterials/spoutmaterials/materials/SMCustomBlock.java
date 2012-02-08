@@ -31,12 +31,16 @@ import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
 
 public class SMCustomBlock extends GenericCuboidCustomBlock {
 
+	private MaterialAction actionL = null;
+	private MaterialAction actionR = null;
 	private Float speedMultiplier = (float) 1;
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
+	private SmpPackage smpPackage;
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
 		super(smpPackage.getSmpManager().getPlugin(), name, opaque, design);
+		this.smpPackage=smpPackage;
 	}
 
 	public void setConfig(ConfigurationSection config) {
@@ -58,6 +62,13 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		if (lightLevel > 0) {
 			this.setLightLevel(lightLevel);
 		}
+		
+		if(config.isConfigurationSection("Lclick")) {
+			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
+		}
+		if(config.isConfigurationSection("Rclick")) {
+			this.actionR = new MaterialAction(config.getConfigurationSection("Rclick"), this.smpPackage);
+		}
 
 		this.speedMultiplier = lspeedMultiplier;
 		this.jumpMultiplier = ljumpMultiplier;
@@ -74,5 +85,12 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 
 	public Float getFallMultiplier() {
 		return this.fallMultiplier;
+	}
+	
+	public MaterialAction getActionL() {
+		return actionL;
+	}
+	public MaterialAction getActionR() {
+		return actionR;
 	}
 }

@@ -35,7 +35,6 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,17 +56,6 @@ public class SmpManager {
 	}
 	
 	private void setupFiles() {
-		// Create folder for SpoutMaterialsPacks if not present.
-		File smpFolder = new File(plugin.getDataFolder().getPath() + File.separator + "materials");
-		if (!smpFolder.exists()) {
-			try {
-				smpFolder.createNewFile();
-			} catch (Exception e) {
-				String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't write materials folder.";
-				Logger.getLogger("Minecraft").info(logMessage);
-			}
-		}
 		
 		// Create new materials file, if none found.
 		File active = new File(plugin.getDataFolder().getPath() + File.separator + "materials.yml");

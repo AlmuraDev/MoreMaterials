@@ -32,7 +32,7 @@ import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 
-public class ItemAction {
+public class MaterialAction {
 
 	private SmpPackage smpPackage = null;
 	private String sound = null;
@@ -45,7 +45,7 @@ public class ItemAction {
 	private String returnedItem = null;
 	private String permissionsBypass;
 
-	public ItemAction(ConfigurationSection config, SmpPackage smpPackage) {
+	public MaterialAction(ConfigurationSection config, SmpPackage smpPackage) {
 		this.smpPackage = smpPackage;
 
 		String lsound = config.getString("Sound", "");
@@ -62,7 +62,6 @@ public class ItemAction {
 			try {
 				File soundFile = smpPackage.cacheFile(lsound);
 				this.sound = soundFile.getName();
-				SpoutManager.getFileManager().addToCache(smpPackage.getSmpManager().getPlugin(), soundFile);
 			} catch (Exception e) {
 				String logMessage = "[" + smpPackage.getSmpManager().getPlugin().getDescription().getName() + "]";
 				logMessage += " SpoutMaterials: Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".";

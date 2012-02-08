@@ -28,16 +28,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.spoutmaterials.spoutmaterials.cmds.DebugExecutor;
-import net.spoutmaterials.spoutmaterials.cmds.GeneralExecutor;
+import net.spoutmaterials.spoutmaterials.cmds.AdminExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
-import net.spoutmaterials.spoutmaterials.other.LegacyCrafting;
-import net.spoutmaterials.spoutmaterials.other.WGenConfig;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,9 +46,7 @@ public class Main extends JavaPlugin {
 	// Used for handling smp files.
 	public SmpManager smpManager = null;
 	
-	/*
-	 * sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+" message!");
-	 */
+	private LegacyManager legacyManager;
 
 	@Override
 	public void onDisable() {
@@ -66,17 +60,16 @@ public class Main extends JavaPlugin {
 		} catch (IOException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		SpoutFurnaceRecipes sfr = new SpoutFurnaceRecipes();
+		SpoutFurnaceRecipes.hook();
 		// Initialize all custom objects. This is all a plugin must do to have custom materials implemented.
 		this.smpManager = new SmpManager(this);
-		webmanager = new WebManager(this);
-		LegacyCrafting.loadCraftingRecipes(this, YamlConfiguration.loadConfiguration(new File(this.getDataFolder()+File.separator+"legacyrecipes.yml")));
-		WGenConfig.addBlocks(this, YamlConfiguration.loadConfiguration(new File(this.getDataFolder()+File.separator+"wgen.yml")));
+		this.legacyManager = new LegacyManager(this, this.smpManager);
+		new WGenManager(this, this.smpManager);
+		new WebManager(this);
 
 		// Chat command stuff
-		getCommand("sm").setExecutor(new GeneralExecutor(this));
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
-		getCommand("smdebug").setExecutor(new DebugExecutor(this));
+		getCommand("smadmin").setExecutor(new AdminExecutor(this));
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm) {
@@ -111,5 +104,9 @@ public class Main extends JavaPlugin {
 				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
+	}
+
+	public LegacyManager getLegacyManager() {
+		return legacyManager;
 	}
 }
