@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +21,13 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.spoutmaterials.spoutmaterials.materials;
 
 import java.io.File;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
-import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 

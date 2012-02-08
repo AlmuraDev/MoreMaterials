@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +22,6 @@
  THE SOFTWARE.
  */
 
-
 package net.spoutmaterials.spoutmaterials;
 
 import java.io.File;
@@ -39,19 +37,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.generator.BlockPopulator;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.CustomBlock;
 
 public class WGenManager extends BlockPopulator {
-	private JavaPlugin plugin;
-	private SmpManager smpManager;
-	
+	private Main plugin;
+
+	//TODO Add list type to remove warning
 	private Map<String, List> populations = new HashMap<String, List>();
 
-	public WGenManager(JavaPlugin plugin, SmpManager smpManager) {
+	public WGenManager(Main plugin) {
 		this.plugin = plugin;
-		this.smpManager = smpManager;
 		
 		// Create new materials file, if none found.
 		File active = new File(plugin.getDataFolder().getPath() + File.separator + "wgen.yml");
@@ -88,7 +84,7 @@ public class WGenManager extends BlockPopulator {
 		for (Object worldEntry : this.populations.get(world.getName())) {
 			//TODO unsafe cast warning remove
 			Map<String, Object> entry = (Map<String, Object>) worldEntry;
-			Object material = this.smpManager.getMaterial((String) entry.get("Material"));
+			Object material = this.plugin.getSmpManager().getMaterial((String) entry.get("Material"));
 			
 			// If given material was not found
 			if (!(material instanceof SMCustomBlock)) {

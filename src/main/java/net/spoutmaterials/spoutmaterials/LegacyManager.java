@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +22,6 @@
  THE SOFTWARE.
  */
 
-
 package net.spoutmaterials.spoutmaterials;
 
 import java.io.File;
@@ -36,7 +34,6 @@ import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
@@ -47,39 +44,34 @@ public class LegacyManager {
 	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 	private SmpManager smpManager;
-	private JavaPlugin plugin;
+	private Main plugin;
 
-	public LegacyManager(JavaPlugin plugin, SmpManager smpManager) {
+	public LegacyManager(Main plugin) {
 		this.plugin = plugin;
-		this.smpManager = smpManager;
-		// Create new materials file, if none found.
-		File active = new File(this.plugin.getDataFolder().getPath() + File.separator + "legacyrecipes.yml");
-		if (!active.exists()) {
-			try {
-				active.createNewFile();
-			} catch (Exception e) {
-				String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't write legacyrecipes.yml.";
-				Logger.getLogger("Minecraft").info(logMessage);
-			}
-		}
+		this.smpManager = plugin.getSmpManager();
 		this.load();
 	}
 
-	public final void load() {
+	private void load() {
 		File materials = new File(plugin.getDataFolder().getPath() + File.separator + "legacyrecipes.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(materials);
 		for (String itemId : config.getKeys(false)) {
 			if (itemId.matches("^[0-9]+$")) {
 				Material material = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(itemId));
-				this.loadCraftingRecipe(itemId, material, config.getConfigurationSection(itemId));
+				if (material != null) {
+					this.loadCraftingRecipe(itemId, material, config.getConfigurationSection(itemId));
+				}
 			}
 		}
 	}
 
-	public void reload() {
+	public void unload() {
 		this.craftingRecipeList.clear();
 		this.furnaceRecipeList.clear();
+	}
+
+	public void reload() {
+		this.unload();
 		this.load();
 	}
 
@@ -122,7 +114,7 @@ public class LegacyManager {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+				String logMessage = "[" + this.plugin.getDescription().getName() + "]";
 				logMessage += " SpoutMaterials: Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.";
 				Logger.getLogger("Minecraft").info(logMessage);
 			}

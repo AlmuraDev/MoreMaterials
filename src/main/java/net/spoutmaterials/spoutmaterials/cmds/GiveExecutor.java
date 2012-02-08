@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +36,6 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class GiveExecutor implements CommandExecutor {
-
 	private Main instance;
 
 	public GiveExecutor(Main plugin) {
@@ -66,25 +64,39 @@ public class GiveExecutor implements CommandExecutor {
 
 		// Permission check
 		if (!instance.hasPermission(sender, "spoutmaterials.give")) {
-			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+ "You don't have permission to do that!");
-			return true;
+			sender.sendMessage(
+				ChatColor.GREEN + "[SpoutMaterials]" +
+				ChatColor.RED + " You don't have permission to do that!"
+			);
 		}
 		
 		SpoutPlayer player = (SpoutPlayer) sender;
-		Map<String, Material> material = instance.smpManager.getMaterial(args[0]);
+		Map<String, Material> material = instance.getSmpManager().getMaterial(args[0]);
 		if (!(instance.hasPermission(sender, "spoutmaterials.give")|| instance.hasPermission(sender, "spoutmaterials.give."+args[0]))) {
-			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.RED+" You do not have permission to do that!");
+			sender.sendMessage(
+				ChatColor.GREEN + "[SpoutMaterials]" +
+				ChatColor.RED + " You don't have permission to do that!"
+			);
 			return true;
 		}
 		if (material.isEmpty()) {
-			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.YELLOW+" Material " + args[0] + " not found!");
+			sender.sendMessage(
+				ChatColor.GREEN + "[SpoutMaterials]" +
+				ChatColor.YELLOW + " Material " + args[0] + " not found!"
+			);
 		} else if (material.size() == 1) {
 			for (String key : material.keySet()) {
 				player.getInventory().addItem(new SpoutItemStack( material.get(key), amount));
-				player.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.YELLOW+"You received " + amount + " object(s) of " + args[0] + ".");
+				sender.sendMessage(
+					ChatColor.GREEN + "[SpoutMaterials]" +
+					ChatColor.YELLOW + "You received " + amount + " object(s) of " + args[0] + "."
+				);
 			}
 		} else {
-			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials]"+ChatColor.YELLOW+"Material " + args[0] + " multiple times found, please specify!");
+			sender.sendMessage(
+				ChatColor.GREEN + "[SpoutMaterials]" +
+				ChatColor.YELLOW + "Material " + args[0] + " multiple times found, please specify!"
+			);
 			for (String key : material.keySet()) {
 				player.sendMessage("- " + key);
 			}

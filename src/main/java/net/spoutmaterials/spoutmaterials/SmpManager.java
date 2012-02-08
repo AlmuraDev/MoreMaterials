@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2011 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -25,109 +24,104 @@
 
 package net.spoutmaterials.spoutmaterials;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.util.Collection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
-import net.spoutmaterials.spoutmaterials.listeners.SMListener;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.zip.ZipFile;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
 
 public class SmpManager {
-	private JavaPlugin plugin;
+	private Main plugin;
 	private Map<String, SmpPackage> smpPackages = new HashMap<String, SmpPackage>();
 
-	// This class can be used in every plugin and contains only smp files for the actual plugin.
-	public SmpManager(JavaPlugin plugin) {
+	public SmpManager(Main plugin) {
 		this.plugin = plugin;
-		this.setupFiles();
-		this.loadAllActiveMaterials();
-		
-		// Registered events for all Materials in this manager.
-		this.plugin.getServer().getPluginManager().registerEvents(new SMListener(this), plugin);
+		this.loadAllPackages();
 	}
 	
-	private void setupFiles() {
-		
-		// Create new materials file, if none found.
-		File active = new File(plugin.getDataFolder().getPath() + File.separator + "materials.yml");
-		if (!active.exists()) {
-			try {
-				active.createNewFile();
-			} catch (Exception e) {
-				String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't write materials.yml.";
-				Logger.getLogger("Minecraft").info(logMessage);
-			}
-		}
-	}
-	
-	private void loadAllActiveMaterials() {
-		// Getting all smp files which are listed in the materials.yml file.
-		try {
-			DataInputStream in = new DataInputStream(new FileInputStream(
-				new File(plugin.getDataFolder().getPath() + File.separator + "materials.yml")
-			));
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			while ((strLine = br.readLine()) != null)   {
-				this.loadSmp(strLine, false);
-			}
-			in.close();
-		} catch (Exception e) {
-			String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-			logMessage += " SpoutMaterials: Couldn't read materials.yml.";
-			Logger.getLogger("Minecraft").info(logMessage);
-		}
-	}
-	
-	public void loadSmp(String smpFile) {
-		this.loadSmp(smpFile, true);
-		this.save();
-	}
+	private void loadAllPackages() {
+		// Getting all .smp files.
+		File materials = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials");
+		String[] files = materials.list();
+		for (String file : files) {
+			if (file.endsWith(".smp")) {
+				try {
+					ZipFile smpFile = getSmpHandle(file);
+				
+					// When file could not be loaded or version information is missing.
+					if (smpFile == null || smpFile.getEntry("_version_plugin") == null) {
+						continue;
+					}
+				
+					// Getting smp version.
+					InputStream versionStream = smpFile.getInputStream(smpFile.getEntry("_version"));
+					String version = "";
+					int rChar;
+					while ((rChar = versionStream.read()) != -1) {
+						version += (char)rChar;
+					}
 
-	private void loadSmp(String smpFile, Boolean save) {
-		if (this.smpPackages.containsKey(smpFile)) {
-			String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-			logMessage += " SpoutMaterials: Couldn't load " + smpFile + ", already loaded.";
-			Logger.getLogger("Minecraft").info(logMessage);
-		} else {
-			this.smpPackages.put(smpFile, new SmpPackage(this, smpFile));
-		}
-	}
-
-	public void unloadSmp(String smpFile) {
-		this.smpPackages.get(smpFile).unload();
-		this.smpPackages.remove(smpFile);
-		this.save();
-	}
-	
-	private void save() {
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(
-				plugin.getDataFolder().getPath() + File.separator + "materials.yml"
-			));
-			Object[] activeSmpFiles = this.smpPackages.keySet().toArray();
-			for (int i = 0; i < activeSmpFiles.length; i++) {
-				if (i > 0) {
-					out.write("\n");
+					// Checking if an update is required.
+					if (!this.plugin.getDescription().getVersion().equals(version)) {
+						
+						// Update this .smp file.
+						smpFile.close();
+						File delete = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + file);
+						delete.delete();
+						this.install(file.replaceAll("\\.smp$", ""), "-1");
+						
+					// Load the .smp file.
+					} else if (smpFile != null) {
+						this.smpPackages.put(file.replaceAll("\\.smp$", ""), new SmpPackage(this, smpFile));
+					}
+				} catch (IOException exception) {
 				}
-				out.write(activeSmpFiles[i].toString());
 			}
-			out.close();
-		} catch (Exception e) {
-			String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-			logMessage += " SpoutMaterials: Couldn't write materials.yml file.";
-			Logger.getLogger("Minecraft").info(logMessage);
 		}
+	}
+	
+	private ZipFile getSmpHandle(String smpFileName) {
+		try {
+			return new ZipFile(
+				this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpFileName
+			);
+		} catch(IOException Exception) {
+			String logMessage = "[" + this.plugin.getDescription().getName() + "]";
+			logMessage += " SpoutMaterials: Couldn't load " + smpFileName + ".";
+			Logger.getLogger("Minecraft").info(logMessage);
+			return null;
+		}
+	}
+
+	public void install(String smpName, String version) {
+		if (!this.smpPackages.containsKey(smpName)) {
+			this.plugin.getWebManager().downloadSmp(smpName, version);
+			ZipFile smpFile = getSmpHandle(smpName + ".smp");
+			this.smpPackages.put(smpName, new SmpPackage(this, smpFile));
+			this.plugin.getLegacyManager().reload();
+		}
+	}
+
+	public void uninstall(String smpName) {
+		if (this.smpPackages.containsKey(smpName)) {
+			this.smpPackages.get(smpName).unload();
+			this.smpPackages.remove(smpName);
+			File delete = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpName + ".smp");
+			delete.delete();
+			this.plugin.getLegacyManager().reload();
+		}
+	}
+	
+	public void unload() {
+		for (String smpName : this.smpPackages.keySet()) {
+			this.smpPackages.get(smpName).unload();
+		}
+		this.smpPackages.clear();
 	}
 	
 	public Map<String, Material> getMaterial(String materialName) {
@@ -151,9 +145,9 @@ public class SmpManager {
 		return materials;
 	}
 	
-	public Object getMaterial(SpoutItemStack itemStack) {
+	public Material getMaterial(SpoutItemStack itemStack) {
 		for (String smpPackage : this.smpPackages.keySet()) {
-			Object found = this.smpPackages.get(smpPackage).getMaterial(itemStack);
+			Material found = this.smpPackages.get(smpPackage).getMaterial(itemStack);
 			if (found != null) {
 				return found;
 			}
@@ -161,17 +155,11 @@ public class SmpManager {
 		return null;
 	}
 	
-	public JavaPlugin getPlugin() {
+	public Main getPlugin() {
 		return this.plugin;
 	}
-
-	public Collection<SmpPackage> getAllPackages() {
-		return smpPackages.values();
-	}
-
-	public SmpPackage getPackage(String string) {
-		if(smpPackages.containsKey(string))
-		return smpPackages.get(string);
-		return null;
+	
+	public Set<String> getPackages() {
+		return this.smpPackages.keySet();
 	}
 }

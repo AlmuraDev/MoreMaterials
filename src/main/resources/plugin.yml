@@ -1,35 +1,45 @@
 name: SpoutMaterials
 version: 1.6
-author: ZNickq, IceReaper
-depend: [Spout]
 description: Custom blocks and items!
+authors: [ZNickq, IceReaper]
+website: http://www.spoutmaterials.net
+
+load: startup
+depend: [Spout]
 main: net.spoutmaterials.spoutmaterials.Main
+
 commands:
   smgive:
-    description: Gives you a custom object.
-    usage: /<command> [custom blockname] {number of blocks}
+    description: Gives you a custom material.
+    usage: /<command> [custom material] {amount}
+    permission: spoutmaterials.give
   smadmin:
     description: Internal helper functions.
-    usage: /<command> [load|unload|reload] [smpPackage]
-  smupdate:
-    description: Update functions
-    usage: /<command> [packageName]
+    usage: |
+      /<command> [list] - List all currently installed smp files.
+      /<command> [updates] - List all updatable smp files.
+      /<command> [install] [smpPackage] {version} - Install specified smp file in specified version (Defaults to latest).
+      /<command> [uninstall] [smpPackage] - Uninstall specified smp file.
+    permission: spoutmaterials.admin
+
 permissions:
   spoutmaterials.*:
     description: Allows access to all of SpoutMaterials' functionality.
     default: op
-  spoutmaterials.debug:
-    description: Experimental features, for fast debugging.
+    children:
+      spoutmaterials.admin
+      spoutmaterials.craft.*
+  spoutmaterials.admin:
+    description: Access to smp commands.
     default: op
+    children:
+      spoutmaterials.give
   spoutmaterials.give:
     description: Allows spawning SpoutMaterials blocks and items.
     default: op
-    children:
-      spoutmaterials.give.package.name: true
-      spoutmaterials.give.name: true
-  spoutmaterials.craft:
+  spoutmaterials.craft.*:
     description: Allows crafting of SpoutMaterials blocks and items.
-    default: op
+    default: true
     children:
-      spoutmaterials.give.package.name: true
-      spoutmaterials.give.name: true
+      spoutmaterials.craft.package: true
+      spoutmaterials.craft.package.material: true

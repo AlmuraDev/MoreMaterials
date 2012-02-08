@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.spoutmaterials.spoutmaterials;
 
 import java.awt.image.BufferedImage;
@@ -64,16 +64,11 @@ public class SmpPackage {
 	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 
-	public SmpPackage(SmpManager smpManager, String smpName) {
-		this.name = smpName;
+	public SmpPackage(SmpManager smpManager, ZipFile smpFile) {
+		this.smpFile = smpFile;
 		this.smpManager = smpManager;
 		Map<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
 		try {
-			// Open the smp file.
-			this.smpFile = new ZipFile(
-							this.smpManager.getPlugin().getDataFolder().getPath()
-							+ File.separator + "materials" + File.separator + this.name + ".smp");
-
 			// Getting all materials.
 			Enumeration<? extends ZipEntry> entries = this.smpFile.entries();
 			while (entries.hasMoreElements()) {
@@ -140,13 +135,16 @@ public class SmpPackage {
 					design.setMinBrightness(brightness);
 					design.setMaxBrightness(brightness);
 					SMCustomBlock customBlock = new SMCustomBlock(
-									this, config.getString("Title", materialName), !config.getBoolean("Transparency", false), design);
+						this, config.getString("Title", materialName),
+						!config.getBoolean("Transparency", false), design
+					);
 					customBlock.setConfig(config);
 					this.customBlocksList.put(materialName, customBlock);
 				} else if (config.getString("Type", "").equals("Item")) {
 					// Initialize an item.
 					SMCustomItem customItem = new SMCustomItem(
-									this, config.getString("Title", materialName), textureFile.getName());
+						this, config.getString("Title", materialName), textureFile.getName()
+					);
 					customItem.setConfig(config);
 					this.customItemsList.put(materialName, customItem);
 				}
@@ -170,6 +168,7 @@ public class SmpPackage {
 		}
 		// This allows us to have multiple recipes.
 		for (Object orecipe : recipes) {
+			//TODO unsafe cast warning remove
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			String type = (String) recipe.get("type");
 			Integer amount = (Integer) recipe.get("amount");
@@ -187,14 +186,15 @@ public class SmpPackage {
 				}
 				SpoutFurnaceRecipe fRecipe;
 				fRecipe = new SpoutFurnaceRecipe(
-								new SpoutItemStack(ingredient, 1),
-								new SpoutItemStack(material, 1));
-
+					new SpoutItemStack(ingredient, 1),
+					new SpoutItemStack(material, 1)
+				);
 				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
 				this.furnaceRecipeList.add(fRecipe);
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
-								new SpoutItemStack(material, amount)).shape("abc", "def", "ghi");
+					new SpoutItemStack(material, amount)
+				).shape("abc", "def", "ghi");
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else if (type.equalsIgnoreCase("shapeless")) {
@@ -221,7 +221,8 @@ public class SmpPackage {
 				idMap[i] = i;
 			}
 			design = new GenericCuboidBlockDesign(
-							this.smpManager.getPlugin(), texture, idMap, 0, 0, 0, 1, 1, 1);
+				this.smpManager.getPlugin(), texture, idMap, 0, 0, 0, 1, 1, 1
+			);
 			// default block, with same texture on each side
 		} else {
 			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
@@ -348,7 +349,7 @@ public class SmpPackage {
 		return null;
 	}
 
-	public Object getMaterial(SpoutItemStack itemStack) {
+	public Material getMaterial(SpoutItemStack itemStack) {
 		for (String itemName : this.customBlocksList.keySet()) {
 			SMCustomBlock tempBlock = this.customBlocksList.get(itemName);
 			if (tempBlock.getRawData() == itemStack.getMaterial().getRawData()) {
@@ -366,9 +367,5 @@ public class SmpPackage {
 
 	public SmpManager getSmpManager() {
 		return this.smpManager;
-	}
-
-	public void reDownload() {
-		//TODO this
 	}
 }

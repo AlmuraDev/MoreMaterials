@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.spoutmaterials.spoutmaterials;
 
 import java.io.File;
@@ -30,42 +30,48 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.cmds.AdminExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
+import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	public static final Logger log = Logger.getLogger("Minecraft");
-	public PluginDescriptionFile pdfile;
-	public WebManager webmanager;
 	// Used for handling smp files.
-	public SmpManager smpManager = null;
-	
+	private SmpManager smpManager = null;
+	// Used for website related stuff.
+	private WebManager webmanager;
+	// Used for legacy material related stuff
 	private LegacyManager legacyManager;
 
 	@Override
 	public void onDisable() {
+		this.smpManager.unload();
+		this.legacyManager.unload();
 	}
 
 	@Override
 	public void onEnable() {
-		pdfile = this.getDescription();
 		try {
+			// Let the plugin check for updates and initialize all files and folders.
 			checkIntegrityAndUpdate();
-		} catch (IOException ex) {
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException exception) {
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
 		}
+		
+		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.
 		SpoutFurnaceRecipes.hook();
-		// Initialize all custom objects. This is all a plugin must do to have custom materials implemented.
+
+		// Initialize all managers we need.
 		this.smpManager = new SmpManager(this);
-		this.legacyManager = new LegacyManager(this, this.smpManager);
-		new WGenManager(this, this.smpManager);
-		new WebManager(this);
+		this.legacyManager = new LegacyManager(this);
+		this.webmanager = new WebManager(this);
+		new WGenManager(this);
+
+		// Registered events for all Materials in this manager.
+		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
 
 		// Chat command stuff
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
@@ -84,29 +90,40 @@ public class Main extends JavaPlugin {
 	}
 
 	private void checkIntegrityAndUpdate() throws IOException {
-		File f = new File(this.getDataFolder()+File.separator+"materials");
-		f.mkdirs();
-		f = new File(this.getDataFolder()+File.separator+"wgen.yml");
-		f.createNewFile();
-		f = new File(this.getDataFolder()+File.separator+"legacyrecipes.yml");
-		f.createNewFile();
-		f = new File(this.getDataFolder()+File.separator+"update");
-		f.mkdir();
-		//Done checking folder integrity, now update!
-		File[] fl=f.listFiles();
-		for(File curf:fl) {
-			if(!curf.getName().endsWith(".smp")) continue;
-			File dest = new File(this.getDataFolder()+File.separator+"update"+curf.getName());
-			dest.delete();
-			try {
-				FileUtils.copyFile(curf, dest);
-			} catch (IOException ex) {
-				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-			}
+		// Update the plugin.
+		if (this.webmanager.updateAvailable()) {
+			this.webmanager.updatePlugin();
+			//TODO somehow reload plugin here
+		}
+
+		// Create all used files and folders if not present.
+		File file = null;
+		// Contains all smp files.
+		file = new File(this.getDataFolder().getPath() + File.separator + "materials");
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		// Contains all legacy item crafting stuff.
+		file = new File(this.getDataFolder().getPath() + File.separator + "legacyrecipes.yml");
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		// Contains all wgen stuff.
+		file = new File(this.getDataFolder().getPath() + File.separator + "wgen.yml");
+		if (!file.exists()) {
+			file.createNewFile();
 		}
 	}
-
+	
+	public SmpManager getSmpManager() {
+		return this.smpManager;
+	}
+	
 	public LegacyManager getLegacyManager() {
-		return legacyManager;
+		return this.legacyManager;
+	}
+	
+	public WebManager getWebManager() {
+		return this.webmanager;
 	}
 }

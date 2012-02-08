@@ -1,8 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq), Sean Porter (Glitchfinder),
- Jan Tojnar (jtojnar, Lisured) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +21,12 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.spoutmaterials.spoutmaterials.listeners;
 
 import java.util.Map;
+
+import net.spoutmaterials.spoutmaterials.Main;
 import net.spoutmaterials.spoutmaterials.SmpManager;
 import net.spoutmaterials.spoutmaterials.materials.MaterialAction;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
@@ -47,16 +49,12 @@ import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-/**
- *
- * @author Nickq
- */
 public class SMListener implements Listener {
 
 	private SmpManager smpManager;
 
-	public SMListener(SmpManager aThis) {
-		smpManager = aThis;
+	public SMListener(Main aThis) {
+		smpManager = aThis.getSmpManager();
 	}
 
 	@EventHandler
