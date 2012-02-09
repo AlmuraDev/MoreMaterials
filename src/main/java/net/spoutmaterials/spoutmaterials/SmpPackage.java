@@ -305,13 +305,12 @@ public class SmpPackage {
 
 		// Saving the file.
 		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
-		String tempDir = System.getProperty("java.io.tmpdir");
-		if (!tempDir.endsWith(File.pathSeparator)) {
-			tempDir += File.pathSeparator;
-		}
+		File tempDir = new File(smpManager.getPlugin().getDataFolder()+File.separator+"temp");
+		tempDir.mkdir();
 		File cacheFile = new File(
-			tempDir + result + fileName.substring(fileName.lastIndexOf("."))
+			tempDir, result + fileName.substring(fileName.lastIndexOf("."))
 		);
+		if(cacheFile.exists()) return cacheFile;
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
 		byte[] bytes = new byte[1024];
@@ -321,7 +320,6 @@ public class SmpPackage {
 		out.flush();
 		out.close();
 		inputStream.close();
-		cacheFile.deleteOnExit();
 		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
 		return cacheFile;
 	}

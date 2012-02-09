@@ -30,12 +30,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.cmds.AdminExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
+import net.spoutmaterials.spoutmaterials.cmds.SMExecutor;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.getspout.commons.ChatColor;
+import org.getspout.spoutapi.SpoutManager;
 
 public class Main extends JavaPlugin {
 
@@ -75,17 +78,21 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
 
 		// Chat command stuff
+		getCommand("sm").setExecutor(new SMExecutor(this));
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
 		getCommand("smadmin").setExecutor(new AdminExecutor(this));
 	}
 
-	public boolean hasPermission(CommandSender sender, String perm) {
+	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
 		// Allow console
 		if (!(sender instanceof Player)) {
 			return true;
 			// Or players with this permission
 		} else if (((Player) sender).hasPermission(perm)) {
 			return true;
+		}
+		if(verbose) {
+			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials] "+ChatColor.RED+"You do not have permission to do that! You need "+perm+"!");
 		}
 		return false;
 	}

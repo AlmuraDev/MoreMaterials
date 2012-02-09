@@ -61,24 +61,13 @@ public class GiveExecutor implements CommandExecutor {
 		if (args.length > 1) {
 			amount = Integer.parseInt(args[1]);
 		}
-
-		// Permission check
-		if (!instance.hasPermission(sender, "spoutmaterials.give")) {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials]" +
-				ChatColor.RED + " You don't have permission to do that!"
-			);
-		}
 		
 		SpoutPlayer player = (SpoutPlayer) sender;
 		Map<String, Material> material = instance.getSmpManager().getMaterial(args[0]);
-		if (!(instance.hasPermission(sender, "spoutmaterials.give")|| instance.hasPermission(sender, "spoutmaterials.give."+args[0]))) {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials]" +
-				ChatColor.RED + " You don't have permission to do that!"
-			);
+		
+		//Permission check
+		if (!(instance.hasPermission(sender, "spoutmaterials.give",true)|| instance.hasPermission(sender, "spoutmaterials.give."+args[0],true)))
 			return true;
-		}
 		if (material.isEmpty()) {
 			sender.sendMessage(
 				ChatColor.GREEN + "[SpoutMaterials]" +

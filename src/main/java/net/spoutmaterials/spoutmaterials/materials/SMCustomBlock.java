@@ -27,9 +27,11 @@ package net.spoutmaterials.spoutmaterials.materials;
 import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
-import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
+import org.getspout.spoutapi.material.Material;
+import org.getspout.spoutapi.material.block.GenericCustomBlock;
+import org.getspout.spoutapi.sound.SoundEffect;
 
-public class SMCustomBlock extends GenericCuboidCustomBlock {
+public class SMCustomBlock extends GenericCustomBlock {
 
 	private MaterialAction actionL = null;
 	private MaterialAction actionR = null;
@@ -37,6 +39,9 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
+	private Material redstoneBlock;//TODO waiting on spout api
+	private String redstoneBlockName;
+	
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
 		super(smpPackage.getSmpManager().getPlugin(), name, opaque, design);
@@ -50,7 +55,8 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		Float lspeedMultiplier = (float) config.getDouble("WalkSpeed", 1);
 		Float ljumpMultiplier = (float) config.getDouble("JumpHeight", 1);
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
-
+		String lstepSound = config.getString("StepSound",null);
+		String redstoneTransform = config.getString("Redstonetransform",null);
 		if (hardness != 0) {
 			this.setHardness((float) hardness);
 		}
@@ -61,6 +67,21 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 
 		if (lightLevel > 0) {
 			this.setLightLevel(lightLevel);
+		}
+		
+		if(lstepSound!=null) {
+			try{
+			this.setStepSound(SoundEffect.getSoundEffectFromName(lstepSound.toUpperCase()));
+			}catch(Exception ex) {
+				System.out.println("Tried to set invalid sound effect! All possible sound effects:");
+				for(SoundEffect curs:SoundEffect.values()) {
+					System.out.print(curs+", ");
+				}
+			}
+		}
+		
+		if(redstoneTransform!=null) {
+			redstoneBlockName = redstoneTransform;
 		}
 		
 		if(config.isConfigurationSection("Lclick")) {

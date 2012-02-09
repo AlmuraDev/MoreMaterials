@@ -9,6 +9,9 @@ depend: [Spout]
 main: net.spoutmaterials.spoutmaterials.Main
 
 commands:
+  sm:
+    description: Some basic commands!
+    usage: /<command> [?]
   smgive:
     description: Gives you a custom material.
     usage: /<command> [custom material] {amount}

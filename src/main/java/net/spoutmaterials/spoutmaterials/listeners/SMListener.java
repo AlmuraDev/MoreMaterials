@@ -182,7 +182,7 @@ public class SMListener implements Listener {
 	@EventHandler
 	public void PlayerInteract(PlayerInteractEvent event) {
 		// If any other plugin already canceled this event
-		if (event.isCancelled()) {
+		if (event.isCancelled()&&event.getAction()!=Action.RIGHT_CLICK_AIR&&event.getAction()!=Action.LEFT_CLICK_AIR) {
 			return;
 		}
 

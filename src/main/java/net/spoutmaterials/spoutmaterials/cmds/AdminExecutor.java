@@ -21,18 +21,16 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.spoutmaterials.spoutmaterials.cmds;
 
 import java.util.Set;
-
 import net.spoutmaterials.spoutmaterials.Main;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class AdminExecutor implements CommandExecutor {
+
 	private Main instance;
 
 	public AdminExecutor(Main plugin) {
@@ -41,29 +39,24 @@ public class AdminExecutor implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		
-		if (!instance.hasPermission(sender, "spoutmaterials.admin")) {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials]" +
-				ChatColor.RED + " You don't have permission to do that!"
-			);
+
+		if (!instance.hasPermission(sender, "spoutmaterials.admin", true)) {
 			return true;
 		}
-		
 		// Parameter is "install"
 		if ("install".equals(args[0]) && args.length > 1) {
 			if (args.length > 2) {
 				this.instance.getSmpManager().install(args[1], args[2]);
 			} else {
-				this.instance.getSmpManager().install(args[1], "-1");	
+				this.instance.getSmpManager().install(args[1], "-1");
 			}
 		}
-		
+
 		// Parameter is "uninstall"
 		if ("uninstall".equals(args[0]) && args.length == 2) {
 			this.instance.getSmpManager().uninstall(args[1]);
 		}
-		
+
 		// Parameter is "list"
 		if ("list".equals(args[0])) {
 			Set<String> packages = this.instance.getSmpManager().getPackages();
@@ -71,12 +64,12 @@ public class AdminExecutor implements CommandExecutor {
 				sender.sendMessage(smpName);
 			}
 		}
-		
+
 		// Parameter is "updates"
 		if ("updates".equals(args[0])) {
 			//TODO check all smp versions for newer ones. (found in _version_smp file)
 		}
-		
+
 		return true;
 	}
 }
