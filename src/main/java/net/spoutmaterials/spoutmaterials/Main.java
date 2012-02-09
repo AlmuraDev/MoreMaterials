@@ -37,16 +37,16 @@ import net.spoutmaterials.spoutmaterials.utils.WebManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
 	public Boolean updateAvailable = false;
-	private String hostname = "127.0.0.1";
-	private Integer port = 8081;
+	private YamlConfiguration config;
 	// Used for handling smp files.
-	private SmpManager smpManager = null;
+	private SmpManager smpManager;
 	// Used for website related stuff.
 	private WebManager webmanager;
 	// Used for legacy material related stuff
@@ -60,7 +60,11 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		//TODO set ip and port
+		try {
+			this.readConfig();
+		} catch (Exception e) {
+		}
+		
 		this.webmanager = new WebManager(this);
 		
 		try {
@@ -85,6 +89,24 @@ public class Main extends JavaPlugin {
 		getCommand("sm").setExecutor(new SMExecutor(this));
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
 		getCommand("smadmin").setExecutor(new AdminExecutor(this));
+	}
+
+	private void readConfig() throws Exception {
+		// Initialize configurations
+		File configFile = new File(this.getDataFolder().getPath(), "config.yml");
+		if (!configFile.exists()) {
+			configFile.createNewFile();
+		}
+		this.config = new YamlConfiguration();
+		YamlConfiguration fileConfig = new YamlConfiguration();
+		fileConfig.load(configFile);
+		
+		// Set active configuration
+		this.config.set("port", fileConfig.getInt("port", 8081));
+		this.config.set("hostname", fileConfig.getString("hostname", "127.0.0.1"));
+		
+		// Save configuration
+		this.config.save(configFile);
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -118,12 +140,12 @@ public class Main extends JavaPlugin {
 			file.mkdirs();
 		}
 		// Contains all legacy item crafting stuff.
-		file = new File(this.getDataFolder().getPath() + File.separator + "legacyrecipes.yml");
+		file = new File(this.getDataFolder().getPath(), "legacyrecipes.yml");
 		if (!file.exists()) {
 			file.createNewFile();
 		}
 		// Contains all wgen stuff.
-		file = new File(this.getDataFolder().getPath() + File.separator + "wgen.yml");
+		file = new File(this.getDataFolder().getPath(), "wgen.yml");
 		if (!file.exists()) {
 			file.createNewFile();
 		}
@@ -142,10 +164,10 @@ public class Main extends JavaPlugin {
 	}
 
 	public String getAssetsUrl() {
-		return "http://" + this.hostname + ":" + this.getPort() + "/";
+		return "http://" + this.config.getString("hostname") + ":" + this.getPort() + "/";
 	}
 
 	public int getPort() {
-		return this.port;
+		return this.config.getInt("port");
 	}
 }
