@@ -59,16 +59,27 @@ public class SMListener implements Listener {
 
 	@EventHandler
 	public void InventoryCraft(InventoryCraftEvent event) {
-		ItemStack itemStack = event.getResult();
-		SpoutItemStack spoutItemStack = new SpoutItemStack(itemStack);
-		Map<String, Material> a = smpManager.getMaterial(spoutItemStack.getMaterial().getName());
-		for (String s : a.keySet()) {
-			Material m = a.get(s);
-			if (m == spoutItemStack.getMaterial()) {
-				if (!event.getPlayer().hasPermission("spoutmaterials.craft." + s)) {
-					event.getPlayer().sendMessage(ChatColor.GREEN + "[SpoutMaterials]" + ChatColor.RED + " You do not have permission to do that!");
+		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getResult());
+		Map<String, Material> materials = this.smpManager.getMaterial(spoutItemStack.getMaterial().getName());
+		for (String materialName : materials.keySet()) {
+			Material material = materials.get(materialName);
+			if (material == spoutItemStack.getMaterial()) {
+				if (!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)) {
+					event.getPlayer().sendMessage(
+						ChatColor.GREEN + "[SpoutMaterials]" +
+						ChatColor.RED + " You do not have permission to do that!"
+					);
 					event.setCancelled(true);
 					return;
+				}
+				if (material instanceof SMCustomItem && ((SMCustomItem)material).getKeepEnchanting()) {
+					ItemStack result = event.getResult();
+					for (ItemStack[] ingredients : event.getRecipe()) {
+						for (ItemStack ingredient : ingredients) {
+							result.addEnchantments(ingredient.getEnchantments());
+						}
+					}
+					event.setResult(result);
 				}
 			}
 		}

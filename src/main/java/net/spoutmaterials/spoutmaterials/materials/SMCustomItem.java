@@ -36,6 +36,7 @@ public class SMCustomItem extends GenericCustomItem {
 	private MaterialAction actionR = null;
 	private boolean stackable = true;
 	private SmpPackage smpPackage = null;
+	private boolean keepEnchanting = false;
 
 	public SMCustomItem(SmpPackage smpPackage, String name, String texture) {
 		super(smpPackage.getSmpManager().getPlugin(), name, texture);
@@ -44,6 +45,7 @@ public class SMCustomItem extends GenericCustomItem {
 	
 	public void setConfig(ConfigurationSection config) {
 		Integer ldamage = config.getInt("Damage");
+		Boolean keepEnchanting = config.getBoolean("KeepEnchanting", false);
 		// Unimplemented
 		Integer durability = config.getInt("Durability");
 		// Unimplemented
@@ -66,6 +68,7 @@ public class SMCustomItem extends GenericCustomItem {
 		}
 		
 		this.stackable = lstackable;
+		this.keepEnchanting = keepEnchanting;
 	}
 	
 	public MaterialAction getActionL() {
@@ -86,5 +89,9 @@ public class SMCustomItem extends GenericCustomItem {
 
 	public boolean getStackable() {
 		return this.stackable;
+	}
+
+	public boolean getKeepEnchanting() {
+		return this.keepEnchanting;
 	}
 }
