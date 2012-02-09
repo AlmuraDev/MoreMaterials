@@ -126,11 +126,11 @@ public class SmpPackage {
 
 	private void loadMaterial(String materialName, YamlConfiguration config, ZipFile smpFile) {
 		try {
-			File textureFile = this.cacheFile(materialName + ".png");
+			String textureName = this.cacheFile(materialName + ".png");
 			try {
 				if (config.getString("Type", "").equals("Block")) {
 					// Initialize a block.
-					GenericCuboidBlockDesign design = this.getCuboidDesign(textureFile);
+					GenericCuboidBlockDesign design = this.getCuboidDesign(textureName);
 					float brightness = (float) config.getDouble("Brightness", 0.2);
 					design.setBrightness(brightness);
 					design.setMinBrightness(brightness);
@@ -144,7 +144,7 @@ public class SmpPackage {
 				} else if (config.getString("Type", "").equals("Item")) {
 					// Initialize an item.
 					SMCustomItem customItem = new SMCustomItem(
-						this, config.getString("Title", materialName), textureFile.getName()
+						this, config.getString("Title", materialName), this.getSmpManager().getPlugin().getAssetsUrl() + textureName
 					);
 					customItem.setConfig(config);
 					this.customItemsList.put(materialName, customItem);
@@ -210,13 +210,14 @@ public class SmpPackage {
 		}
 	}
 
-	private GenericCuboidBlockDesign getCuboidDesign(File textureFile) throws IOException {
+	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
 		GenericCuboidBlockDesign design;
+		File textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName);
 		BufferedImage bufferedImage = ImageIO.read(textureFile);
 
 		// for different textures on each block side
 		if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
-			Texture texture = new Texture(this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth());
+			Texture texture = new Texture(this.smpManager.getPlugin(), this.getSmpManager().getPlugin().getAssetsUrl() + textureName, bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth());
 			int[] idMap = new int[6];
 			for (int i = 0; i < 6; i++) {
 				idMap[i] = i;
@@ -226,7 +227,7 @@ public class SmpPackage {
 			);
 			// default block, with same texture on each side
 		} else {
-			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), textureFile.getName(), bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
+			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), this.getSmpManager().getPlugin().getAssetsUrl() + textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
 		}
 		return design;
 	}
@@ -285,7 +286,7 @@ public class SmpPackage {
 		this.craftingRecipeList.add(recipe);
 	}
 
-	public File cacheFile(String fileName) throws Exception {
+	public String cacheFile(String fileName) throws Exception {
 		// Getting the hash of the file.
 		InputStream fis = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
 		byte[] buffer = new byte[1024];
@@ -311,8 +312,8 @@ public class SmpPackage {
 		File cacheFile = new File(tempDir, result + fileName.substring(fileName.lastIndexOf(".")));
 		// No need of creating the file again, its already present!
 		if (cacheFile.exists()) {
-			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
-			return cacheFile;
+			inputStream.close();
+			return result + fileName.substring(fileName.lastIndexOf("."));
 		}
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
@@ -323,8 +324,7 @@ public class SmpPackage {
 		out.flush();
 		out.close();
 		inputStream.close();
-		SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
-		return cacheFile;
+		return result + fileName.substring(fileName.lastIndexOf("."));
 	}
 
 	private void setDrops(YamlConfiguration config, String name) {

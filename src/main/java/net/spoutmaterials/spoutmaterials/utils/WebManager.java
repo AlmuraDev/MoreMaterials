@@ -24,6 +24,10 @@
 
 package net.spoutmaterials.spoutmaterials.utils;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import com.sun.net.httpserver.HttpServer;
+
 import net.spoutmaterials.spoutmaterials.Main;
 
 public class WebManager {
@@ -31,13 +35,25 @@ public class WebManager {
 
 	public WebManager(Main plugin) {
 		this.instance = plugin;
+		this.startAssetsServer(plugin.getPort());
+	}
+
+	private void startAssetsServer(Integer port) {
+		HttpServer server;
+		try {
+			server = HttpServer.create(new InetSocketAddress(port), 0);
+		    server.createContext("/", new SMHttpHandler(this.instance));
+		    server.setExecutor(null);
+		    server.start();
+		} catch (IOException exception) {
+		}
 	}
 
 	public boolean updateAvailable() {
 		String version = this.instance.getDescription().getVersion();
 		String newest = version;
 		//TODO returns wether an update is available.
-		return version != newest;
+		return !version.equals(newest);
 	}
 
 	public void downloadSmp(String smpName, String version) {

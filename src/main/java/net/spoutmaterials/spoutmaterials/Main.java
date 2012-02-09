@@ -43,6 +43,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 
 	public Boolean updateAvailable = false;
+	private String hostname = "127.0.0.1";
+	private Integer port = 8081;
 	// Used for handling smp files.
 	private SmpManager smpManager = null;
 	// Used for website related stuff.
@@ -58,6 +60,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		//TODO set ip and port
 		this.webmanager = new WebManager(this);
 		
 		try {
@@ -136,5 +139,13 @@ public class Main extends JavaPlugin {
 	
 	public WebManager getWebManager() {
 		return this.webmanager;
+	}
+
+	public String getAssetsUrl() {
+		return "http://" + this.hostname + ":" + this.getPort() + "/";
+	}
+
+	public int getPort() {
+		return this.port;
 	}
 }

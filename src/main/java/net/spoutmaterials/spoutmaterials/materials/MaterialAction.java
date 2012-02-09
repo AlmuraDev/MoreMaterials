@@ -24,7 +24,6 @@
 
 package net.spoutmaterials.spoutmaterials.materials;
 
-import java.io.File;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
@@ -59,8 +58,7 @@ public class MaterialAction {
 
 		if (!lsound.equals("")) {
 			try {
-				File soundFile = smpPackage.cacheFile(lsound);
-				this.sound = soundFile.getName();
+				this.sound = smpPackage.cacheFile(lsound);
 			} catch (Exception e) {
 				String logMessage = "[" + smpPackage.getSmpManager().getPlugin().getDescription().getName() + "]";
 				logMessage += " SpoutMaterials: Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".";
