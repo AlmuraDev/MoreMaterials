@@ -65,6 +65,7 @@ public class SmpPackage {
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 
 	public SmpPackage(SmpManager smpManager, ZipFile smpFile, String name) {
+		this.name = name;
 		this.smpFile = smpFile;
 		this.smpManager = smpManager;
 		Map<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
