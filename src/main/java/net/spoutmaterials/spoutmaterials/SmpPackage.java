@@ -64,7 +64,8 @@ public class SmpPackage {
 	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 
-	public SmpPackage(SmpManager smpManager, ZipFile smpFile) {
+	public SmpPackage(SmpManager smpManager, ZipFile smpFile, String name) {
+		this.name = name;
 		this.smpFile = smpFile;
 		this.smpManager = smpManager;
 		Map<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
@@ -307,9 +308,7 @@ public class SmpPackage {
 		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
 		File tempDir = new File(smpManager.getPlugin().getDataFolder()+File.separator+"temp");
 		tempDir.mkdir();
-		File cacheFile = new File(
-			tempDir, result + fileName.substring(fileName.lastIndexOf("."))
-		);
+		File cacheFile = new File(tempDir,fileName);
 		if(cacheFile.exists()) return cacheFile;
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
