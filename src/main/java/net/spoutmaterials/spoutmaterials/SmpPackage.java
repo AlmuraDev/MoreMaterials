@@ -306,17 +306,8 @@ public class SmpPackage {
 
 		// Saving the file.
 		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
-		String tempDir = System.getProperty("java.io.tmpdir");
-		if (!tempDir.endsWith(File.pathSeparator)) {
-			tempDir += File.pathSeparator;
-		}
-		
-		String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
-		logMessage += " SpoutMaterials: using tempfile: " + tempDir + result + fileName.substring(fileName.lastIndexOf("."));
-		Logger.getLogger("Minecraft").info(logMessage);
-
 		File cacheFile = new File(
-			tempDir + result + fileName.substring(fileName.lastIndexOf("."))
+			System.getProperty("java.io.tmpdir"), result + fileName.substring(fileName.lastIndexOf("."))
 		);
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
