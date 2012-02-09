@@ -66,8 +66,11 @@ public class GiveExecutor implements CommandExecutor {
 		Map<String, Material> material = instance.getSmpManager().getMaterial(args[0]);
 		
 		//Permission check
-		if (!(instance.hasPermission(sender, "spoutmaterials.give",true)|| instance.hasPermission(sender, "spoutmaterials.give."+args[0],true)))
+		if (!instance.hasPermission(sender, "spoutmaterials.give", true)
+			&& !instance.hasPermission(sender, "spoutmaterials.give." + args[0], true)
+		) {
 			return true;
+		}
 		if (material.isEmpty()) {
 			sender.sendMessage(
 				ChatColor.GREEN + "[SpoutMaterials]" +

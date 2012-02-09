@@ -306,10 +306,14 @@ public class SmpPackage {
 
 		// Saving the file.
 		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
-		File tempDir = new File(smpManager.getPlugin().getDataFolder()+File.separator+"temp");
+		File tempDir = new File(smpManager.getPlugin().getDataFolder() + File.separator + "cache");
 		tempDir.mkdir();
-		File cacheFile = new File(tempDir,fileName);
-		if(cacheFile.exists()) return cacheFile;
+		File cacheFile = new File(tempDir, result + fileName.substring(fileName.lastIndexOf(".")));
+		// No need of creating the file again, its already present!
+		if (cacheFile.exists()) {
+			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
+			return cacheFile;
+		}
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
 		byte[] bytes = new byte[1024];

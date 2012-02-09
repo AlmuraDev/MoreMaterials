@@ -40,10 +40,6 @@ public class WebManager {
 		return version != newest;
 	}
 
-	public void updatePlugin() {
-		//TODO this should update the plugin itself.
-	}
-
 	public void downloadSmp(String smpName, String version) {
 		//TODO here should a .smp be downloaded (version -1 = newest)
 	}

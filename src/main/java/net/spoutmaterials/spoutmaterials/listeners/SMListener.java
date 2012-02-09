@@ -32,14 +32,17 @@ import net.spoutmaterials.spoutmaterials.materials.MaterialAction;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.SpoutManager;
@@ -53,8 +56,34 @@ public class SMListener implements Listener {
 
 	private SmpManager smpManager;
 
-	public SMListener(Main aThis) {
-		smpManager = aThis.getSmpManager();
+	public SMListener(Main plugin) {
+		this.smpManager = plugin.getSmpManager();
+	}
+	
+	@EventHandler
+	public void BlockRedstone(BlockRedstoneEvent event) {
+		Block redstone = event.getBlock();
+		Boolean on = redstone.getData() == 0;
+
+		// Getting the block below the redstone
+		SpoutBlock block = (SpoutBlock) redstone.getLocation().getWorld().getBlockAt(
+			redstone.getX(), redstone.getY() - 1, redstone.getZ()
+		);
+		
+		if (block.isCustomBlock()) {
+			SMCustomBlock customBlock = (SMCustomBlock) this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
+			//TODO block toggle
+		}
+	}
+	
+	@EventHandler
+	public void PlayerJoin(PlayerJoinEvent event) {
+		if (event.getPlayer().isOp()) {
+			event.getPlayer().sendMessage(
+				ChatColor.GREEN + "[SpoutMaterials]" +
+				ChatColor.YELLOW + " An update is available!"
+			);
+		}
 	}
 
 	@EventHandler
@@ -152,9 +181,10 @@ public class SMListener implements Listener {
 
 		// Getting the block below the player
 		SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-						player.getLocation().getBlockX(),
-						player.getLocation().getBlockY() - 1,
-						player.getLocation().getBlockZ());
+			player.getLocation().getBlockX(),
+			player.getLocation().getBlockY() - 1,
+			player.getLocation().getBlockZ()
+		);
 
 		// This only applies for custom blocks
 		Object item = null;
@@ -182,7 +212,7 @@ public class SMListener implements Listener {
 	@EventHandler
 	public void PlayerInteract(PlayerInteractEvent event) {
 		// If any other plugin already canceled this event
-		if (event.isCancelled()&&event.getAction()!=Action.RIGHT_CLICK_AIR&&event.getAction()!=Action.LEFT_CLICK_AIR) {
+		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_AIR) {
 			return;
 		}
 

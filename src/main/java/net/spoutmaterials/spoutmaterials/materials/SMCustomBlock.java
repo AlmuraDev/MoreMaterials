@@ -27,11 +27,10 @@ package net.spoutmaterials.spoutmaterials.materials;
 import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
-import org.getspout.spoutapi.material.Material;
-import org.getspout.spoutapi.material.block.GenericCustomBlock;
+import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
 import org.getspout.spoutapi.sound.SoundEffect;
 
-public class SMCustomBlock extends GenericCustomBlock {
+public class SMCustomBlock extends GenericCuboidCustomBlock {
 
 	private MaterialAction actionL = null;
 	private MaterialAction actionR = null;
@@ -39,13 +38,12 @@ public class SMCustomBlock extends GenericCustomBlock {
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
-	private Material redstoneBlock;//TODO waiting on spout api
-	private String redstoneBlockName;
+	private String redstoneTransform = null;
 	
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
 		super(smpPackage.getSmpManager().getPlugin(), name, opaque, design);
-		this.smpPackage=smpPackage;
+		this.smpPackage = smpPackage;
 	}
 
 	public void setConfig(ConfigurationSection config) {
@@ -55,8 +53,8 @@ public class SMCustomBlock extends GenericCustomBlock {
 		Float lspeedMultiplier = (float) config.getDouble("WalkSpeed", 1);
 		Float ljumpMultiplier = (float) config.getDouble("JumpHeight", 1);
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
-		String lstepSound = config.getString("StepSound",null);
-		String redstoneTransform = config.getString("Redstonetransform",null);
+		String stepSound = config.getString("StepSound", null);
+		String lredstoneTransform = config.getString("RedstoneTransform", null);
 		if (hardness != 0) {
 			this.setHardness((float) hardness);
 		}
@@ -69,19 +67,19 @@ public class SMCustomBlock extends GenericCustomBlock {
 			this.setLightLevel(lightLevel);
 		}
 		
-		if(lstepSound!=null) {
-			try{
-			this.setStepSound(SoundEffect.getSoundEffectFromName(lstepSound.toUpperCase()));
-			}catch(Exception ex) {
+		if (stepSound != null) {
+			try {
+				this.setStepSound(SoundEffect.getSoundEffectFromName(stepSound.toUpperCase()));
+			} catch(Exception exception) {
 				System.out.println("Tried to set invalid sound effect! All possible sound effects:");
-				for(SoundEffect curs:SoundEffect.values()) {
-					System.out.print(curs+", ");
+				for (SoundEffect soundEffect : SoundEffect.values()) {
+					System.out.print(soundEffect + ", ");
 				}
 			}
 		}
 		
-		if(redstoneTransform!=null) {
-			redstoneBlockName = redstoneTransform;
+		if (lredstoneTransform != null) {
+			this.redstoneTransform = lredstoneTransform;
 		}
 		
 		if(config.isConfigurationSection("Lclick")) {
@@ -109,9 +107,14 @@ public class SMCustomBlock extends GenericCustomBlock {
 	}
 	
 	public MaterialAction getActionL() {
-		return actionL;
+		return this.actionL;
 	}
+	
 	public MaterialAction getActionR() {
-		return actionR;
+		return this.actionR;
+	}
+	
+	public String getRedstoneTransform() {
+		return this.redstoneTransform;
 	}
 }

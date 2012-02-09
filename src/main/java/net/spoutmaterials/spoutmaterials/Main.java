@@ -34,14 +34,15 @@ import net.spoutmaterials.spoutmaterials.cmds.SMExecutor;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
+
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.commons.ChatColor;
-import org.getspout.spoutapi.SpoutManager;
 
 public class Main extends JavaPlugin {
 
+	public Boolean updateAvailable = false;
 	// Used for handling smp files.
 	private SmpManager smpManager = null;
 	// Used for website related stuff.
@@ -91,8 +92,11 @@ public class Main extends JavaPlugin {
 		} else if (((Player) sender).hasPermission(perm)) {
 			return true;
 		}
-		if(verbose) {
-			sender.sendMessage(ChatColor.GREEN+"[SpoutMaterials] "+ChatColor.RED+"You do not have permission to do that! You need "+perm+"!");
+		if (verbose) {
+			sender.sendMessage(
+				ChatColor.GREEN + "[SpoutMaterials] " +
+				ChatColor.RED + "You do not have permission to do that! You need " + perm + "!"
+			);
 		}
 		return false;
 	}
@@ -100,8 +104,7 @@ public class Main extends JavaPlugin {
 	private void checkIntegrityAndUpdate() throws IOException {
 		// Update the plugin.
 		if (this.webmanager.updateAvailable()) {
-			this.webmanager.updatePlugin();
-			//TODO somehow reload plugin here
+			this.updateAvailable = true;
 		}
 
 		// Create all used files and folders if not present.
