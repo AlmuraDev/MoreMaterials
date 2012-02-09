@@ -54,7 +54,13 @@ public class SmpManager {
 					ZipFile smpFile = getSmpHandle(file);
 				
 					// When file could not be loaded or version information is missing.
-					if (smpFile == null || smpFile.getEntry("_version_plugin") == null) {
+					if (smpFile == null) {
+						continue;
+					}
+					
+					// Ignore private files.
+					if (smpFile.getEntry("_version_plugin") == null) {
+						this.smpPackages.put(file.replaceAll("\\.smp$", ""), new SmpPackage(this, smpFile));
 						continue;
 					}
 				
