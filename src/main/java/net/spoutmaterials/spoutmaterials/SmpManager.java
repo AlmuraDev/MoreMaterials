@@ -60,7 +60,7 @@ public class SmpManager {
 					
 					// Ignore private files.
 					if (smpFile.getEntry("_version_plugin") == null) {
-						this.smpPackages.put(file.replaceAll("\\.smp$", ""), new SmpPackage(this, smpFile));
+						this.smpPackages.put(file.replaceAll("\\.smp$", ""), new SmpPackage(this, smpFile, file.replaceAll("\\.smp$", "")));
 						continue;
 					}
 				
@@ -83,7 +83,7 @@ public class SmpManager {
 						
 					// Load the .smp file.
 					} else if (smpFile != null) {
-						this.smpPackages.put(file.replaceAll("\\.smp$", ""), new SmpPackage(this, smpFile));
+						this.smpPackages.put(file.replaceAll("\\.smp$", ""), new SmpPackage(this, smpFile, file.replaceAll("\\.smp$", "")));
 					}
 				} catch (IOException exception) {
 				}
@@ -108,7 +108,7 @@ public class SmpManager {
 		if (!this.smpPackages.containsKey(smpName)) {
 			this.plugin.getWebManager().downloadSmp(smpName, version);
 			ZipFile smpFile = getSmpHandle(smpName + ".smp");
-			this.smpPackages.put(smpName, new SmpPackage(this, smpFile));
+			this.smpPackages.put(smpName, new SmpPackage(this, smpFile, smpName));
 			this.plugin.getLegacyManager().reload();
 		}
 	}

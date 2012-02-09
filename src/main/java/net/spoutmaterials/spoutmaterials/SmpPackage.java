@@ -64,7 +64,8 @@ public class SmpPackage {
 	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 
-	public SmpPackage(SmpManager smpManager, ZipFile smpFile) {
+	public SmpPackage(SmpManager smpManager, ZipFile smpFile, String name) {
+		this.name = name;
 		this.smpFile = smpFile;
 		this.smpManager = smpManager;
 		Map<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
@@ -309,6 +310,11 @@ public class SmpPackage {
 		if (!tempDir.endsWith(File.pathSeparator)) {
 			tempDir += File.pathSeparator;
 		}
+		
+		String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
+		logMessage += " SpoutMaterials: using tempfile: " + tempDir + result + fileName.substring(fileName.lastIndexOf("."));
+		Logger.getLogger("Minecraft").info(logMessage);
+
 		File cacheFile = new File(
 			tempDir + result + fileName.substring(fileName.lastIndexOf("."))
 		);
