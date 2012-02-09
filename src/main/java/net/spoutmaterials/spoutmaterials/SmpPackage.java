@@ -305,8 +305,13 @@ public class SmpPackage {
 
 		// Saving the file.
 		InputStream inputStream = this.smpFile.getInputStream(this.smpFile.getEntry(fileName));
+		String tempDir = System.getProperty("java.io.tmpdir");
+		if (!tempDir.endsWith(File.pathSeparator)) {
+			tempDir += File.pathSeparator;
+		}
 		File cacheFile = new File(
-						System.getProperty("java.io.tmpdir") + result + fileName.substring(fileName.lastIndexOf(".")));
+			tempDir + result + fileName.substring(fileName.lastIndexOf("."))
+		);
 		OutputStream out = new FileOutputStream(cacheFile);
 		int read;
 		byte[] bytes = new byte[1024];
