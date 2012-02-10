@@ -29,7 +29,6 @@ import java.util.Map;
 import net.minecraft.server.FurnaceRecipes;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 public class SpoutFurnaceRecipes extends FurnaceRecipes {
 

@@ -21,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.spoutmaterials.spoutmaterials;
 
 import java.io.File;
@@ -36,7 +37,6 @@ import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -62,11 +62,11 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.	
 		try{
-		SpoutFurnaceRecipes.hook();
-		}
-		catch(Exception ex) {
+			SpoutFurnaceRecipes.hook();
+		} catch(Exception ex) {
 			System.out.println("[SpoutMaterials] ERROR ===========> Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!");
 		}
+		
 		try {
 			this.readConfig();
 		} catch (Exception e) {
@@ -99,14 +99,14 @@ public class Main extends JavaPlugin {
 
 	private void readConfig() throws Exception {
 		FileConfiguration cfg = this.getConfig();
+		//TODO Do we realy need to set defaults when we also have them below?
 		cfg.addDefault("Port", 8180);
 		cfg.addDefault("Hostname", "localhost");
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 
-		port = cfg.getInt("Port", 8180);
-		hostname = cfg.getString("Hostname", "localhost");
-
+		this.port = cfg.getInt("Port", 8180);
+		this.hostname = cfg.getString("Hostname", "localhost");
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -121,8 +121,9 @@ public class Main extends JavaPlugin {
 		}
 		if (verbose) {
 			sender.sendMessage(
-							ChatColor.GREEN + "[SpoutMaterials] "
-							+ ChatColor.RED + "You do not have permission to do that! You need " + perm + "!");
+				ChatColor.GREEN + "[SpoutMaterials] " +
+				ChatColor.RED + "You do not have permission to do that! You need " + perm + "!"
+			);
 		}
 		return false;
 	}
@@ -165,10 +166,10 @@ public class Main extends JavaPlugin {
 	}
 
 	public String getAssetsUrl() {
-		return "http://" + hostname + ":" + this.getPort() + "/";
+		return "http://" + this.hostname + ":" + this.getPort() + "/";
 	}
 
 	public int getPort() {
-		return port;
+		return this.port;
 	}
 }

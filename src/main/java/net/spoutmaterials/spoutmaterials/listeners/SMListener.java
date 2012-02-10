@@ -25,7 +25,6 @@
 package net.spoutmaterials.spoutmaterials.listeners;
 
 import java.util.Map;
-
 import net.spoutmaterials.spoutmaterials.Main;
 import net.spoutmaterials.spoutmaterials.SmpManager;
 import net.spoutmaterials.spoutmaterials.materials.MaterialAction;
@@ -78,8 +77,8 @@ public class SMListener implements Listener {
 	
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
-		if (event.getPlayer().isOp()) {
-			//event.getPlayer().sendMessage(
+		if (event.getPlayer().isOp() && this.smpManager.getPlugin().updateAvailable) {
+//			event.getPlayer().sendMessage(
 //				ChatColor.GREEN + "[SpoutMaterials]" +
 //				ChatColor.YELLOW + " An update is available!"
 //			);
@@ -93,8 +92,9 @@ public class SMListener implements Listener {
 		for (String materialName : materials.keySet()) {
 			Material material = materials.get(materialName);
 			if (material == spoutItemStack.getMaterial()) {
-				if (!(event.getPlayer().hasPermission("spoutmaterials.craft"))||
-					!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)) {
+				if (!(event.getPlayer().hasPermission("spoutmaterials.craft")) ||
+					!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)
+				) {
 					event.getPlayer().sendMessage(
 						ChatColor.GREEN + "[SpoutMaterials]" +
 						ChatColor.RED + " You do not have permission to do that!"
