@@ -40,9 +40,8 @@ permissions:
   spoutmaterials.give:
     description: Allows spawning SpoutMaterials blocks and items.
     default: op
-  spoutmaterials.craft.*:
+  spoutmaterials.craft:
     description: Allows crafting of SpoutMaterials blocks and items.
     default: true
     children:
-      spoutmaterials.craft.package: true
-      spoutmaterials.craft.package.material: true
+      spoutmaterials.craft.material: true

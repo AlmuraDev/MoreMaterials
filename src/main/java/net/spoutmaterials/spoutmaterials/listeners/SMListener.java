@@ -93,7 +93,8 @@ public class SMListener implements Listener {
 		for (String materialName : materials.keySet()) {
 			Material material = materials.get(materialName);
 			if (material == spoutItemStack.getMaterial()) {
-				if (!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)) {
+				if (!(event.getPlayer().hasPermission("spoutmaterials.craft"))||
+					!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)) {
 					event.getPlayer().sendMessage(
 						ChatColor.GREEN + "[SpoutMaterials]" +
 						ChatColor.RED + " You do not have permission to do that!"

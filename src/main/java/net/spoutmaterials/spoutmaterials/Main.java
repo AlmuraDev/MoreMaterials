@@ -21,7 +21,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.spoutmaterials.spoutmaterials;
 
 import java.io.File;
@@ -50,7 +49,6 @@ public class Main extends JavaPlugin {
 	private WebManager webmanager;
 	// Used for legacy material related stuff
 	private LegacyManager legacyManager;
-	
 	private int port;
 	private String hostname;
 
@@ -68,17 +66,17 @@ public class Main extends JavaPlugin {
 			this.readConfig();
 		} catch (Exception e) {
 		}
-		
+
 		this.webmanager = new WebManager(this);
-		
+
 		try {
 			// Let the plugin check for updates and initialize all files and folders.
 			checkIntegrityAndUpdate();
 		} catch (IOException exception) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
 		}
-		
-		
+
+
 
 		// Initialize all managers we need.
 		this.smpManager = new SmpManager(this);
@@ -100,10 +98,10 @@ public class Main extends JavaPlugin {
 		cfg.addDefault("Hostname", "localhost");
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
-		
-		port = cfg.getInt("Port",8180);
-		hostname = cfg.getString("Hostname","localhost");
-		
+
+		port = cfg.getInt("Port", 8180);
+		hostname = cfg.getString("Hostname", "localhost");
+
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -111,14 +109,15 @@ public class Main extends JavaPlugin {
 		if (!(sender instanceof Player)) {
 			return true;
 			// Or players with this permission
+		} else if (sender.hasPermission("spoutmaterials.*")) {
+			return true;
 		} else if (((Player) sender).hasPermission(perm)) {
 			return true;
 		}
 		if (verbose) {
 			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials] " +
-				ChatColor.RED + "You do not have permission to do that! You need " + perm + "!"
-			);
+							ChatColor.GREEN + "[SpoutMaterials] "
+							+ ChatColor.RED + "You do not have permission to do that! You need " + perm + "!");
 		}
 		return false;
 	}
@@ -130,7 +129,7 @@ public class Main extends JavaPlugin {
 		}
 
 		// Create all used files and folders if not present.
-		File file ;
+		File file;
 		// Contains all smp files.
 		file = new File(this.getDataFolder().getPath() + File.separator + "materials");
 		if (!file.exists()) {
@@ -147,15 +146,15 @@ public class Main extends JavaPlugin {
 			file.createNewFile();
 		}
 	}
-	
+
 	public SmpManager getSmpManager() {
 		return this.smpManager;
 	}
-	
+
 	public LegacyManager getLegacyManager() {
 		return this.legacyManager;
 	}
-	
+
 	public WebManager getWebManager() {
 		return this.webmanager;
 	}

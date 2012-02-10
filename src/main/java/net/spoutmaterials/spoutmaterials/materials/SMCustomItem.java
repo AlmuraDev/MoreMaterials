@@ -45,7 +45,7 @@ public class SMCustomItem extends GenericCustomItem {
 	
 	public void setConfig(ConfigurationSection config) {
 		Integer ldamage = config.getInt("Damage");
-		Boolean keepEnchanting = config.getBoolean("KeepEnchanting", false);
+		Boolean lkeepEnchanting = config.getBoolean("KeepEnchanting", false);
 		// Unimplemented
 		Integer durability = config.getInt("Durability");
 		// Unimplemented
@@ -68,7 +68,7 @@ public class SMCustomItem extends GenericCustomItem {
 		}
 		
 		this.stackable = lstackable;
-		this.keepEnchanting = keepEnchanting;
+		this.keepEnchanting = lkeepEnchanting;
 	}
 	
 	public MaterialAction getActionL() {
