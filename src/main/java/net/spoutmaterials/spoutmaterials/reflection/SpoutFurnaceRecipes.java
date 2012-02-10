@@ -29,6 +29,7 @@ import java.util.Map;
 import net.minecraft.server.FurnaceRecipes;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 public class SpoutFurnaceRecipes extends FurnaceRecipes {
 
@@ -66,9 +67,8 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 	}
 
 	public static void hook() {
-		if (FurnaceRecipes.a instanceof SpoutFurnaceRecipes) {
-			return;
-		}
+		System.out.println("Attempting to hook furnace recipes...");
 		FurnaceRecipes.a = new SpoutFurnaceRecipes();
+		System.out.println("Furnace recipes hooked!");
 	}
 }

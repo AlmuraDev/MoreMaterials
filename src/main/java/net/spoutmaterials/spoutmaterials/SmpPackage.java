@@ -180,7 +180,7 @@ public class SmpPackage {
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
 				} else if (materialName.split("\\.").length == 1) {
-					ingredient = this.getMaterial(materialName);
+					ingredient = this.getMaterial(ingredientName);
 				} else {
 					Map<String, Material> materialList = this.smpManager.getMaterial(materialName);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);

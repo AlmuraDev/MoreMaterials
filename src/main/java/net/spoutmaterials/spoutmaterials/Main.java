@@ -34,9 +34,9 @@ import net.spoutmaterials.spoutmaterials.cmds.SMExecutor;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,13 +44,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 
 	public Boolean updateAvailable = false;
-	private YamlConfiguration config;
 	// Used for handling smp files.
 	private SmpManager smpManager;
 	// Used for website related stuff.
 	private WebManager webmanager;
 	// Used for legacy material related stuff
 	private LegacyManager legacyManager;
+	
+	private int port;
+	private String hostname;
 
 	@Override
 	public void onDisable() {
@@ -60,6 +62,8 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.	
+		SpoutFurnaceRecipes.hook();
 		try {
 			this.readConfig();
 		} catch (Exception e) {
@@ -74,8 +78,7 @@ public class Main extends JavaPlugin {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
 		}
 		
-		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.
-		SpoutFurnaceRecipes.hook();
+		
 
 		// Initialize all managers we need.
 		this.smpManager = new SmpManager(this);
@@ -92,21 +95,15 @@ public class Main extends JavaPlugin {
 	}
 
 	private void readConfig() throws Exception {
-		// Initialize configurations
-		File configFile = new File(this.getDataFolder().getPath(), "config.yml");
-		if (!configFile.exists()) {
-			configFile.createNewFile();
-		}
-		this.config = new YamlConfiguration();
-		YamlConfiguration fileConfig = new YamlConfiguration();
-		fileConfig.load(configFile);
+		FileConfiguration cfg = this.getConfig();
+		cfg.addDefault("Port", 8180);
+		cfg.addDefault("Hostname", "localhost");
+		cfg.options().copyDefaults(true);
+		this.saveConfig();
 		
-		// Set active configuration
-		this.config.set("port", fileConfig.getInt("port", 8081));
-		this.config.set("hostname", fileConfig.getString("hostname", "127.0.0.1"));
+		port = cfg.getInt("Port",8180);
+		hostname = cfg.getString("Hostname","localhost");
 		
-		// Save configuration
-		this.config.save(configFile);
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -133,7 +130,7 @@ public class Main extends JavaPlugin {
 		}
 
 		// Create all used files and folders if not present.
-		File file = null;
+		File file ;
 		// Contains all smp files.
 		file = new File(this.getDataFolder().getPath() + File.separator + "materials");
 		if (!file.exists()) {
@@ -164,10 +161,10 @@ public class Main extends JavaPlugin {
 	}
 
 	public String getAssetsUrl() {
-		return "http://" + this.config.getString("hostname") + ":" + this.getPort() + "/";
+		return "http://" + hostname + ":" + this.getPort() + "/";
 	}
 
 	public int getPort() {
-		return this.config.getInt("port");
+		return port;
 	}
 }
