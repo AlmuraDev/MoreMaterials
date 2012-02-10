@@ -79,10 +79,10 @@ public class SMListener implements Listener {
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
 		if (event.getPlayer().isOp()) {
-			event.getPlayer().sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials]" +
-				ChatColor.YELLOW + " An update is available!"
-			);
+			//event.getPlayer().sendMessage(
+//				ChatColor.GREEN + "[SpoutMaterials]" +
+//				ChatColor.YELLOW + " An update is available!"
+//			);
 		}
 	}
 

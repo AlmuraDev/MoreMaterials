@@ -61,7 +61,12 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.	
+		try{
 		SpoutFurnaceRecipes.hook();
+		}
+		catch(Exception ex) {
+			System.out.println("[SpoutMaterials] ERROR ===========> Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!");
+		}
 		try {
 			this.readConfig();
 		} catch (Exception e) {
