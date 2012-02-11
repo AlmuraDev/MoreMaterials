@@ -87,7 +87,7 @@ public class SMCustomItem extends GenericCustomItem {
 		return this.damage;
 	}
 
-	public boolean getStackable() {
+	public boolean isStackable() {
 		return this.stackable;
 	}
 

@@ -168,4 +168,12 @@ public class SmpManager {
 	public Set<String> getPackages() {
 		return this.smpPackages.keySet();
 	}
+	
+	public int getMaterialNumber() {
+		int toRet=0;
+		for(SmpPackage sp:smpPackages.values()) {
+			toRet+=sp.getMaterialNumber();
+		}
+		return toRet;
+	}
 }

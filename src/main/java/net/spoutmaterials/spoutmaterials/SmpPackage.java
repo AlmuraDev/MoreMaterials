@@ -374,4 +374,8 @@ public class SmpPackage {
 	public SmpManager getSmpManager() {
 		return this.smpManager;
 	}
+	
+	public int getMaterialNumber() {
+		return customBlocksList.size()+customItemsList.size();
+	}
 }

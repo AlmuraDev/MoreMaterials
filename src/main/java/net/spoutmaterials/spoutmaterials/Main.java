@@ -32,11 +32,11 @@ import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.SMExecutor;
 import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
+import net.spoutmaterials.spoutmaterials.stats.StatHooker;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -95,6 +95,7 @@ public class Main extends JavaPlugin {
 		getCommand("sm").setExecutor(new SMExecutor(this));
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
 		getCommand("smadmin").setExecutor(new AdminExecutor(this));
+		//new StatHooker(this);
 	}
 
 	private void readConfig() throws Exception {
