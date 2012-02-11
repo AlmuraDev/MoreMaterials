@@ -26,15 +26,18 @@ package net.spoutmaterials.spoutmaterials;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.generator.BlockPopulator;
 import org.getspout.spoutapi.SpoutManager;
@@ -42,9 +45,7 @@ import org.getspout.spoutapi.material.CustomBlock;
 
 public class WGenManager extends BlockPopulator {
 	private Main plugin;
-
-	//TODO Add list type to remove warning
-	private Map<String, List> populations = new HashMap<String, List>();
+	private Map<String, Set<ConfigurationSection>> populators = new HashMap<String, Set<ConfigurationSection>>();
 
 	public WGenManager(Main plugin) {
 		this.plugin = plugin;
@@ -60,17 +61,22 @@ public class WGenManager extends BlockPopulator {
 				Logger.getLogger("Minecraft").info(logMessage);
 			}
 		}
-
 		// Loading the wgen.yml
 		File wgenYml = new File(plugin.getDataFolder().getPath() + File.separator + "wgen.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(wgenYml);
 		for (String worldName : config.getKeys(false)) {
-			this.populations.put(worldName, config.getList(worldName));
+			Set<ConfigurationSection> pops = new HashSet<ConfigurationSection>();
+			ConfigurationSection datWorld = config.getConfigurationSection(worldName);
+			for(String matName:datWorld.getKeys(false)) {
+				ConfigurationSection cs = datWorld.getConfigurationSection(matName);
+				pops.add(cs);
+			}
+			this.populators.put(worldName, pops);
 		}
 		
 		// Registering for worlds.
 		for (World world : this.plugin.getServer().getWorlds()) {
-			if (this.populations.containsKey(world)) {
+			if (this.populators.containsKey(world.getName())) {
 				world.getPopulators().add(this);
 			}
 		}
@@ -78,13 +84,11 @@ public class WGenManager extends BlockPopulator {
 
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-		if (!this.populations.containsKey(world.getName())) {
+		if (!this.populators.containsKey(world.getName())) {
 			return;
 		}
-		for (Object worldEntry : this.populations.get(world.getName())) {
-			//TODO unsafe cast warning remove
-			Map<String, Object> entry = (Map<String, Object>) worldEntry;
-			Object material = this.plugin.getSmpManager().getMaterial((String) entry.get("Material"));
+		for (ConfigurationSection entry : this.populators.get(world.getName())) {
+			Object material = this.plugin.getSmpManager().getMaterial(entry.getName());
 			
 			// If given material was not found
 			if (!(material instanceof SMCustomBlock)) {
@@ -92,12 +96,12 @@ public class WGenManager extends BlockPopulator {
 			}
 			
 			// Getting values
-			Integer chance = entry.containsKey("Chance") ? (Integer) entry.get("Chance") : 0;
-			Integer minY = entry.containsKey("MinY") ? (Integer) entry.get("MinY") : 0;
-			Integer maxY = entry.containsKey("MaxY") ? (Integer) entry.get("MaxY") : 127;
-			Integer veins = entry.containsKey("Veins") ? (Integer) entry.get("Veins") : 4;
-			Integer veinSize = entry.containsKey("VeinSize") ? (Integer) entry.get("VeinSize") : 8;
-			String replaces = entry.containsKey("Replaces") ? (String) entry.get("Replaces") : "1 3 13";
+			Integer chance = entry.getInt("Chance",0);
+			Integer minY = entry.getInt("MinY",0);
+			Integer maxY = entry.getInt("MaxY",128);
+			Integer veins = entry.getInt("Veins",0);
+			Integer veinSize = entry.getInt("VeinSize",0);
+			String replaces = entry.getString("Replaces","1 3 13");
 
 			// Calculate chance that blocks will be present in this chunk.
 			int rn = random.nextInt(100);
@@ -110,10 +114,10 @@ public class WGenManager extends BlockPopulator {
 			// Calculate how large a vein may become.
 			int howLarge = random.nextInt(veinSize - 1) + 1;
 			
-			int x = 0;
-			int y = 0;
-			int z = 0;
-			Block curBlock = null;
+			int x;
+			int y;
+			int z;
+			Block curBlock;
 			
 			for (int i = 0; i < howMany; i++) {
 				
