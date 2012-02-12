@@ -42,10 +42,10 @@ public class AdminExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
 		if (!instance.hasPermission(sender, "spoutmaterials.admin", true)) {
-			return true;
+			return false;
 		}
 		// Parameter is "install"
-		if ("install".equals(args[0]) && args.length > 1) {
+		if (args.length>1&&"install".equals(args[0]) ) {
 			if (args.length > 2) {
 				this.instance.getSmpManager().install(args[1], args[2]);
 			} else {
@@ -54,10 +54,10 @@ public class AdminExecutor implements CommandExecutor {
 		}
 
 		// Parameter is "uninstall"
-		if ("uninstall".equals(args[0]) && args.length == 2) {
+		if (args.length>=2&&"uninstall".equals(args[0])) {
 			this.instance.getSmpManager().uninstall(args[1]);
 		}
-
+		if(args.length==0) return false;
 		// Parameter is "list"
 		if ("list".equals(args[0])) {
 			Set<String> packages = this.instance.getSmpManager().getPackages();

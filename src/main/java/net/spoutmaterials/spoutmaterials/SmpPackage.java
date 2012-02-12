@@ -53,6 +53,7 @@ import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.Material;
+import org.getspout.spoutapi.material.MaterialData;
 
 public class SmpPackage {
 
@@ -261,7 +262,10 @@ public class SmpPackage {
 					Map<String, Material> materialList = this.smpManager.getMaterial(ingredientitem);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
-
+				
+				if(ingredient == null) {
+					ingredient = MaterialData.getMaterial(ingredientitem);
+				}
 				// Do not require an "air-block" in empty fields :D
 				if (ingredient == null || ingredientitem.equals("0")) {
 					currentColumn++;

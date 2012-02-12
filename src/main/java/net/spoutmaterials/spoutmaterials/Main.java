@@ -35,6 +35,7 @@ import net.spoutmaterials.spoutmaterials.listeners.SMListener;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import net.spoutmaterials.spoutmaterials.stats.StatHooker;
 import net.spoutmaterials.spoutmaterials.utils.WebManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,7 +65,7 @@ public class Main extends JavaPlugin {
 		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.	
 		try{
 			SpoutFurnaceRecipes.hook();
-		} catch(Exception ex) {
+		} catch(Throwable ex) {//Not exception!
 			System.out.println("[SpoutMaterials] ERROR ===========> Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!");
 		}
 		
@@ -96,19 +97,19 @@ public class Main extends JavaPlugin {
 		getCommand("sm").setExecutor(new SMExecutor(this));
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
 		getCommand("smadmin").setExecutor(new AdminExecutor(this));
-		//new StatHooker(this);
+		new StatHooker(this);
 	}
 
 	private void readConfig() throws Exception {
 		FileConfiguration cfg = this.getConfig();
 		//TODO Do we realy need to set defaults when we also have them below?
 		cfg.addDefault("Port", 8180);
-		cfg.addDefault("Hostname", "localhost");
+		cfg.addDefault("Hostname", Bukkit.getServer().getIp());
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 
 		this.port = cfg.getInt("Port", 8180);
-		this.hostname = cfg.getString("Hostname", "localhost");
+		this.hostname = cfg.getString("Hostname",Bukkit.getServer().getIp());
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
