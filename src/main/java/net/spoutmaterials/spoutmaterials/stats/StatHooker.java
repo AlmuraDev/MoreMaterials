@@ -21,34 +21,32 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.spoutmaterials.spoutmaterials.stats;
 
 import java.io.IOException;
 import net.spoutmaterials.spoutmaterials.Main;
 
-
-
 public class StatHooker {
 	public StatHooker(final Main plugin) {
 		try {
-    Metrics metrics = new Metrics();
+			Metrics metrics = new Metrics();
+			// Add our plotters
+			metrics.addCustomData(plugin, new Metrics.Plotter() {
+				@Override
+				public String getColumnName() {
+					return "Total Custom Materials";
+				}
 
-    // Add our plotters
-    metrics.addCustomData(plugin, new Metrics.Plotter() {
-        @Override
-        public String getColumnName() {
-            return "Total Custom Materials";
-        }
+				@Override
+				public int getValue() {
+					return plugin.getSmpManager().getMaterialNumber();
+				}
+			});
 
-        @Override
-        public int getValue() {
-            return plugin.getSmpManager().getMaterialNumber();
-        }
-    });
-
-    metrics.beginMeasuringPlugin(plugin);
-} catch (IOException e) {
-	e.printStackTrace();
-}
+			metrics.beginMeasuringPlugin(plugin);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

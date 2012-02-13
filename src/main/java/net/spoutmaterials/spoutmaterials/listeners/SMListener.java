@@ -129,9 +129,10 @@ public class SMListener implements Listener {
 
 			// Getting the block below the player
 			SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-							player.getLocation().getBlockX(),
-							player.getLocation().getBlockY() - 1,
-							player.getLocation().getBlockZ());
+				player.getLocation().getBlockX(),
+				player.getLocation().getBlockY() - 1,
+				player.getLocation().getBlockZ()
+			);
 
 			// This only applies for custom blocks
 			if (block.isCustomBlock()) {

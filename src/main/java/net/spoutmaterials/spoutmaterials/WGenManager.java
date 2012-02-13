@@ -27,7 +27,6 @@ package net.spoutmaterials.spoutmaterials;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -67,9 +66,9 @@ public class WGenManager extends BlockPopulator {
 		for (String worldName : config.getKeys(false)) {
 			Set<ConfigurationSection> pops = new HashSet<ConfigurationSection>();
 			ConfigurationSection datWorld = config.getConfigurationSection(worldName);
-			for(String matName:datWorld.getKeys(false)) {
-				ConfigurationSection cs = datWorld.getConfigurationSection(matName);
-				pops.add(cs);
+			for (String matName : datWorld.getKeys(false)) {
+				ConfigurationSection section = datWorld.getConfigurationSection(matName);
+				pops.add(section);
 			}
 			this.populators.put(worldName, pops);
 		}
@@ -96,12 +95,12 @@ public class WGenManager extends BlockPopulator {
 			}
 			
 			// Getting values
-			Integer chance = entry.getInt("Chance",0);
-			Integer minY = entry.getInt("MinY",0);
-			Integer maxY = entry.getInt("MaxY",128);
-			Integer veins = entry.getInt("Veins",0);
-			Integer veinSize = entry.getInt("VeinSize",0);
-			String replaces = entry.getString("Replaces","1 3 13");
+			Integer chance = entry.getInt("Chance", 0);
+			Integer minY = entry.getInt("MinY", 0);
+			Integer maxY = entry.getInt("MaxY", 128);
+			Integer veins = entry.getInt("Veins", 0);
+			Integer veinSize = entry.getInt("VeinSize", 0);
+			String replaces = entry.getString("Replaces", "1 3 13");
 
 			// Calculate chance that blocks will be present in this chunk.
 			int rn = random.nextInt(100);

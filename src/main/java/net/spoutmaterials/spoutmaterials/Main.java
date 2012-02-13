@@ -109,7 +109,7 @@ public class Main extends JavaPlugin {
 		this.saveConfig();
 
 		this.port = cfg.getInt("Port", 8180);
-		this.hostname = cfg.getString("Hostname",Bukkit.getServer().getIp());
+		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
