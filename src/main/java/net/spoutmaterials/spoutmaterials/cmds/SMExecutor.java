@@ -33,8 +33,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 public class SMExecutor implements CommandExecutor {
+
 	private Main plugin;
 	private String authors;
 
@@ -66,7 +69,15 @@ public class SMExecutor implements CommandExecutor {
 			sender.sendMessage(this.plugin.getMessage("/smgive -> " + ChatColor.GOLD + "Commands to give any custom material!", Level.WARNING));
 			sender.sendMessage(this.plugin.getMessage("/smadmin -> " + ChatColor.GOLD + "Administration commands!", Level.WARNING));
 		}
+		if (first.equalsIgnoreCase("fixme")) {
+			if (!(sender instanceof Player)) {
+				return false;
+			}
+			Player player = (Player) sender;
+			SpoutItemStack itemStack = new SpoutItemStack(player.getItemInHand());
+			player.sendMessage(this.plugin.getMessage("The item in your hand is custom: " + itemStack.isCustomItem()));
+			player.sendMessage(this.plugin.getMessage("It's called " + itemStack.getMaterial().getName() + "!"));
+		}
 		return true;
 	}
-
 }

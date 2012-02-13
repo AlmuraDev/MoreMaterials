@@ -24,7 +24,8 @@
 
 package net.spoutmaterials.spoutmaterials.stats;
 
-import java.io.IOException;
+import java.util.logging.Level;
+
 import net.spoutmaterials.spoutmaterials.Main;
 
 public class StatHooker {
@@ -43,10 +44,10 @@ public class StatHooker {
 					return plugin.getSmpManager().getMaterialNumber();
 				}
 			});
-
 			metrics.beginMeasuringPlugin(plugin);
-		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Stat tracking activated!");
+		} catch (Exception e) {
+			plugin.log("Stats error!", Level.SEVERE);
 		}
 	}
 }
