@@ -47,8 +47,9 @@ public class StatHooker {
     });
 
     metrics.beginMeasuringPlugin(plugin);
-} catch (IOException e) {
-	e.printStackTrace();
+		System.out.println("Stat tracking activated!");
+} catch (Exception e) {
+	System.out.println("[SpoutMaterials] Stats error!");
 }
 	}
 }

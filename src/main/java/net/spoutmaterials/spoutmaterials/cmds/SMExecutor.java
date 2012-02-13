@@ -21,7 +21,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.spoutmaterials.spoutmaterials.cmds;
 
 import java.util.ArrayList;
@@ -31,8 +30,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 public class SMExecutor implements CommandExecutor {
+
 	private Main plugin;
 	private String authors;
 
@@ -49,28 +52,33 @@ public class SMExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials] " +
-				ChatColor.YELLOW + "This server is running SpoutMaterials " +
-				"v" +plugin.getDescription().getVersion() + "! " +
-				"Credits to " + authors + "!"
-			);
+							ChatColor.GREEN + "[SpoutMaterials] "
+							+ ChatColor.YELLOW + "This server is running SpoutMaterials "
+							+ "v" + plugin.getDescription().getVersion() + "! "
+							+ "Credits to " + authors + "!");
 			return true;
 		}
 		String first = args[0];
 		if (first.equalsIgnoreCase("?") || first.equalsIgnoreCase("help")) {
 			sender.sendMessage(ChatColor.GREEN + "SpoutMaterials help page");
 			sender.sendMessage(ChatColor.AQUA + "---------------------------------");
-			sender.sendMessage(ChatColor.YELLOW + "/sm -> " +
-				ChatColor.GOLD + "Basic informations, and help!"
-			);
-			sender.sendMessage(ChatColor.YELLOW + "/smgive -> " +
-				ChatColor.GOLD + "Commands to give any custom material!"
-			);
-			sender.sendMessage(ChatColor.YELLOW + "/smadmin -> " +
-				ChatColor.GOLD + "Administration commands!"
-			);
+			sender.sendMessage(ChatColor.YELLOW + "/sm -> "
+							+ ChatColor.GOLD + "Basic informations, and help!");
+			sender.sendMessage(ChatColor.YELLOW + "/smgive -> "
+							+ ChatColor.GOLD + "Commands to give any custom material!");
+			sender.sendMessage(ChatColor.YELLOW + "/smadmin -> "
+							+ ChatColor.GOLD + "Administration commands!");
+		}
+		if (first.equalsIgnoreCase("fixme")) {
+			if (!(sender instanceof Player)) {
+				return false;
+			}
+			Player plr = (Player) sender;
+			ItemStack is = plr.getItemInHand();
+			SpoutItemStack sis = new SpoutItemStack(is);
+			plr.sendMessage("The item in your hand is custom: " + sis.isCustomItem());
+			plr.sendMessage("It's called " + sis.getMaterial().getName() + "!");
 		}
 		return true;
 	}
-
 }
