@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipe;
 import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
 import org.bukkit.configuration.ConfigurationSection;
@@ -114,9 +114,7 @@ public class LegacyManager {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.";
-				Logger.getLogger("Minecraft").info(logMessage);
+				this.plugin.log("Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.", Level.WARNING);
 			}
 		}
 	}

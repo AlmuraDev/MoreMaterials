@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -55,9 +54,7 @@ public class WGenManager extends BlockPopulator {
 			try {
 				active.createNewFile();
 			} catch (Exception e) {
-				String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't write wgen.yml.";
-				Logger.getLogger("Minecraft").info(logMessage);
+				this.plugin.log("Couldn't read wgen.yml.");
 			}
 		}
 		// Loading the wgen.yml

@@ -48,25 +48,35 @@ class SMHttpHandler implements HttpHandler {
 		// Determine which asset we want
 		String fileName = exchange.getRequestURI().getPath().substring(1);
 		
-		// Add the required response headers
+		// Used to check for working server.
 		Headers headers = exchange.getResponseHeaders();
-		if (fileName.endsWith(".png")) {
-			headers.add("Content-Type", "image/png");
-		} else if (fileName.endsWith(".ogg")) {
-			headers.add("Content-Type", "application/ogg");
+		if (fileName.equals("status")) {
+			headers.add("Content-Type", "text/plain");
+			exchange.sendResponseHeaders(200, 0);
+			OutputStream outputStream = exchange.getResponseBody();
+			outputStream.write("Working!".getBytes());
+			outputStream.close();
+		// Delivering assets
+		} else {
+			// Add the required response headers
+			if (fileName.endsWith(".png")) {
+				headers.add("Content-Type", "image/png");
+			} else if (fileName.endsWith(".ogg")) {
+				headers.add("Content-Type", "application/ogg");
+			}
+	
+			// Read the file
+			File file = new File(this.instance.getDataFolder().getPath() + File.separator + "cache", fileName);
+			byte[] bytearray = new byte[(int) file.length()];
+			FileInputStream inputStream = new FileInputStream(file);
+			BufferedInputStream buffer = new BufferedInputStream(inputStream);
+			buffer.read(bytearray, 0, bytearray.length);
+	
+			// Send response.
+			exchange.sendResponseHeaders(200, file.length());
+			OutputStream outputStream = exchange.getResponseBody();
+			outputStream.write(bytearray, 0, bytearray.length);
+			outputStream.close();
 		}
-
-		// Read the file
-		File file = new File(this.instance.getDataFolder().getPath() + File.separator + "cache", fileName);
-		byte[] bytearray = new byte[(int) file.length()];
-		FileInputStream inputStream = new FileInputStream(file);
-		BufferedInputStream buffer = new BufferedInputStream(inputStream);
-		buffer.read(bytearray, 0, bytearray.length);
-
-		// Send response.
-		exchange.sendResponseHeaders(200, file.length());
-		OutputStream outputStream = exchange.getResponseBody();
-		outputStream.write(bytearray, 0, bytearray.length);
-		outputStream.close();
 	}
 }

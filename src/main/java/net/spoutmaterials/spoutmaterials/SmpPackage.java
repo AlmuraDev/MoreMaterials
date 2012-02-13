@@ -36,7 +36,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
@@ -81,9 +81,7 @@ public class SmpPackage {
 					try {
 						materials.get(materialName).load(this.smpFile.getInputStream(entry));
 					} catch (Exception e) {
-						String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
-						logMessage += " SpoutMaterials: Error loading YML " + materialName + " from " + this.name + ".";
-						Logger.getLogger("Minecraft").info(logMessage);
+						this.smpManager.getPlugin().log("Error loading YML " + materialName + " from " + this.name + ".", Level.WARNING);
 					}
 				}
 			}
@@ -112,9 +110,7 @@ public class SmpPackage {
 
 			this.smpFile.close();
 		} catch (Exception e) {
-			String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
-			logMessage += " SpoutMaterials: Couldn't load " + this.name + ".";
-			Logger.getLogger("Minecraft").info(logMessage);
+			this.smpManager.getPlugin().log("Couldn't load " + this.name + ".", Level.WARNING);
 		}
 	}
 
@@ -151,14 +147,10 @@ public class SmpPackage {
 					this.customItemsList.put(materialName, customItem);
 				}
 			} catch (Exception e) {
-				String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't load material " + materialName + ".png from " + this.name + ".";
-				Logger.getLogger("Minecraft").info(logMessage);
+				this.smpManager.getPlugin().log("Couldn't load material " + materialName + " from " + this.name + ".", Level.WARNING);
 			}
 		} catch (Exception e) {
-			String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
-			logMessage += " SpoutMaterials: Couldn't load texture " + materialName + ".png from " + this.name + ".";
-			Logger.getLogger("Minecraft").info(logMessage);
+			this.smpManager.getPlugin().log("Couldn't load texture " + materialName + ".png from " + this.name + ".", Level.WARNING);
 		}
 	}
 
@@ -204,9 +196,7 @@ public class SmpPackage {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				String logMessage = "[" + this.smpManager.getPlugin().getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't load crafting recipe for " + materialName + ".png from " + this.name + ".";
-				Logger.getLogger("Minecraft").info(logMessage);
+				this.smpManager.getPlugin().log("Couldn't load crafting recipe for " + materialName + " from " + this.name + ".", Level.WARNING);
 			}
 		}
 	}

@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.zip.ZipFile;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
@@ -97,9 +97,7 @@ public class SmpManager {
 				this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpFileName
 			);
 		} catch(IOException Exception) {
-			String logMessage = "[" + this.plugin.getDescription().getName() + "]";
-			logMessage += " SpoutMaterials: Couldn't load " + smpFileName + ".";
-			Logger.getLogger("Minecraft").info(logMessage);
+			this.plugin.log("Couldn't load " + smpFileName + ".", Level.SEVERE);
 			return null;
 		}
 	}

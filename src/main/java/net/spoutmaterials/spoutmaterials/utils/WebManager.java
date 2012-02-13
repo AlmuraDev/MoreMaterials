@@ -24,8 +24,13 @@
 
 package net.spoutmaterials.spoutmaterials.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.net.URL;
+import java.util.logging.Level;
+
 import com.sun.net.httpserver.HttpServer;
 
 import net.spoutmaterials.spoutmaterials.Main;
@@ -45,7 +50,18 @@ public class WebManager {
 		    server.createContext("/", new SMHttpHandler(this.instance));
 		    server.setExecutor(null);
 		    server.start();
+		    URL assetsStatus = new URL(this.instance.getAssetsUrl() + "status");
+    		BufferedReader in = new BufferedReader(new InputStreamReader(assetsStatus.openStream()));
+			String inputLine = in.readLine();
+			in.close();
+		    if (inputLine.equals("Working!")) {
+		    	this.instance.log("Assets-Host listening on " + this.instance.getAssetsUrl());
+		    } else {
+		    	this.instance.log("Assets-Host not listening on " + this.instance.getAssetsUrl(), Level.SEVERE);
+		    }
 		} catch (IOException exception) {
+	    	System.out.println(exception);
+	    	this.instance.log("DEBUG" + this.instance.getAssetsUrl());
 		}
 	}
 

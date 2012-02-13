@@ -25,6 +25,8 @@
 package net.spoutmaterials.spoutmaterials.cmds;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+
 import net.spoutmaterials.spoutmaterials.Main;
 
 import org.bukkit.ChatColor;
@@ -48,27 +50,21 @@ public class SMExecutor implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials] " +
-				ChatColor.YELLOW + "This server is running SpoutMaterials " +
+			sender.sendMessage(this.plugin.getMessage(
+				"This server is running SpoutMaterials " +
 				"v" +plugin.getDescription().getVersion() + "! " +
-				"Credits to " + authors + "!"
+				"Credits to " + authors + "!")
 			);
 			return true;
 		}
 		String first = args[0];
 		if (first.equalsIgnoreCase("?") || first.equalsIgnoreCase("help")) {
-			sender.sendMessage(ChatColor.GREEN + "SpoutMaterials help page");
-			sender.sendMessage(ChatColor.AQUA + "---------------------------------");
-			sender.sendMessage(ChatColor.YELLOW + "/sm -> " +
-				ChatColor.GOLD + "Basic informations, and help!"
-			);
-			sender.sendMessage(ChatColor.YELLOW + "/smgive -> " +
-				ChatColor.GOLD + "Commands to give any custom material!"
-			);
-			sender.sendMessage(ChatColor.YELLOW + "/smadmin -> " +
-				ChatColor.GOLD + "Administration commands!"
-			);
+			sender.sendMessage(this.plugin.getMessage("SpoutMaterials help page", Level.SEVERE));
+			sender.sendMessage(this.plugin.getMessage("---------------------------------"));
+			//TODO cant we read them from the plugin.yml?
+			sender.sendMessage(this.plugin.getMessage("/sm -> " + ChatColor.GOLD + "Basic informations, and help!", Level.WARNING));
+			sender.sendMessage(this.plugin.getMessage("/smgive -> " + ChatColor.GOLD + "Commands to give any custom material!", Level.WARNING));
+			sender.sendMessage(this.plugin.getMessage("/smadmin -> " + ChatColor.GOLD + "Administration commands!", Level.WARNING));
 		}
 		return true;
 	}

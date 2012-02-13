@@ -25,12 +25,13 @@
 package net.spoutmaterials.spoutmaterials.listeners;
 
 import java.util.Map;
+import java.util.logging.Level;
+
 import net.spoutmaterials.spoutmaterials.Main;
 import net.spoutmaterials.spoutmaterials.SmpManager;
 import net.spoutmaterials.spoutmaterials.materials.MaterialAction;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
 import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -78,10 +79,7 @@ public class SMListener implements Listener {
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
 		if (event.getPlayer().isOp() && this.smpManager.getPlugin().updateAvailable) {
-//			event.getPlayer().sendMessage(
-//				ChatColor.GREEN + "[SpoutMaterials]" +
-//				ChatColor.YELLOW + " An update is available!"
-//			);
+			event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("An Update is available!", Level.WARNING));
 		}
 	}
 
@@ -95,10 +93,7 @@ public class SMListener implements Listener {
 				if (!(event.getPlayer().hasPermission("spoutmaterials.craft")) ||
 					!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)
 				) {
-					event.getPlayer().sendMessage(
-						ChatColor.GREEN + "[SpoutMaterials]" +
-						ChatColor.RED + " You do not have permission to do that!"
-					);
+					event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
 				}
@@ -252,7 +247,8 @@ public class SMListener implements Listener {
 			if (action == Action.RIGHT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
 					Object blockMaterial = this.smpManager.getMaterial(
-									new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1));
+						new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1)
+					);
 					if (blockMaterial instanceof SMCustomBlock) {
 						block = (SMCustomBlock) blockMaterial;
 						useAction = block.getActionR();

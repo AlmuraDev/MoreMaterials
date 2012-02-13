@@ -27,7 +27,6 @@ package net.spoutmaterials.spoutmaterials;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.spoutmaterials.spoutmaterials.cmds.AdminExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
 import net.spoutmaterials.spoutmaterials.cmds.SMExecutor;
@@ -64,9 +63,9 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.	
 		try{
-			SpoutFurnaceRecipes.hook();
-		} catch(Throwable ex) {//Not exception!
-			System.out.println("[SpoutMaterials] ERROR ===========> Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!");
+			SpoutFurnaceRecipes.hook(this);
+		} catch(Throwable ex) { // Not exception!
+			this.log("Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!", Level.SEVERE);
 		}
 		
 		try {
@@ -80,7 +79,6 @@ public class Main extends JavaPlugin {
 			// Let the plugin check for updates and initialize all files and folders.
 			checkIntegrityAndUpdate();
 		} catch (IOException exception) {
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
 		}
 
 
@@ -97,17 +95,18 @@ public class Main extends JavaPlugin {
 		getCommand("sm").setExecutor(new SMExecutor(this));
 		getCommand("smgive").setExecutor(new GiveExecutor(this));
 		getCommand("smadmin").setExecutor(new AdminExecutor(this));
+		//TODO remove this when website is done.
 		new StatHooker(this);
 	}
 
 	private void readConfig() throws Exception {
 		FileConfiguration cfg = this.getConfig();
-		//TODO Do we realy need to set defaults when we also have them below?
 		cfg.addDefault("Port", 8180);
 		cfg.addDefault("Hostname", Bukkit.getServer().getIp());
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 
+		//TODO Do we realy need defaults here? Should already be set above!
 		this.port = cfg.getInt("Port", 8180);
 		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
 	}
@@ -123,10 +122,7 @@ public class Main extends JavaPlugin {
 			return true;
 		}
 		if (verbose) {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials] " +
-				ChatColor.RED + "You do not have permission to do that! You need " + perm + "!"
-			);
+			sender.sendMessage(this.getMessage("You do not have permission to do that! You need " + perm + "!", Level.SEVERE));
 		}
 		return false;
 	}
@@ -174,5 +170,35 @@ public class Main extends JavaPlugin {
 
 	public int getPort() {
 		return this.port;
+	}
+	
+	// Generalize all console or chat output!
+	public String getMessage(String logMessage) {
+		return this.getMessage(logMessage, Level.INFO);
+	}
+	
+	public String getMessage(String logMessage, Level level) {
+		if (level == Level.WARNING) {
+			return ChatColor.GREEN + "[SpoutMaterials] " + ChatColor.YELLOW + logMessage;
+		} else if (level == Level.SEVERE) {
+			return ChatColor.GREEN + "[SpoutMaterials] " + ChatColor.RED + logMessage;
+		}
+		return ChatColor.GREEN + "[SpoutMaterials] " + ChatColor.WHITE + logMessage;
+	}
+	
+	public void log(String logMessage) {
+		this.log(logMessage, Level.INFO);
+	}
+	
+	public void log(String logMessage, Level level) {
+		if (level == Level.WARNING) {
+			//TODO add console text color yellow
+			System.out.println("[SpoutMaterials] Warning: " + logMessage);
+		} else if (level == Level.SEVERE) {
+			//TODO add console text color red
+			System.out.println("[SpoutMaterials] ERROR: " + logMessage);
+		}
+		//TODO add console text color normal
+		System.out.println("[SpoutMaterials] " + logMessage);
 	}
 }

@@ -25,8 +25,8 @@
 package net.spoutmaterials.spoutmaterials.cmds;
 
 import java.util.Map;
+import java.util.logging.Level;
 import net.spoutmaterials.spoutmaterials.Main;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -52,7 +52,7 @@ public class GiveExecutor implements CommandExecutor {
 
 		// Sender must also submit an object name.
 		if (args.length < 1) {
-			sender.sendMessage(command.getUsage());
+			sender.sendMessage(this.instance.getMessage(command.getUsage(), Level.WARNING));
 			return true;
 		}
 
@@ -72,25 +72,16 @@ public class GiveExecutor implements CommandExecutor {
 			return true;
 		}
 		if (material.isEmpty()) {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials]" +
-				ChatColor.YELLOW + " Material " + args[0] + " not found!"
-			);
+			sender.sendMessage(this.instance.getMessage("Material " + args[0] + " not found!", Level.SEVERE));
 		} else if (material.size() == 1) {
 			for (String key : material.keySet()) {
 				player.getInventory().addItem(new SpoutItemStack( material.get(key), amount));
-				sender.sendMessage(
-					ChatColor.GREEN + "[SpoutMaterials]" +
-					ChatColor.YELLOW + "You received " + amount + " object(s) of " + args[0] + "."
-				);
+				sender.sendMessage(this.instance.getMessage("You received " + amount + "object(s) of " + args[0] + "."));
 			}
 		} else {
-			sender.sendMessage(
-				ChatColor.GREEN + "[SpoutMaterials]" +
-				ChatColor.YELLOW + "Material " + args[0] + " multiple times found, please specify!"
-			);
+			sender.sendMessage(this.instance.getMessage("Material " + args[0] + " multiple times found, please specify!", Level.WARNING));
 			for (String key : material.keySet()) {
-				player.sendMessage("- " + key);
+				player.sendMessage(this.instance.getMessage("- " + key));
 			}
 		}
 

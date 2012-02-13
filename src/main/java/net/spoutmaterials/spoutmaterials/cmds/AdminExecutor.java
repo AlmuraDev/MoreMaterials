@@ -64,7 +64,7 @@ public class AdminExecutor implements CommandExecutor {
 		if ("list".equals(args[0])) {
 			Set<String> packages = this.instance.getSmpManager().getPackages();
 			for (String smpName : packages) {
-				sender.sendMessage(smpName);
+				sender.sendMessage(this.instance.getMessage(smpName));
 			}
 		}
 

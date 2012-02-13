@@ -24,6 +24,8 @@
 
 package net.spoutmaterials.spoutmaterials.materials;
 
+import java.util.logging.Level;
+
 import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
@@ -71,10 +73,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 			try {
 				this.setStepSound(SoundEffect.getSoundEffectFromName(stepSound.toUpperCase()));
 			} catch(Exception exception) {
-				System.out.println("Tried to set invalid sound effect! All possible sound effects:");
-				for (SoundEffect soundEffect : SoundEffect.values()) {
-					System.out.print(soundEffect + ", ");
-				}
+				this.smpPackage.getSmpManager().getPlugin().log("Tried to set invalid sound effect!", Level.WARNING);
 			}
 		}
 		

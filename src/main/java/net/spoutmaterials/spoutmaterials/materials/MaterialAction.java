@@ -24,7 +24,7 @@
 
 package net.spoutmaterials.spoutmaterials.materials;
 
-import java.util.logging.Logger;
+import java.util.logging.Level;
 import net.spoutmaterials.spoutmaterials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.Material;
@@ -60,9 +60,7 @@ public class MaterialAction {
 			try {
 				this.sound = smpPackage.cacheFile(lsound);
 			} catch (Exception e) {
-				String logMessage = "[" + smpPackage.getSmpManager().getPlugin().getDescription().getName() + "]";
-				logMessage += " SpoutMaterials: Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".";
-				Logger.getLogger("Minecraft").info(logMessage);
+				smpPackage.getSmpManager().getPlugin().log("Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".", Level.WARNING);
 			}
 		}
 		if (!laction.equals("")) {

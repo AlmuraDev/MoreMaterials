@@ -27,6 +27,8 @@ package net.spoutmaterials.spoutmaterials.reflection;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.FurnaceRecipes;
+import net.spoutmaterials.spoutmaterials.Main;
+
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -65,9 +67,9 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 		registerSpoutRecipe(fRecipe.getIngredient(), fRecipe.getResult());
 	}
 
-	public static void hook() {
-		System.out.println("Attempting to hook furnace recipes...");
+	public static void hook(Main plugin) {
+		plugin.log("Attempting to hook furnace recipes...");
 		FurnaceRecipes.a = new SpoutFurnaceRecipes();
-		System.out.println("Furnace recipes hooked!");
+		plugin.log("Furnace recipes hooked!");
 	}
 }
