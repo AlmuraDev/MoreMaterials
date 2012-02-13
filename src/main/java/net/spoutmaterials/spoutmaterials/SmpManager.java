@@ -170,9 +170,9 @@ public class SmpManager {
 	}
 	
 	public int getMaterialNumber() {
-		int toRet=0;
-		for(SmpPackage sp:smpPackages.values()) {
-			toRet+=sp.getMaterialNumber();
+		int toRet = 0;
+		for (SmpPackage smp : this.smpPackages.values()) {
+			toRet += smp.getMaterialNumber();
 		}
 		return toRet;
 	}

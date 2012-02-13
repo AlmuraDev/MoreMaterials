@@ -45,7 +45,7 @@ public class AdminExecutor implements CommandExecutor {
 			return false;
 		}
 		// Parameter is "install"
-		if (args.length>1&&"install".equals(args[0]) ) {
+		if (args.length > 1 && "install".equals(args[0])) {
 			if (args.length > 2) {
 				this.instance.getSmpManager().install(args[1], args[2]);
 			} else {
@@ -54,10 +54,12 @@ public class AdminExecutor implements CommandExecutor {
 		}
 
 		// Parameter is "uninstall"
-		if (args.length>=2&&"uninstall".equals(args[0])) {
+		if (args.length >= 2&& "uninstall".equals(args[0])) {
 			this.instance.getSmpManager().uninstall(args[1]);
 		}
-		if(args.length==0) return false;
+		if (args.length == 0) {
+			return false;
+		}
 		// Parameter is "list"
 		if ("list".equals(args[0])) {
 			Set<String> packages = this.instance.getSmpManager().getPackages();

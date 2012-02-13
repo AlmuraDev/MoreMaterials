@@ -263,7 +263,7 @@ public class SmpPackage {
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 				
-				if(ingredient == null) {
+				if (ingredient == null) {
 					ingredient = MaterialData.getMaterial(ingredientitem);
 				}
 				// Do not require an "air-block" in empty fields :D
@@ -380,6 +380,6 @@ public class SmpPackage {
 	}
 	
 	public int getMaterialNumber() {
-		return customBlocksList.size()+customItemsList.size();
+		return customBlocksList.size() + customItemsList.size();
 	}
 }
