@@ -44,12 +44,6 @@ public class StatHooker {
 				}
 			});
 
-        @Override
-        public int getValue() {
-            return plugin.getSmpManager().getMaterialNumber();
-        }
-    });
-
     metrics.beginMeasuringPlugin(plugin);
 		System.out.println("Stat tracking activated!");
 } catch (Exception e) {
