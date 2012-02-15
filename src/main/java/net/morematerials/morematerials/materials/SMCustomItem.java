@@ -22,9 +22,9 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.materials;
+package net.morematerials.morematerials.materials;
 
-import net.spoutmaterials.spoutmaterials.SmpPackage;
+import net.morematerials.morematerials.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 

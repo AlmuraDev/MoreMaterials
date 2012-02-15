@@ -22,15 +22,15 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials;
+package net.morematerials.morematerials;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipe;
-import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
+import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipe;
+import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;

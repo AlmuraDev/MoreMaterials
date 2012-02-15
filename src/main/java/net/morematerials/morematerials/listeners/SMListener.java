@@ -22,16 +22,16 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.listeners;
+package net.morematerials.morematerials.listeners;
 
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.spoutmaterials.spoutmaterials.Main;
-import net.spoutmaterials.spoutmaterials.SmpManager;
-import net.spoutmaterials.spoutmaterials.materials.MaterialAction;
-import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
-import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
+import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.SmpManager;
+import net.morematerials.morematerials.materials.MaterialAction;
+import net.morematerials.morematerials.materials.SMCustomBlock;
+import net.morematerials.morematerials.materials.SMCustomItem;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

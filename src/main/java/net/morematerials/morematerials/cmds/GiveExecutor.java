@@ -22,11 +22,11 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.cmds;
+package net.morematerials.morematerials.cmds;
 
 import java.util.Map;
 import java.util.logging.Level;
-import net.spoutmaterials.spoutmaterials.Main;
+import net.morematerials.morematerials.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

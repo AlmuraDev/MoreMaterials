@@ -22,18 +22,18 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials;
+package net.morematerials.morematerials;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import net.spoutmaterials.spoutmaterials.cmds.AdminExecutor;
-import net.spoutmaterials.spoutmaterials.cmds.GiveExecutor;
-import net.spoutmaterials.spoutmaterials.cmds.SMExecutor;
-import net.spoutmaterials.spoutmaterials.listeners.SMListener;
-import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
-import net.spoutmaterials.spoutmaterials.stats.StatHooker;
-import net.spoutmaterials.spoutmaterials.utils.WebManager;
+import net.morematerials.morematerials.cmds.AdminExecutor;
+import net.morematerials.morematerials.cmds.GiveExecutor;
+import net.morematerials.morematerials.cmds.SMExecutor;
+import net.morematerials.morematerials.listeners.SMListener;
+import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
+import net.morematerials.morematerials.stats.StatHooker;
+import net.morematerials.morematerials.utils.WebManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

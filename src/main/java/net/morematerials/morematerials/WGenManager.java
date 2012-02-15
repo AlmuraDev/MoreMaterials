@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials;
+package net.morematerials.morematerials;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
+import net.morematerials.morematerials.materials.SMCustomBlock;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;

@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials;
+package net.morematerials.morematerials;
 
 import java.io.File;
 import java.io.IOException;

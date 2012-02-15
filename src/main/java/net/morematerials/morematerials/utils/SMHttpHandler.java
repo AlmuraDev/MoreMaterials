@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.utils;
+package net.morematerials.morematerials.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -30,7 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.spoutmaterials.spoutmaterials.Main;
+import net.morematerials.morematerials.Main;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;

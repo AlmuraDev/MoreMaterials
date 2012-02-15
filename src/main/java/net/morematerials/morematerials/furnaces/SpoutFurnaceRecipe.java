@@ -1,7 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
+ Copyright (c) 2011 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,24 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.stats;
+package net.morematerials.morematerials.furnaces;
 
-import java.util.logging.Level;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 
-import net.spoutmaterials.spoutmaterials.Main;
+public class SpoutFurnaceRecipe {
+	private SpoutItemStack ingredient, result;
 
-public class StatHooker {
-	public StatHooker(final Main plugin) {
-		try {
-			Metrics metrics = new Metrics();
-			// Add our plotters
-			metrics.addCustomData(plugin, new Metrics.Plotter() {
-				@Override
-				public String getColumnName() {
-					return "Total Custom Materials";
-				}
-
-				@Override
-				public int getValue() {
-					return plugin.getSmpManager().getMaterialNumber();
-				}
-			});
-			metrics.beginMeasuringPlugin(plugin);
-			System.out.println("Stat tracking activated!");
-		} catch (Exception e) {
-			plugin.log("Stats error!", Level.SEVERE);
-		}
+	public SpoutFurnaceRecipe(SpoutItemStack ing, SpoutItemStack res) {
+		ingredient = ing;
+		result = res;
 	}
+
+	public SpoutItemStack getIngredient() {
+		return ingredient;
+	}
+
+	public SpoutItemStack getResult() {
+		return result;
+	}
+
 }

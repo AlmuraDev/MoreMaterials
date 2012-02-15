@@ -22,12 +22,12 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.reflection;
+package net.morematerials.morematerials.furnaces;
 
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.FurnaceRecipes;
-import net.spoutmaterials.spoutmaterials.Main;
+import net.morematerials.morematerials.Main;
 
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
