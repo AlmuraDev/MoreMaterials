@@ -135,6 +135,10 @@ public class SMListener implements Listener {
 				if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getFallMultiplier() != 1) {
 					event.setDamage((int) (event.getDamage() * ((SMCustomBlock) item).getFallMultiplier()));
 				}
+				if (event.getDamage() == 0) {
+					// Prevent hurt sound!
+					event.setCancelled(true);
+				}
 			}
 		}
 
