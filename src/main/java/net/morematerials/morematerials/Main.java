@@ -185,11 +185,11 @@ public class Main extends JavaPlugin {
 	
 	public String getMessage(String logMessage, Level level) {
 		if (level == Level.WARNING) {
-			return ChatColor.GREEN + "[SpoutMaterials] " + ChatColor.YELLOW + logMessage;
+			return ChatColor.GREEN + "[" + this.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
 		} else if (level == Level.SEVERE) {
-			return ChatColor.GREEN + "[SpoutMaterials] " + ChatColor.RED + logMessage;
+			return ChatColor.GREEN + "[" + this.getDescription().getName() + "] " + ChatColor.RED + logMessage;
 		}
-		return ChatColor.GREEN + "[SpoutMaterials] " + ChatColor.WHITE + logMessage;
+		return ChatColor.GREEN + "[" + this.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
 	}
 	
 	public void log(String logMessage) {
@@ -199,13 +199,13 @@ public class Main extends JavaPlugin {
 	public void log(String logMessage, Level level) {
 		if (level == Level.WARNING) {
 			//TODO add console text color yellow
-			System.out.println("[SpoutMaterials] Warning: " + logMessage);
+			System.out.println("[" + this.getDescription().getName() + "] Warning: " + logMessage);
 		} else if (level == Level.SEVERE) {
 			//TODO add console text color red
-			System.out.println("[SpoutMaterials] ERROR: " + logMessage);
+			System.out.println("[" + this.getDescription().getName() + "] ERROR: " + logMessage);
 		}
 		//TODO add console text color normal
-		System.out.println("[SpoutMaterials] " + logMessage);
+		System.out.println("[" + this.getDescription().getName() + "] " + logMessage);
 	}
 	
 	public boolean useAssetsServer() {
