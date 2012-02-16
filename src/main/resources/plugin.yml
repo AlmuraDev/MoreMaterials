@@ -1,11 +1,11 @@
-name: SpoutMaterials
-version: 1.6.1
+name: MoreMaterials
+version: 1.6.2
 description: Custom blocks and items!
 authors: [ZNickq, IceReaper]
 website: http://www.spoutmaterials.net
 
 depend: [Spout]
-main: net.spoutmaterials.spoutmaterials.Main
+main: net.morematerials.morematerials.Main
 
 commands:
   sm:

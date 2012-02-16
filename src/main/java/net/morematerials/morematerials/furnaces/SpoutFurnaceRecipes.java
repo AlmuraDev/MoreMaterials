@@ -21,14 +21,12 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
-package net.spoutmaterials.spoutmaterials.reflection;
+package net.morematerials.morematerials.furnaces;
 
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.FurnaceRecipes;
-import net.spoutmaterials.spoutmaterials.Main;
-
+import net.morematerials.morematerials.Main;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,7 +40,7 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 
 	@Override
 	public net.minecraft.server.ItemStack a(net.minecraft.server.ItemStack i) {
-		String str = i.getData() + "000" + i.id;
+		String str = i.getData() + " " + i.id;
 		if (spoutMap.containsKey(str)) {
 			return spoutMap.get(str);
 		}
@@ -54,7 +52,7 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 	}
 
 	private static void registerSpoutRecipe(net.minecraft.server.ItemStack i, net.minecraft.server.ItemStack result) {
-		String str = i.getData() + "000" + i.id;
+		String str = i.getData() + " " + i.id;
 		spoutMap.put(str, result);
 
 	}

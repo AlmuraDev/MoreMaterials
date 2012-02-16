@@ -1,4 +1,4 @@
-package net.spoutmaterials.spoutmaterials.stats;
+package net.morematerials.morematerials.stats;
 
 /*
  * Copyright 2011 Tyler Blair. All rights reserved.

@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials;
+package net.morematerials.morematerials;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -40,10 +40,10 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
-import net.spoutmaterials.spoutmaterials.materials.SMCustomBlock;
-import net.spoutmaterials.spoutmaterials.materials.SMCustomItem;
-import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipe;
-import net.spoutmaterials.spoutmaterials.reflection.SpoutFurnaceRecipes;
+import net.morematerials.morematerials.materials.SMCustomBlock;
+import net.morematerials.morematerials.materials.SMCustomItem;
+import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipe;
+import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
 import org.getspout.spoutapi.SpoutManager;
@@ -141,7 +141,7 @@ public class SmpPackage {
 				} else if (config.getString("Type", "").equals("Item")) {
 					// Initialize an item.
 					SMCustomItem customItem = new SMCustomItem(
-						this, config.getString("Title", materialName), this.getSmpManager().getPlugin().getAssetsUrl() + textureName
+						this, config.getString("Title", materialName), this.getSmpManager().getPlugin().getAssetsUr() + textureName
 					);
 					customItem.setConfig(config);
 					this.customItemsList.put(materialName, customItem);

@@ -22,32 +22,32 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.utils;
+package net.morematerials.morematerials.stats;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.util.logging.Level;
 
-public class FileUtils {
+import net.morematerials.morematerials.Main;
 
-	public static void copyAndOverwriteFile(File in, File out) throws IOException {
-		out.delete();
-
-		FileChannel inChannel = new FileInputStream(in).getChannel();
-		FileChannel outChannel = new FileOutputStream(out).getChannel();
+public class StatHooker {
+	public StatHooker(final Main plugin) {
 		try {
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (inChannel != null) {
-				inChannel.close();
-			}
-			if (outChannel != null) {
-				outChannel.close();
-			}
+			Metrics metrics = new Metrics();
+			// Add our plotters
+			metrics.addCustomData(plugin, new Metrics.Plotter() {
+				@Override
+				public String getColumnName() {
+					return "Total Custom Materials";
+				}
+
+				@Override
+				public int getValue() {
+					return plugin.getSmpManager().getMaterialNumber();
+				}
+			});
+			metrics.beginMeasuringPlugin(plugin);
+			System.out.println("Stat tracking activated!");
+		} catch (Exception e) {
+			plugin.log("Stats error!", Level.SEVERE);
 		}
 	}
 }

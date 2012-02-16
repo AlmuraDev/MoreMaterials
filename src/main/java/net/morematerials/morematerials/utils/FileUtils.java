@@ -1,7 +1,7 @@
 /*
  The MIT License
 
- Copyright (c) 2011 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
+ Copyright (c) 2012 Zloteanu Nichita (ZNickq) and Andre Mohren (IceReaper)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +22,32 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.reflection;
+package net.morematerials.morematerials.utils;
 
-import org.getspout.spoutapi.inventory.SpoutItemStack;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
-public class SpoutFurnaceRecipe {
-	private SpoutItemStack ingredient, result;
+public class FileUtils {
 
-	public SpoutFurnaceRecipe(SpoutItemStack ing, SpoutItemStack res) {
-		ingredient = ing;
-		result = res;
+	public static void copyAndOverwriteFile(File in, File out) throws IOException {
+		out.delete();
+
+		FileChannel inChannel = new FileInputStream(in).getChannel();
+		FileChannel outChannel = new FileOutputStream(out).getChannel();
+		try {
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			if (inChannel != null) {
+				inChannel.close();
+			}
+			if (outChannel != null) {
+				outChannel.close();
+			}
+		}
 	}
-
-	public SpoutItemStack getIngredient() {
-		return ingredient;
-	}
-
-	public SpoutItemStack getResult() {
-		return result;
-	}
-
 }

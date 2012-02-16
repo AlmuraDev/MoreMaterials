@@ -22,14 +22,20 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.handlers;
+package net.morematerials.morematerials.handlers;
 
-import net.spoutmaterials.spoutmaterials.Main;
-import org.bukkit.Location;
-import org.getspout.spoutapi.player.SpoutPlayer;
+import java.io.File;
+import net.morematerials.morematerials.Main;
 
-public abstract class GenericHandler {
-	public abstract void onActivation(Location location, SpoutPlayer player);
-	public abstract void init(Main instance);
-	public abstract void shutdown();
+public class HandlerManager {
+	public HandlerManager(Main instance) {
+		File folder = new File(instance.getDataFolder() + File.separator + "handlers");
+		if (!folder.exists()) {
+			folder.mkdir();
+		}
+		File[] files = folder.listFiles();
+		for (File file : files) {
+			//TODO do whatever you are planning to do here
+		}
+	}
 }

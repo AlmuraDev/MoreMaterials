@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.spoutmaterials.spoutmaterials.utils;
+package net.morematerials.morematerials.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,13 +33,14 @@ import java.util.logging.Level;
 
 import com.sun.net.httpserver.HttpServer;
 
-import net.spoutmaterials.spoutmaterials.Main;
+import net.morematerials.morematerials.Main;
 
 public class WebManager {
 	private Main instance;
 
 	public WebManager(Main plugin) {
 		this.instance = plugin;
+		if(instance.useAssetsServer())
 		this.startAssetsServer(plugin.getPort());
 	}
 
