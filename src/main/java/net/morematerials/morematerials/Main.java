@@ -103,7 +103,7 @@ public class Main extends JavaPlugin {
 	private void readConfig() throws Exception {
 		FileConfiguration cfg = this.getConfig();
 		cfg.addDefault("Port", 8180);
-		cfg.addDefault("Hostname", "localhost");
+		cfg.addDefault("Hostname", Bukkit.getServer().getIp());
 		cfg.addDefault("Use-WebServer", true);
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
@@ -111,7 +111,7 @@ public class Main extends JavaPlugin {
 		//TODO Do we realy need defaults here? Should already be set above!
 		this.port = cfg.getInt("Port", 8180);
 		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
-		this.useAssetsServer = cfg.getBoolean("Use-WebServer",true);
+		this.useAssetsServer = cfg.getBoolean("Use-WebServer", true);
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {

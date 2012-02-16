@@ -141,7 +141,7 @@ public class SmpPackage {
 				} else if (config.getString("Type", "").equals("Item")) {
 					// Initialize an item.
 					SMCustomItem customItem = new SMCustomItem(
-						this, config.getString("Title", materialName), this.getSmpManager().getPlugin().getAssetsUr() + textureName
+						this, config.getString("Title", materialName), textureName
 					);
 					customItem.setConfig(config);
 					this.customItemsList.put(materialName, customItem);
@@ -202,13 +202,14 @@ public class SmpPackage {
 	}
 
 	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
+		//TODO get sizes for url version
 		GenericCuboidBlockDesign design;
 		File textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName);
 		BufferedImage bufferedImage = ImageIO.read(textureFile);
 
 		// for different textures on each block side
 		if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
-			Texture texture = new Texture(this.smpManager.getPlugin(), this.getSmpManager().getPlugin().getAssetsUrl() + textureName, bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth());
+			Texture texture = new Texture(this.smpManager.getPlugin(), textureName, bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth());
 			int[] idMap = new int[6];
 			for (int i = 0; i < 6; i++) {
 				idMap[i] = i;
@@ -218,7 +219,7 @@ public class SmpPackage {
 			);
 			// default block, with same texture on each side
 		} else {
-			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), this.getSmpManager().getPlugin().getAssetsUrl() + textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
+			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
 		}
 		return design;
 	}
@@ -305,19 +306,22 @@ public class SmpPackage {
 		tempDir.mkdir();
 		File cacheFile = new File(tempDir, result + fileName.substring(fileName.lastIndexOf(".")));
 		// No need of creating the file again, its already present!
-		if (cacheFile.exists()) {
-			inputStream.close();
-			return result + fileName.substring(fileName.lastIndexOf("."));
+		if (!cacheFile.exists()) {		
+			OutputStream out = new FileOutputStream(cacheFile);
+			int read;
+			byte[] bytes = new byte[1024];
+			while ((read = inputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
 		}
-		OutputStream out = new FileOutputStream(cacheFile);
-		int read;
-		byte[] bytes = new byte[1024];
-		while ((read = inputStream.read(bytes)) != -1) {
-			out.write(bytes, 0, read);
-		}
-		out.flush();
-		out.close();
 		inputStream.close();
+		if (this.smpManager.getPlugin().useAssetsServer()) {
+			result = this.smpManager.getPlugin().getAssetsUrl() + result;
+		} else {
+			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
+		}
 		return result + fileName.substring(fileName.lastIndexOf("."));
 	}
 
