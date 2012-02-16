@@ -52,7 +52,8 @@ public class Main extends JavaPlugin {
 	private LegacyManager legacyManager;
 	private int port;
 	private String hostname;
-
+	private boolean useAssetsServer;
+	
 	@Override
 	public void onDisable() {
 		this.smpManager.unload();
@@ -102,13 +103,15 @@ public class Main extends JavaPlugin {
 	private void readConfig() throws Exception {
 		FileConfiguration cfg = this.getConfig();
 		cfg.addDefault("Port", 8180);
-		cfg.addDefault("Hostname", Bukkit.getServer().getIp());
+		cfg.addDefault("Hostname", "localhost");
+		cfg.addDefault("Use-WebServer", true);
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 
 		//TODO Do we realy need defaults here? Should already be set above!
 		this.port = cfg.getInt("Port", 8180);
 		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
+		this.useAssetsServer = cfg.getBoolean("Use-WebServer",true);
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -200,5 +203,9 @@ public class Main extends JavaPlugin {
 		}
 		//TODO add console text color normal
 		System.out.println("[SpoutMaterials] " + logMessage);
+	}
+	
+	public boolean useAssetsServer() {
+		return useAssetsServer;
 	}
 }

@@ -141,7 +141,7 @@ public class SmpPackage {
 				} else if (config.getString("Type", "").equals("Item")) {
 					// Initialize an item.
 					SMCustomItem customItem = new SMCustomItem(
-						this, config.getString("Title", materialName), this.getSmpManager().getPlugin().getAssetsUrl() + textureName
+						this, config.getString("Title", materialName), this.getSmpManager().getPlugin().getAssetsUr() + textureName
 					);
 					customItem.setConfig(config);
 					this.customItemsList.put(materialName, customItem);
