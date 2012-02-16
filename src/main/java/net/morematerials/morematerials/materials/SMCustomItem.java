@@ -37,6 +37,7 @@ public class SMCustomItem extends GenericCustomItem {
 	private boolean stackable = true;
 	private SmpPackage smpPackage = null;
 	private boolean keepEnchanting = false;
+	private String url;
 
 	public SMCustomItem(SmpPackage smpPackage, String name, String texture) {
 		super(smpPackage.getSmpManager().getPlugin(), name, texture);
@@ -51,12 +52,18 @@ public class SMCustomItem extends GenericCustomItem {
 		// Unimplemented
 		Boolean lstackable = config.getBoolean("Stackable", true);
 		
+		String lurl = config.getString("Url",null);
+		
 		if (ldamage != null && ldamage > 0) {
 			this.damage = ldamage;
 		}
 		
 		if (durability != null && durability > 0) {
 			this.maxDurability = durability;
+		}
+		
+		if(lurl!=null) {
+			this.url=lurl;
 		}
 		
 		if (config.isConfigurationSection("Lclick")) {
@@ -93,5 +100,8 @@ public class SMCustomItem extends GenericCustomItem {
 
 	public boolean getKeepEnchanting() {
 		return this.keepEnchanting;
+	}
+	public String getUrl() {
+		return url;
 	}
 }

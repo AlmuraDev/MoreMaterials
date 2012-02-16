@@ -41,6 +41,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
 	private String redstoneTransform = null;
+	private String url;
 	
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
@@ -57,6 +58,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
 		String stepSound = config.getString("StepSound", null);
 		String lredstoneTransform = config.getString("RedstoneTransform", null);
+		String lurl = config.getString("Url",null);
 		if (hardness != 0) {
 			this.setHardness((float) hardness);
 		}
@@ -80,7 +82,9 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		if (lredstoneTransform != null) {
 			this.redstoneTransform = lredstoneTransform;
 		}
-		
+		if(lurl!=null) {
+			this.url=lurl;
+		}
 		if(config.isConfigurationSection("Lclick")) {
 			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
 		}
@@ -115,5 +119,9 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	
 	public String getRedstoneTransform() {
 		return this.redstoneTransform;
+	}
+	
+	public String getUrl() {
+		return url;
 	}
 }
