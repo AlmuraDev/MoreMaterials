@@ -40,8 +40,9 @@ public class WebManager {
 
 	public WebManager(Main plugin) {
 		this.instance = plugin;
-		if(instance.useAssetsServer())
-		this.startAssetsServer(plugin.getPort());
+		if (plugin.useAssetsServer()) {
+			this.startAssetsServer(plugin.getPort());
+		}
 	}
 
 	private void startAssetsServer(Integer port) {

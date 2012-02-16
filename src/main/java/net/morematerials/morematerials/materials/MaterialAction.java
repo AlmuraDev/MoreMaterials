@@ -56,6 +56,8 @@ public class MaterialAction {
 		String lreturnedItem = config.getString("Give", "");
 		String permBypass = config.getString("PermissionsBypass","");
 
+		this.consume = lconsume;
+		
 		if (!lsound.equals("")) {
 			try {
 				this.sound = smpPackage.cacheFile(lsound);
@@ -63,25 +65,31 @@ public class MaterialAction {
 				smpPackage.getSmpManager().getPlugin().log("Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".", Level.WARNING);
 			}
 		}
+
 		if (!laction.equals("")) {
 			this.action = laction;
 		}
-		this.consume = lconsume;
+		
 		if (lhealth != 0) {
 			this.health = lhealth;
 		}
+		
 		if (lhunger != 0) {
 			this.hunger = lhunger;
 		}
+		
 		if (lair != 0) {
 			this.air = lair;
 		}
+		
 		if (lexperience != 0) {
 			this.experience = lexperience;
 		}
+		
 		if (!lreturnedItem.equals("")) {
 			this.returnedItem = lreturnedItem;
 		}
+		
 		if(!permBypass.equals("")) {
 			this.permissionsBypass = permBypass;
 		}

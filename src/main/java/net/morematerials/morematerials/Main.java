@@ -104,7 +104,7 @@ public class Main extends JavaPlugin {
 	private void readConfig() throws Exception {
 		FileConfiguration cfg = this.getConfig();
 		cfg.addDefault("Port", 8180);
-		cfg.addDefault("Hostname", "localhost");
+		cfg.addDefault("Hostname", Bukkit.getServer().getIp());
 		cfg.addDefault("Use-WebServer", true);
 		cfg.addDefault("DebugMode", false);
 		cfg.options().copyDefaults(true);
