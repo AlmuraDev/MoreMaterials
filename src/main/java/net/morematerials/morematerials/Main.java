@@ -53,6 +53,7 @@ public class Main extends JavaPlugin {
 	private int port;
 	private String hostname;
 	private boolean useAssetsServer;
+	private static boolean debug=false;
 	
 	@Override
 	public void onDisable() {
@@ -105,6 +106,7 @@ public class Main extends JavaPlugin {
 		cfg.addDefault("Port", 8180);
 		cfg.addDefault("Hostname", "localhost");
 		cfg.addDefault("Use-WebServer", true);
+		cfg.addDefault("DebugMode", false);
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 
@@ -112,6 +114,7 @@ public class Main extends JavaPlugin {
 		this.port = cfg.getInt("Port", 8180);
 		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
 		this.useAssetsServer = cfg.getBoolean("Use-WebServer",true);
+		this.debug = cfg.getBoolean("DebugMode",false);
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -207,5 +210,9 @@ public class Main extends JavaPlugin {
 	
 	public boolean useAssetsServer() {
 		return useAssetsServer;
+	}
+	
+	public static boolean isDebugging() {
+		return debug;
 	}
 }

@@ -21,7 +21,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.morematerials.morematerials.listeners;
 
 import java.util.Map;
@@ -59,7 +58,7 @@ public class SMListener implements Listener {
 	public SMListener(Main plugin) {
 		this.smpManager = plugin.getSmpManager();
 	}
-	
+
 	@EventHandler
 	public void BlockRedstone(BlockRedstoneEvent event) {
 		Block redstone = event.getBlock();
@@ -67,15 +66,14 @@ public class SMListener implements Listener {
 
 		// Getting the block below the redstone
 		SpoutBlock block = (SpoutBlock) redstone.getLocation().getWorld().getBlockAt(
-			redstone.getX(), redstone.getY() - 1, redstone.getZ()
-		);
-		
+						redstone.getX(), redstone.getY() - 1, redstone.getZ());
+
 		if (block.isCustomBlock()) {
 			SMCustomBlock customBlock = (SMCustomBlock) this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
 			//TODO block toggle
 		}
 	}
-	
+
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
 		if (event.getPlayer().isOp() && this.smpManager.getPlugin().updateAvailable) {
@@ -85,19 +83,29 @@ public class SMListener implements Listener {
 
 	@EventHandler
 	public void InventoryCraft(InventoryCraftEvent event) {
+		if (event.getResult() == null) {
+			return;
+		}
+		if (Main.isDebugging()) {
+			event.getPlayer().sendMessage("[MoreMaterialsDebug] You just crafted " + event.getResult().getType().name() + "!");
+		}
 		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getResult());
 		Map<String, Material> materials = this.smpManager.getMaterial(spoutItemStack.getMaterial().getName());
 		for (String materialName : materials.keySet()) {
 			Material material = materials.get(materialName);
 			if (material == spoutItemStack.getMaterial()) {
-				if (!(event.getPlayer().hasPermission("spoutmaterials.craft")) ||
-					!event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)
-				) {
+				if (!(event.getPlayer().hasPermission("spoutmaterials.craft"))
+								|| !event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)) {
 					event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
+				} else {
+
+					if (Main.isDebugging()) {
+						event.getPlayer().sendMessage("[MoreMaterialsDebug] You are allowed to craft that!");
+					}
 				}
-				if (material instanceof SMCustomItem && ((SMCustomItem)material).getKeepEnchanting()) {
+				if (material instanceof SMCustomItem && ((SMCustomItem) material).getKeepEnchanting()) {
 					ItemStack result = event.getResult();
 					for (ItemStack[] ingredients : event.getRecipe()) {
 						for (ItemStack ingredient : ingredients) {
@@ -124,10 +132,9 @@ public class SMListener implements Listener {
 
 			// Getting the block below the player
 			SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-				player.getLocation().getBlockX(),
-				player.getLocation().getBlockY() - 1,
-				player.getLocation().getBlockZ()
-			);
+							player.getLocation().getBlockX(),
+							player.getLocation().getBlockY() - 1,
+							player.getLocation().getBlockZ());
 
 			// This only applies for custom blocks
 			if (block.isCustomBlock()) {
@@ -178,10 +185,9 @@ public class SMListener implements Listener {
 
 		// Getting the block below the player
 		SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-			player.getLocation().getBlockX(),
-			player.getLocation().getBlockY() - 1,
-			player.getLocation().getBlockZ()
-		);
+						player.getLocation().getBlockX(),
+						player.getLocation().getBlockY() - 1,
+						player.getLocation().getBlockZ());
 
 		// This only applies for custom blocks
 		Object item = null;
@@ -217,7 +223,7 @@ public class SMListener implements Listener {
 		Object object = this.smpManager.getMaterial(new SpoutItemStack(player.getItemInHand()));
 
 		SMCustomItem item = null;
-		
+
 		if (object instanceof SMCustomItem) {
 			item = (SMCustomItem) object;
 		}
@@ -247,8 +253,7 @@ public class SMListener implements Listener {
 			if (action == Action.RIGHT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
 					Object blockMaterial = this.smpManager.getMaterial(
-						new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1)
-					);
+									new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1));
 					if (blockMaterial instanceof SMCustomBlock) {
 						block = (SMCustomBlock) blockMaterial;
 						useAction = block.getActionR();
