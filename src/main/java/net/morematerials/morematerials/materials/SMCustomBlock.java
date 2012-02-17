@@ -36,6 +36,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 
 	private MaterialAction actionL = null;
 	private MaterialAction actionR = null;
+	private MaterialAction actionWalk = null;
 	private Float speedMultiplier = (float) 1;
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
@@ -82,12 +83,16 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 			this.redstoneTransform = lredstoneTransform;
 		}
 
-		if(config.isConfigurationSection("Lclick")) {
+		if (config.isConfigurationSection("Lclick")) {
 			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
 		}
 		
-		if(config.isConfigurationSection("Rclick")) {
+		if (config.isConfigurationSection("Rclick")) {
 			this.actionR = new MaterialAction(config.getConfigurationSection("Rclick"), this.smpPackage);
+		}
+		
+		if (config.isConfigurationSection("WalkAction")) {
+			this.actionWalk = new MaterialAction(config.getConfigurationSection("WalkAction"), this.smpPackage);
 		}
 
 		this.speedMultiplier = lspeedMultiplier;
@@ -113,6 +118,10 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	
 	public MaterialAction getActionR() {
 		return this.actionR;
+	}
+	
+	public MaterialAction getActionWalk() {
+		return this.actionWalk;
 	}
 	
 	public String getRedstoneTransform() {

@@ -1,8 +1,8 @@
 name: MoreMaterials
-version: 1.6.2
+version: 1.6.3
 description: Custom blocks and items!
 authors: [ZNickq, IceReaper]
-website: http://www.spoutmaterials.net
+website: http://www.morematerials.net
 
 depend: [Spout]
 main: net.morematerials.morematerials.Main
@@ -14,7 +14,7 @@ commands:
   smgive:
     description: Gives you a custom material.
     usage: /<command> [custom material] {amount}
-    permission: spoutmaterials.give
+    permission: morematerials.give
   smadmin:
     description: Internal helper functions.
     usage: |
@@ -22,25 +22,25 @@ commands:
       /<command> [updates] - List all updatable smp files.
       /<command> [install] [smpPackage] {version} - Install specified smp file in specified version (Defaults to latest).
       /<command> [uninstall] [smpPackage] - Uninstall specified smp file.
-    permission: spoutmaterials.admin
+    permission: morematerials.admin
 
 permissions:
-  spoutmaterials.*:
-    description: Allows access to all of SpoutMaterials' functionality.
+  morematerials.*:
+    description: Allows access to all of MoreMaterials' functionality.
     default: op
     children:
-      spoutmaterials.admin: true
-      spoutmaterials.craft.*: true
-  spoutmaterials.admin:
+      morematerials.admin: true
+      morematerials.craft.*: true
+  morematerials.admin:
     description: Access to smp commands.
     default: op
     children:
-      spoutmaterials.give: true
-  spoutmaterials.give:
-    description: Allows spawning SpoutMaterials blocks and items.
+      morematerials.give: true
+  morematerials.give:
+    description: Allows spawning MoreMaterials blocks and items.
     default: op
-  spoutmaterials.craft:
-    description: Allows crafting of SpoutMaterials blocks and items.
+  morematerials.craft:
+    description: Allows crafting of MoreMaterials blocks and items.
     default: true
     children:
-      spoutmaterials.craft.material: true
+      morematerials.craft.material: true

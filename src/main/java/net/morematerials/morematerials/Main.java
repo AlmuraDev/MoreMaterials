@@ -53,7 +53,9 @@ public class Main extends JavaPlugin {
 	private int port;
 	private String hostname;
 	private boolean useAssetsServer;
-	private static boolean debug=false;
+	//private String apiUrl = "http://www.morematerials.net/api.php";
+	private String apiUrl = "http://localhost/morematerials/api.php";
+	private static boolean debug = false;
 	
 	@Override
 	public void onDisable() {
@@ -114,7 +116,7 @@ public class Main extends JavaPlugin {
 		this.port = cfg.getInt("Port", 8180);
 		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
 		this.useAssetsServer = cfg.getBoolean("Use-WebServer",true);
-		this.debug = cfg.getBoolean("DebugMode",false);
+		debug = cfg.getBoolean("DebugMode",false);
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
@@ -122,7 +124,7 @@ public class Main extends JavaPlugin {
 		if (!(sender instanceof Player)) {
 			return true;
 			// Or players with this permission
-		} else if (sender.hasPermission("spoutmaterials.*")) {
+		} else if (sender.hasPermission("morematerials.*")) {
 			return true;
 		} else if (((Player) sender).hasPermission(perm)) {
 			return true;
@@ -214,5 +216,9 @@ public class Main extends JavaPlugin {
 	
 	public static boolean isDebugging() {
 		return debug;
+	}
+
+	public String getApiUrl() {
+		return this.apiUrl ;
 	}
 }

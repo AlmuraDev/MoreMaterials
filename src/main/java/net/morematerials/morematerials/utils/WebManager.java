@@ -25,14 +25,13 @@
 package net.morematerials.morematerials.utils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.logging.Level;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 import com.sun.net.httpserver.HttpServer;
-
 import net.morematerials.morematerials.Main;
 
 public class WebManager {
@@ -61,7 +60,7 @@ public class WebManager {
 		    } else {
 		    	this.instance.log("Assets-Host not listening on " + this.instance.getAssetsUrl(), Level.SEVERE);
 		    }
-		} catch (IOException exception) {
+		} catch (Exception exception) {
 	    	System.out.println(exception);
 	    	this.instance.log("DEBUG" + this.instance.getAssetsUrl());
 		}
@@ -70,8 +69,41 @@ public class WebManager {
 	public boolean updateAvailable() {
 		String version = this.instance.getDescription().getVersion();
 		String newest = version;
-		//TODO returns wether an update is available.
+		try {
+			JSONObject json = this.readJsonFromApi("action=version");
+			JSONArray versions = json.getJSONArray("versions");
+			// Last entry is always newest version!
+			newest = versions.getString(versions.length()-1);
+		} catch (Exception exception) {
+	    	this.instance.log(exception.getMessage(), Level.SEVERE);
+		}
 		return !version.equals(newest);
+	}
+	
+	private JSONObject readJsonFromApi(String params) throws Exception {
+		JSONObject json = new JSONObject();
+		try {
+			URL versionCheck = new URL(this.instance.getApiUrl() + "?" + params);
+			BufferedReader in = new BufferedReader(new InputStreamReader(versionCheck.openStream()));
+		    StringBuilder sb = new StringBuilder();
+		    int cp;
+		    while ((cp = in.read()) != -1) {
+		      sb.append((char) cp);
+		    }
+			in.close();
+			json = new JSONObject(sb.toString());
+		} catch (Exception e) {
+		}
+		// We always have "error" which is true | false from our json. If not something went wrong!
+		if (!json.has("error")) {
+			throw new Exception("Cannot Acces API!");
+		}
+		// If error is specified, data contains always our error message.
+		if (json.getBoolean("error")) {
+			throw new Exception(json.getString("data"));
+		}
+		// Else data contains the response json.
+		return json.getJSONObject("data");
 	}
 
 	public void downloadSmp(String smpName, String version) {

@@ -41,7 +41,7 @@ public class AdminExecutor implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-		if (!instance.hasPermission(sender, "spoutmaterials.admin", true)) {
+		if (!instance.hasPermission(sender, "morematerials.admin", true)) {
 			return false;
 		}
 		// Parameter is "install"

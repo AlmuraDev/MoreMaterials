@@ -134,6 +134,7 @@ public class SmpPackage {
 					design.setMaxBrightness(brightness);
 					SMCustomBlock customBlock = new SMCustomBlock(
 						this, config.getString("Title", materialName),
+						//TODO get transparency from image file!
 						!config.getBoolean("Transparency", false), design
 					);
 					customBlock.setConfig(config);
@@ -204,7 +205,7 @@ public class SmpPackage {
 	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
 		//TODO get sizes for url version
 		GenericCuboidBlockDesign design;
-		File textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName);
+		File textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName.substring(textureName.lastIndexOf("/")));
 		BufferedImage bufferedImage = ImageIO.read(textureFile);
 
 		// for different textures on each block side
@@ -318,11 +319,13 @@ public class SmpPackage {
 		}
 		inputStream.close();
 		if (this.smpManager.getPlugin().useAssetsServer()) {
-			result = this.smpManager.getPlugin().getAssetsUrl() + result;
+			result = this.smpManager.getPlugin().getAssetsUrl() + result + fileName.substring(fileName.lastIndexOf("."));
+			this.smpManager.getPlugin().log(result);
+			return result;
 		} else {
 			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
+			return cacheFile.getName();
 		}
-		return result + fileName.substring(fileName.lastIndexOf("."));
 	}
 
 	private void setDrops(YamlConfiguration config, String name) {

@@ -96,7 +96,7 @@ public class SMListener implements Listener {
 		for (String materialName : materials.keySet()) {
 			Material material = materials.get(materialName);
 			if (material == spoutItemStack.getMaterial()) {
-				if (!(event.getPlayer().hasPermission("spoutmaterials.craft")) || !event.getPlayer().hasPermission("spoutmaterials.craft." + materialName)) {
+				if (!(event.getPlayer().hasPermission("morematerials.craft")) || !event.getPlayer().hasPermission("morematerials.craft." + materialName)) {
 					event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
@@ -214,6 +214,22 @@ public class SMListener implements Listener {
 		} else {
 			player.setJumpingMultiplier(1);
 		}
+		
+		MaterialAction walkAction = null;
+		
+		// Getting the walk action.
+		if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getActionWalk() != null) {
+			walkAction = ((SMCustomBlock) item).getActionWalk();
+		}
+		
+		if (walkAction != null) {
+			this.doMaterialAction(walkAction, player, (SMCustomBlock) item);
+	
+			// Materials can be consumed.
+			if (walkAction.getConsume()) {
+				block.setType(org.bukkit.Material.AIR);
+			}
+		}
 	}
 
 	@EventHandler
@@ -222,7 +238,7 @@ public class SMListener implements Listener {
 		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_AIR) {
 			return;
 		}
-
+		
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 		Object object = this.smpManager.getMaterial(new SpoutItemStack(player.getItemInHand()));
 
@@ -271,6 +287,26 @@ public class SMListener implements Listener {
 		if (useAction == null) {
 			return;
 		}
+		
+		this.doMaterialAction(useAction, player, block);
+
+		// Materials can be consumed.
+		if (useAction.getConsume()) {
+			if (block != null) {
+				event.getClickedBlock().setType(org.bukkit.Material.AIR);
+			} else {
+				ItemStack itemInHand = player.getItemInHand();
+				itemInHand.setAmount(itemInHand.getAmount() - 1);
+				if (itemInHand.getAmount() == 0) {
+					itemInHand = null;
+				}
+				player.setItemInHand(itemInHand);
+			}
+		}
+		
+	}
+
+	private void doMaterialAction(MaterialAction useAction, SpoutPlayer player, SMCustomBlock block) {
 
 		// Adding bypass permission
 		if (useAction.getPermissionsBypass() != null) {
@@ -343,20 +379,6 @@ public class SMListener implements Listener {
 		// Let the player use a specific chat command.
 		if (useAction.getAction() != null) {
 			player.chat(useAction.getAction());
-		}
-
-		// Items can be consumed.
-		if (useAction.getConsume()) {
-			if (block != null) {
-				event.getClickedBlock().setType(org.bukkit.Material.AIR);
-			} else {
-				ItemStack itemInHand = player.getItemInHand();
-				itemInHand.setAmount(itemInHand.getAmount() - 1);
-				if (itemInHand.getAmount() == 0) {
-					itemInHand = null;
-				}
-				player.setItemInHand(itemInHand);
-			}
 		}
 
 		// Removing bypass permission

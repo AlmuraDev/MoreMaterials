@@ -54,15 +54,15 @@ public class SMExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(this.plugin.getMessage(
-				"This server is running SpoutMaterials " +
-				"v" +plugin.getDescription().getVersion() + "! " +
+				"This server is running " + this.plugin.getDescription().getName() + " " +
+				"v" + plugin.getDescription().getVersion() + "! " +
 				"Credits to " + authors + "!")
 			);
 			return true;
 		}
 		String first = args[0];
 		if (first.equalsIgnoreCase("?") || first.equalsIgnoreCase("help")) {
-			sender.sendMessage(this.plugin.getMessage("SpoutMaterials help page", Level.SEVERE));
+			sender.sendMessage(this.plugin.getMessage("Help page", Level.SEVERE));
 			sender.sendMessage(this.plugin.getMessage("---------------------------------"));
 			//TODO cant we read them from the plugin.yml?
 			sender.sendMessage(this.plugin.getMessage("/sm -> " + ChatColor.GOLD + "Basic informations, and help!", Level.WARNING));
