@@ -50,6 +50,7 @@ public class SmpManager {
 		String[] files = materials.list();
 		for (String file : files) {
 			if (file.endsWith(".smp")) {
+				System.out.println(plugin.getMessage("Loading "+file, Level.INFO));
 				try {
 					ZipFile smpFile = getSmpHandle(file);
 				
