@@ -94,9 +94,9 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
 
 		// Chat command stuff
-		getCommand("sm").setExecutor(new SMExecutor(this));
-		getCommand("smgive").setExecutor(new GiveExecutor(this));
-		getCommand("smadmin").setExecutor(new AdminExecutor(this));
+		getCommand("mm").setExecutor(new SMExecutor(this));
+		getCommand("mmgive").setExecutor(new GiveExecutor(this));
+		getCommand("mmadmin").setExecutor(new AdminExecutor(this));
 		//TODO remove this when website is done.
 		new StatHooker(this);
 	}
@@ -134,7 +134,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private void checkIntegrityAndUpdate() throws IOException {
-		this.webmanager.updateAvailable();
+		//this.webmanager.updateAvailable();
 
 		// Create all used files and folders if not present.
 		File file;
