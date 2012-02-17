@@ -8,14 +8,14 @@ depend: [Spout]
 main: net.morematerials.morematerials.Main
 
 commands:
-  sm:
+  mm:
     description: Some basic commands!
     usage: /<command> [?]
-  smgive:
+  mmgive:
     description: Gives you a custom material.
     usage: /<command> [custom material] {amount}
     permission: morematerials.give
-  smadmin:
+  mmadmin:
     description: Internal helper functions.
     usage: |
       /<command> [list] - List all currently installed smp files.

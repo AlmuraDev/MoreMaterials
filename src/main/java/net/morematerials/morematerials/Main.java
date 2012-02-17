@@ -43,7 +43,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	public Boolean updateAvailable = false;
 	// Used for handling smp files.
 	private SmpManager smpManager;
 	// Used for website related stuff.
@@ -64,7 +63,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// Workaround for hooking into FurnaceRecipes, because spout doesn't support this.	
+		// Workaround for hooking into FurnaceRecipes, because bukkit doesn't support this.	
 		try{
 			SpoutFurnaceRecipes.hook(this);
 		} catch(Throwable ex) { // Not exception!
@@ -95,9 +94,9 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
 
 		// Chat command stuff
-		getCommand("sm").setExecutor(new SMExecutor(this));
-		getCommand("smgive").setExecutor(new GiveExecutor(this));
-		getCommand("smadmin").setExecutor(new AdminExecutor(this));
+		getCommand("mm").setExecutor(new SMExecutor(this));
+		getCommand("mmgive").setExecutor(new GiveExecutor(this));
+		getCommand("mmadmin").setExecutor(new AdminExecutor(this));
 		//TODO remove this when website is done.
 		new StatHooker(this);
 	}
@@ -135,10 +134,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private void checkIntegrityAndUpdate() throws IOException {
-		// Update the plugin.
-		if (this.webmanager.updateAvailable()) {
-			this.updateAvailable = true;
-		}
+		//this.webmanager.updateAvailable();
 
 		// Create all used files and folders if not present.
 		File file;

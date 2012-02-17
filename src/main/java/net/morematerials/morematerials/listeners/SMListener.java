@@ -32,6 +32,7 @@ import net.morematerials.morematerials.SmpManager;
 import net.morematerials.morematerials.materials.MaterialAction;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
+import net.morematerials.morematerials.utils.WebManager;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -55,9 +56,11 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class SMListener implements Listener {
 
 	private SmpManager smpManager;
+	private Main plugin;
 
 	public SMListener(Main plugin) {
 		this.smpManager = plugin.getSmpManager();
+		this.plugin=plugin;
 	}
 
 	@EventHandler
@@ -78,7 +81,8 @@ public class SMListener implements Listener {
 
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
-		if (event.getPlayer().isOp() && this.smpManager.getPlugin().updateAvailable) {
+		if(WebManager.newVer==null) return;
+		if (!WebManager.newVer.equals(plugin.getDescription().getVersion())) {
 			event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("An Update is available!", Level.WARNING));
 		}
 	}
