@@ -320,7 +320,6 @@ public class SmpPackage {
 		inputStream.close();
 		if (this.smpManager.getPlugin().useAssetsServer()) {
 			result = this.smpManager.getPlugin().getAssetsUrl() + result + fileName.substring(fileName.lastIndexOf("."));
-			this.smpManager.getPlugin().log(result);
 			return result;
 		} else {
 			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);

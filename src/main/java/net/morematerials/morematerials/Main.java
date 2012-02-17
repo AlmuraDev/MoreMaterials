@@ -53,8 +53,7 @@ public class Main extends JavaPlugin {
 	private int port;
 	private String hostname;
 	private boolean useAssetsServer;
-	//private String apiUrl = "http://www.morematerials.net/api.php";
-	private String apiUrl = "http://localhost/morematerials/api.php";
+	private String apiUrl = "http://www.morematerials.net/api.php";
 	private static boolean debug = false;
 	
 	@Override
