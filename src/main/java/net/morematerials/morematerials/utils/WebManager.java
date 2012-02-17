@@ -36,7 +36,7 @@ import net.morematerials.morematerials.Main;
 
 public class WebManager {
 	private Main instance;
-	public static String newVer=null;
+	public static String newVer = null;
 	public WebManager(Main plugin) {
 		this.instance = plugin;
 		if (plugin.useAssetsServer()) {
@@ -77,8 +77,9 @@ public class WebManager {
 		} catch (Exception exception) {
 	    	this.instance.log(exception.getMessage(), Level.SEVERE);
 		}
-		if(!version.equals(newest))
-			newVer=newest;
+		if (!version.equals(newest)) {
+			newVer = newest;
+		}
 		return !newest.equals(version);
 	}
 	

@@ -60,7 +60,7 @@ public class SMListener implements Listener {
 
 	public SMListener(Main plugin) {
 		this.smpManager = plugin.getSmpManager();
-		this.plugin=plugin;
+		this.plugin = plugin;
 	}
 
 	@EventHandler
@@ -81,7 +81,9 @@ public class SMListener implements Listener {
 
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
-		if(WebManager.newVer==null) return;
+		if (WebManager.newVer == null) {
+			return;
+		}
 		if (!WebManager.newVer.equals(plugin.getDescription().getVersion())) {
 			event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("An Update is available!", Level.WARNING));
 		}
