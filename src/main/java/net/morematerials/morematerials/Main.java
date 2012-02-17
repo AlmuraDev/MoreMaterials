@@ -204,9 +204,10 @@ public class Main extends JavaPlugin {
 		} else if (level == Level.SEVERE) {
 			//TODO add console text color red
 			System.out.println("[" + this.getDescription().getName() + "] ERROR: " + logMessage);
+		} else {
+			//TODO add console text color normal
+			System.out.println("[" + this.getDescription().getName() + "] " + logMessage);
 		}
-		//TODO add console text color normal
-		System.out.println("[" + this.getDescription().getName() + "] " + logMessage);
 	}
 	
 	public boolean useAssetsServer() {

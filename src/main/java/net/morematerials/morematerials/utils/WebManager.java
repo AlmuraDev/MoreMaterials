@@ -96,7 +96,7 @@ public class WebManager {
 		}
 		// We always have "error" which is true | false from our json. If not something went wrong!
 		if (!json.has("error")) {
-			throw new Exception("Cannot Acces API!");
+			throw new Exception("Cannot access API!");
 		}
 		// If error is specified, data contains always our error message.
 		if (json.getBoolean("error")) {

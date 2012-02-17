@@ -205,7 +205,12 @@ public class SmpPackage {
 	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
 		//TODO get sizes for url version
 		GenericCuboidBlockDesign design;
-		File textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName.substring(textureName.lastIndexOf("/")));
+		File textureFile = null;
+		if (this.getSmpManager().getPlugin().useAssetsServer()) {
+			textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName.substring(textureName.lastIndexOf("/")));
+		} else {
+			textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName);
+		}
 		BufferedImage bufferedImage = ImageIO.read(textureFile);
 
 		// for different textures on each block side
