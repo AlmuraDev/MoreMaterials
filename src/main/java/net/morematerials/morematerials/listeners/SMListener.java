@@ -240,11 +240,13 @@ public class SMListener implements Listener {
 		}
 
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
-		Object object = MainManager.getSmpManager().getMaterial(new SpoutItemStack(player.getItemInHand()));
+		Object object = null;
+		if(event.getPlayer().getItemInHand()!=null)
+		object=MainManager.getSmpManager().getMaterial(new SpoutItemStack(player.getItemInHand()));
 
 		SMCustomItem item = null;
 
-		if (object instanceof SMCustomItem) {
+		if (object!=null&&object instanceof SMCustomItem) {
 			item = (SMCustomItem) object;
 			if (event.getClickedBlock() != null) {
 				item.getHandler().onActivation(event.getClickedBlock().getLocation(), player);

@@ -26,6 +26,7 @@ package net.morematerials.morematerials;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Level;
 import net.morematerials.morematerials.cmds.AdminExecutor;
 import net.morematerials.morematerials.cmds.GiveExecutor;
@@ -34,9 +35,12 @@ import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import net.morematerials.morematerials.listeners.SMListener;
 import net.morematerials.morematerials.manager.LegacyManager;
 import net.morematerials.morematerials.manager.MainManager;
+import net.morematerials.morematerials.materials.SMCustomBlock;
+import net.morematerials.morematerials.materials.SMCustomItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.getspout.spoutapi.material.Material;
 
 public class Main extends JavaPlugin {
 
@@ -49,6 +53,11 @@ public class Main extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		Set<Material> mats=MainManager.getSmpManager().getAllMaterials();
+		for(Material mat:mats) {
+			if(mat instanceof SMCustomItem) ((SMCustomItem)mat).getHandler().shutdown();
+			if(mat instanceof SMCustomBlock) ((SMCustomBlock)mat).getHandler().shutdown();
+		}
 		MainManager.getSmpManager().unload();
 		MainManager.getLegacyManager().unload();
 	}

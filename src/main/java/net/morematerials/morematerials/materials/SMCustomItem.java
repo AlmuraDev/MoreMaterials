@@ -27,6 +27,7 @@ package net.morematerials.morematerials.materials;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.morematerials.morematerials.handlers.GenericHandler;
+import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
@@ -86,7 +87,7 @@ public class SMCustomItem extends GenericCustomItem {
 			}
 			ghandler.createAndInit(GenericHandler.MaterialType.ITEM, smpPackage.getSmpManager().getPlugin());
 		}
-		
+		if(ghandler==null) ghandler = new TheBasicHandler();
 		this.stackable = lstackable;
 		this.keepEnchanting = lkeepEnchanting;
 	}

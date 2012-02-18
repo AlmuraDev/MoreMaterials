@@ -27,7 +27,9 @@ package net.morematerials.morematerials.smp;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -176,5 +178,15 @@ public class SmpManager {
 			toRet += smp.getMaterialNumber();
 		}
 		return toRet;
+	}
+
+	public Set<Material> getAllMaterials() {
+		Collection<SmpPackage> col=smpPackages.values();
+		Set<Material> toRet = new HashSet<Material>();
+		for(SmpPackage cursmp:col) {
+			toRet.addAll(cursmp.getAllMaterials());
+		}
+		return toRet;
+		
 	}
 }

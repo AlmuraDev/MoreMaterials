@@ -32,10 +32,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -383,5 +386,12 @@ public class SmpPackage {
 	
 	public int getMaterialNumber() {
 		return customBlocksList.size() + customItemsList.size();
+	}
+
+	public Collection<Material> getAllMaterials() {
+		Set<Material> toRet = new HashSet<Material>();
+		toRet.addAll(customItemsList.values());
+		toRet.addAll(customBlocksList.values());
+		return toRet;
 	}
 }

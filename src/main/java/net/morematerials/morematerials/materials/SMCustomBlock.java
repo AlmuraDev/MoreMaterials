@@ -26,6 +26,7 @@ package net.morematerials.morematerials.materials;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.morematerials.morematerials.handlers.GenericHandler;
+import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.Location;
@@ -113,7 +114,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 				ghandler.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
 			}
 		}
-
+		if(ghandler==null) ghandler = new TheBasicHandler();
 		this.speedMultiplier = lspeedMultiplier;
 		this.jumpMultiplier = ljumpMultiplier;
 		this.fallMultiplier = lfallMultiplier;
@@ -147,7 +148,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		return this.redstoneTransform;
 	}
 
-	public GenericHandler getGenericHandler() {
+	public GenericHandler getHandler() {
 		return ghandler;
 	}
 
