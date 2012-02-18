@@ -25,7 +25,6 @@
 package net.morematerials.morematerials.manager;
 
 import java.util.logging.Level;
-import net.morematerials.morematerials.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,11 +32,6 @@ import org.bukkit.entity.Player;
 
 
 public class Utils {
-	
-	private Main plugin;
-	protected Utils(Main plugin) {
-		this.plugin = plugin;
-	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
 		// Allow console
@@ -62,11 +56,11 @@ public class Utils {
 	
 	public String getMessage(String logMessage, Level level) {
 		if (level == Level.WARNING) {
-			return ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
+			return ChatColor.GREEN + "[" + "MoreMaterials" + "] " + ChatColor.YELLOW + logMessage;
 		} else if (level == Level.SEVERE) {
-			return ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + ChatColor.RED + logMessage;
+			return ChatColor.GREEN + "[" + "MoreMaterials" + "] " + ChatColor.RED + logMessage;
 		}
-		return ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
+		return ChatColor.GREEN + "[" + "MoreMaterials" + "] " + ChatColor.WHITE + logMessage;
 	}
 	
 	public void log(String logMessage) {
@@ -76,13 +70,13 @@ public class Utils {
 	public void log(String logMessage, Level level) {
 		if (level == Level.WARNING) {
 			//TODO add console text color yellow
-			System.out.println("[" + plugin.getDescription().getName() + "] Warning: " + logMessage);
+			System.out.println("[" + "MoreMaterials" + "] Warning: " + logMessage);
 		} else if (level == Level.SEVERE) {
 			//TODO add console text color red
-			System.out.println("[" + plugin.getDescription().getName() + "] ERROR: " + logMessage);
+			System.out.println("[" + "MoreMaterials" + "] ERROR: " + logMessage);
 		} else {
 			//TODO add console text color normal
-			System.out.println("[" + plugin.getDescription().getName() + "] " + logMessage);
+			System.out.println("[" + "MoreMaterials" + "] " + logMessage);
 		}
 	}
 	

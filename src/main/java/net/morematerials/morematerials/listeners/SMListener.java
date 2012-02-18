@@ -21,7 +21,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.morematerials.morematerials.listeners;
 
 import java.util.Map;
@@ -68,8 +67,7 @@ public class SMListener implements Listener {
 
 		// Getting the block below the redstone
 		SpoutBlock block = (SpoutBlock) redstone.getLocation().getWorld().getBlockAt(
-			redstone.getX(), redstone.getY() - 1, redstone.getZ()
-		);
+						redstone.getX(), redstone.getY() - 1, redstone.getZ());
 
 		if (block.isCustomBlock()) {
 			SMCustomBlock customBlock = (SMCustomBlock) MainManager.getSmpManager().getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
@@ -134,10 +132,9 @@ public class SMListener implements Listener {
 
 			// Getting the block below the player
 			SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-				player.getLocation().getBlockX(),
-				player.getLocation().getBlockY() - 1,
-				player.getLocation().getBlockZ()
-			);
+							player.getLocation().getBlockX(),
+							player.getLocation().getBlockY() - 1,
+							player.getLocation().getBlockZ());
 
 			// This only applies for custom blocks
 			if (block.isCustomBlock()) {
@@ -192,10 +189,9 @@ public class SMListener implements Listener {
 
 		// Getting the block below the player
 		SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-			player.getLocation().getBlockX(),
-			player.getLocation().getBlockY() - 1,
-			player.getLocation().getBlockZ()
-		);
+						player.getLocation().getBlockX(),
+						player.getLocation().getBlockY() - 1,
+						player.getLocation().getBlockZ());
 
 		// This only applies for custom blocks
 		Object item = null;
@@ -218,17 +214,17 @@ public class SMListener implements Listener {
 		} else {
 			player.setJumpingMultiplier(1);
 		}
-		
+
 		MaterialAction walkAction = null;
-		
+
 		// Getting the walk action.
 		if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getActionWalk() != null) {
 			walkAction = ((SMCustomBlock) item).getActionWalk();
 		}
-		
+
 		if (walkAction != null) {
 			this.doMaterialAction(walkAction, player, (SMCustomBlock) item);
-	
+
 			// Materials can be consumed.
 			if (walkAction.getConsume()) {
 				block.setType(org.bukkit.Material.AIR);
@@ -242,7 +238,7 @@ public class SMListener implements Listener {
 		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_AIR) {
 			return;
 		}
-		
+
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 		Object object = MainManager.getSmpManager().getMaterial(new SpoutItemStack(player.getItemInHand()));
 
@@ -250,6 +246,11 @@ public class SMListener implements Listener {
 
 		if (object instanceof SMCustomItem) {
 			item = (SMCustomItem) object;
+			if (event.getClickedBlock() != null) {
+				item.getHandler().onActivation(event.getClickedBlock().getLocation(), player);
+			} else {
+				item.getHandler().onActivation(null, player);
+			}
 		}
 		SMCustomBlock block = null;
 
@@ -263,8 +264,7 @@ public class SMListener implements Listener {
 			if (action == Action.LEFT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
 					Object blockMaterial = MainManager.getSmpManager().getMaterial(
-						new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1)
-					);
+									new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1));
 					if (blockMaterial instanceof SMCustomBlock) {
 						block = (SMCustomBlock) blockMaterial;
 						useAction = block.getActionL();
@@ -291,7 +291,7 @@ public class SMListener implements Listener {
 		if (useAction == null) {
 			return;
 		}
-		
+
 		this.doMaterialAction(useAction, player, block);
 
 		// Materials can be consumed.
@@ -307,7 +307,7 @@ public class SMListener implements Listener {
 				player.setItemInHand(itemInHand);
 			}
 		}
-		
+
 	}
 
 	private void doMaterialAction(MaterialAction useAction, SpoutPlayer player, SMCustomBlock block) {

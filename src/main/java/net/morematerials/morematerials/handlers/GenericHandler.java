@@ -21,7 +21,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.morematerials.morematerials.handlers;
 
 import net.morematerials.morematerials.Main;
@@ -29,7 +28,25 @@ import org.bukkit.Location;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public abstract class GenericHandler {
+	
+	public enum MaterialType {
+
+		BLOCK, ITEM
+	}
+	private MaterialType handlerType;
+
 	public abstract void onActivation(Location location, SpoutPlayer player);
+
 	public abstract void init(Main instance);
+
 	public abstract void shutdown();
+
+	public MaterialType getMaterialType() {
+		return handlerType;
+	}
+	
+	public final void createAndInit(MaterialType theType, Main instance) {
+		handlerType = theType;
+		init(instance);
+	}
 }

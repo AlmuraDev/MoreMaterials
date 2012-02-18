@@ -24,6 +24,10 @@
 
 package net.morematerials.morematerials.materials;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.morematerials.morematerials.handlers.GenericHandler;
+import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
@@ -37,6 +41,7 @@ public class SMCustomItem extends GenericCustomItem {
 	private boolean stackable = true;
 	private SmpPackage smpPackage = null;
 	private boolean keepEnchanting = false;
+	private GenericHandler ghandler;
 
 	public SMCustomItem(SmpPackage smpPackage, String name, String texture) {
 		super(smpPackage.getSmpManager().getPlugin(), name, texture);
@@ -46,6 +51,7 @@ public class SMCustomItem extends GenericCustomItem {
 	public void setConfig(ConfigurationSection config) {
 		Integer ldamage = config.getInt("Damage");
 		Boolean lkeepEnchanting = config.getBoolean("KeepEnchanting", false);
+		String handler = config.getString("Handler",null);
 		// Unimplemented
 		Integer durability = config.getInt("Durability");
 		// Unimplemented
@@ -65,6 +71,20 @@ public class SMCustomItem extends GenericCustomItem {
 		
 		if (config.isConfigurationSection("Rclick")) {
 			this.actionR = new MaterialAction(config.getConfigurationSection("Rclick"), this.smpPackage);
+		}
+		
+		if(handler != null) {
+			Class<?> clazz=MainManager.getHandlerManager().getHandler(handler);
+			if(clazz==null) {
+				MainManager.getUtils().log("Invalid handler name: "+handler+"!");
+			} else {
+				try {
+					ghandler = (GenericHandler) clazz.newInstance();
+				} catch (Exception ex) {
+					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
+				} 
+			}
+			ghandler.createAndInit(GenericHandler.MaterialType.ITEM, smpPackage.getSmpManager().getPlugin());
 		}
 		
 		this.stackable = lstackable;
@@ -93,5 +113,9 @@ public class SMCustomItem extends GenericCustomItem {
 
 	public boolean getKeepEnchanting() {
 		return this.keepEnchanting;
+	}
+	
+	public GenericHandler getHandler() {
+		return this.ghandler;
 	}
 }

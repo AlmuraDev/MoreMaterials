@@ -24,6 +24,7 @@
 package net.morematerials.morematerials.manager;
 
 import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.handlers.HandlerManager;
 import net.morematerials.morematerials.smp.SmpManager;
 import net.morematerials.morematerials.stats.StatHooker;
 import net.morematerials.morematerials.utils.WebManager;
@@ -35,18 +36,18 @@ public class MainManager {
 	private static WebManager wm;
 	private static WGenManager wgm;
 	private static StatHooker sh;
-	private static Utils u;
+	private static Utils u = new Utils();
+	private static HandlerManager hm;
 
 	public MainManager(Main plugin) {
 		if (smp != null) {
 			throw new IllegalStateException("Cannot re-initialize MainManager!");
 		}
+		hm = new HandlerManager(plugin);
 		wm = new WebManager(plugin);
 		smp = new SmpManager(plugin);
 		lm = new LegacyManager(plugin);
 		wgm = new WGenManager(plugin);
-		u = new Utils(plugin);
-		
 		
 		//TODO remove this when website is done.
 		sh = new StatHooker(plugin);
@@ -74,5 +75,9 @@ public class MainManager {
 	
 	public static Utils getUtils() {
 		return u;
+	}
+	
+	public static HandlerManager getHandlerManager() {
+		return hm;
 	}
 }

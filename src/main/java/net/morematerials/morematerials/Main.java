@@ -34,22 +34,12 @@ import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import net.morematerials.morematerials.listeners.SMListener;
 import net.morematerials.morematerials.manager.LegacyManager;
 import net.morematerials.morematerials.manager.MainManager;
-import net.morematerials.morematerials.smp.SmpManager;
-import net.morematerials.morematerials.stats.StatHooker;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	// Used for handling smp files.
-	private SmpManager smpManager;
-	// Used for website related stuff.
-	//private WebManager webmanager;
-	// Used for legacy material related stuff
 	private LegacyManager legacyManager;
 	private int port;
 	private String hostname;
@@ -59,8 +49,8 @@ public class Main extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		this.smpManager.unload();
-		this.legacyManager.unload();
+		MainManager.getSmpManager().unload();
+		MainManager.getLegacyManager().unload();
 	}
 
 	@Override
