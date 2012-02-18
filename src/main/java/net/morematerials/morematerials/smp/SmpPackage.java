@@ -44,6 +44,7 @@ import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipe;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
+import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
 import org.getspout.spoutapi.SpoutManager;
@@ -81,7 +82,7 @@ public class SmpPackage {
 					try {
 						materials.get(materialName).load(this.smpFile.getInputStream(entry));
 					} catch (Exception e) {
-						this.smpManager.getPlugin().log("Error loading YML " + materialName + " from " + this.name + ".", Level.WARNING);
+						MainManager.getUtils().log("Error loading YML " + materialName + " from " + this.name + ".", Level.WARNING);
 					}
 				}
 			}
@@ -110,7 +111,7 @@ public class SmpPackage {
 
 			this.smpFile.close();
 		} catch (Exception e) {
-			this.smpManager.getPlugin().log("Couldn't load " + this.name + ".", Level.WARNING);
+			MainManager.getUtils().log("Couldn't load " + this.name + ".", Level.WARNING);
 		}
 	}
 
@@ -148,10 +149,10 @@ public class SmpPackage {
 					this.customItemsList.put(materialName, customItem);
 				}
 			} catch (Exception e) {
-				this.smpManager.getPlugin().log("Couldn't load material " + materialName + " from " + this.name + ".", Level.WARNING);
+				MainManager.getUtils().log("Couldn't load material " + materialName + " from " + this.name + ".", Level.WARNING);
 			}
 		} catch (Exception e) {
-			this.smpManager.getPlugin().log("Couldn't load texture " + materialName + ".png from " + this.name + ".", Level.WARNING);
+			MainManager.getUtils().log("Couldn't load texture " + materialName + ".png from " + this.name + ".", Level.WARNING);
 		}
 	}
 
@@ -197,7 +198,7 @@ public class SmpPackage {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				this.smpManager.getPlugin().log("Couldn't load crafting recipe for " + materialName + " from " + this.name + ".", Level.WARNING);
+				MainManager.getUtils().log("Couldn't load crafting recipe for " + materialName + " from " + this.name + ".", Level.WARNING);
 			}
 		}
 	}

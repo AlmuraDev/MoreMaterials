@@ -42,7 +42,7 @@ public class AdminExecutor implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-		if (!instance.hasPermission(sender, "morematerials.admin", true)) {
+		if (!MainManager.getUtils().hasPermission(sender, "morematerials.admin", true)) {
 			return false;
 		}
 		// Parameter is "install"
@@ -65,7 +65,7 @@ public class AdminExecutor implements CommandExecutor {
 		if ("list".equals(args[0])) {
 			Set<String> packages = MainManager.getSmpManager().getPackages();
 			for (String smpName : packages) {
-				sender.sendMessage(this.instance.getMessage(smpName));
+				sender.sendMessage(MainManager.getUtils().getMessage(smpName));
 			}
 		}
 

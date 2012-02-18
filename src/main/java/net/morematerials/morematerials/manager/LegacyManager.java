@@ -114,7 +114,7 @@ public class LegacyManager {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				this.plugin.log("Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.", Level.WARNING);
+				MainManager.getUtils().log("Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.", Level.WARNING);
 			}
 		}
 	}

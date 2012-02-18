@@ -53,7 +53,7 @@ public class GiveExecutor implements CommandExecutor {
 
 		// Sender must also submit an object name.
 		if (args.length < 1) {
-			sender.sendMessage(this.instance.getMessage(command.getUsage(), Level.WARNING));
+			sender.sendMessage(MainManager.getUtils().getMessage(command.getUsage(), Level.WARNING));
 			return true;
 		}
 
@@ -67,22 +67,22 @@ public class GiveExecutor implements CommandExecutor {
 		Map<String, Material> material = MainManager.getSmpManager().getMaterial(args[0]);
 		
 		//Permission check
-		if (!instance.hasPermission(sender, "morematerials.give", true)
-			&& !instance.hasPermission(sender, "morematerials.give." + args[0], true)
+		if (!MainManager.getUtils().hasPermission(sender, "morematerials.give", true)
+			&& !MainManager.getUtils().hasPermission(sender, "morematerials.give." + args[0], true)
 		) {
 			return true;
 		}
 		if (material.isEmpty()) {
-			sender.sendMessage(this.instance.getMessage("Material " + args[0] + " not found!", Level.SEVERE));
+			sender.sendMessage(MainManager.getUtils().getMessage("Material " + args[0] + " not found!", Level.SEVERE));
 		} else if (material.size() == 1) {
 			for (String key : material.keySet()) {
 				player.getInventory().addItem(new SpoutItemStack( material.get(key), amount));
-				sender.sendMessage(this.instance.getMessage("You received " + amount + "object(s) of " + args[0] + "."));
+				sender.sendMessage(MainManager.getUtils().getMessage("You received " + amount + "object(s) of " + args[0] + "."));
 			}
 		} else {
-			sender.sendMessage(this.instance.getMessage("Material " + args[0] + " multiple times found, please specify!", Level.WARNING));
+			sender.sendMessage(MainManager.getUtils().getMessage("Material " + args[0] + " multiple times found, please specify!", Level.WARNING));
 			for (String key : material.keySet()) {
-				player.sendMessage(this.instance.getMessage("- " + key));
+				player.sendMessage(MainManager.getUtils().getMessage("- " + key));
 			}
 		}
 

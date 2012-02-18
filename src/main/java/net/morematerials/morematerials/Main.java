@@ -69,7 +69,7 @@ public class Main extends JavaPlugin {
 		try{
 			SpoutFurnaceRecipes.hook(this);
 		} catch(Throwable ex) { // Not exception!
-			this.log("Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!", Level.SEVERE);
+			MainManager.getUtils().log("Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!", Level.SEVERE);
 		}
 		
 		try {
@@ -111,22 +111,6 @@ public class Main extends JavaPlugin {
 		debug = cfg.getBoolean("DebugMode",false);
 	}
 
-	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
-		// Allow console
-		if (!(sender instanceof Player)) {
-			return true;
-			// Or players with this permission
-		} else if (sender.hasPermission("morematerials.*")) {
-			return true;
-		} else if (((Player) sender).hasPermission(perm)) {
-			return true;
-		}
-		if (verbose) {
-			sender.sendMessage(this.getMessage("You do not have permission to do that! You need " + perm + "!", Level.SEVERE));
-		}
-		return false;
-	}
-
 	private void checkIntegrityAndUpdate() throws IOException {
 		//this.webmanager.updateAvailable();
 
@@ -155,38 +139,6 @@ public class Main extends JavaPlugin {
 	public int getPort() {
 		return this.port;
 	}
-	
-	// Generalize all console or chat output!
-	public String getMessage(String logMessage) {
-		return this.getMessage(logMessage, Level.INFO);
-	}
-	
-	public String getMessage(String logMessage, Level level) {
-		if (level == Level.WARNING) {
-			return ChatColor.GREEN + "[" + this.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
-		} else if (level == Level.SEVERE) {
-			return ChatColor.GREEN + "[" + this.getDescription().getName() + "] " + ChatColor.RED + logMessage;
-		}
-		return ChatColor.GREEN + "[" + this.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
-	}
-	
-	public void log(String logMessage) {
-		this.log(logMessage, Level.INFO);
-	}
-	
-	public void log(String logMessage, Level level) {
-		if (level == Level.WARNING) {
-			//TODO add console text color yellow
-			System.out.println("[" + this.getDescription().getName() + "] Warning: " + logMessage);
-		} else if (level == Level.SEVERE) {
-			//TODO add console text color red
-			System.out.println("[" + this.getDescription().getName() + "] ERROR: " + logMessage);
-		} else {
-			//TODO add console text color normal
-			System.out.println("[" + this.getDescription().getName() + "] " + logMessage);
-		}
-	}
-	
 	public boolean useAssetsServer() {
 		return useAssetsServer;
 	}

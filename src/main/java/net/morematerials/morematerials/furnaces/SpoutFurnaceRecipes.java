@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.FurnaceRecipes;
 import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -67,8 +68,8 @@ public class SpoutFurnaceRecipes extends FurnaceRecipes {
 	}
 
 	public static void hook(Main plugin) {
-		plugin.log("Attempting to hook furnace recipes...");
+		MainManager.getUtils().log("Attempting to hook furnace recipes...");
 		FurnaceRecipes.a = new SpoutFurnaceRecipes();
-		plugin.log("Furnace recipes hooked!");
+		MainManager.getUtils().log("Furnace recipes hooked!");
 	}
 }

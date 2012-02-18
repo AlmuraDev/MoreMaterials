@@ -25,6 +25,7 @@
 package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
+import net.morematerials.morematerials.manager.MainManager;
 
 import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
@@ -75,7 +76,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 			try {
 				this.setStepSound(SoundEffect.getSoundEffectFromName(stepSound.toUpperCase()));
 			} catch(Exception exception) {
-				this.smpPackage.getSmpManager().getPlugin().log("Tried to set invalid sound effect!", Level.WARNING);
+				MainManager.getUtils().log("Tried to set invalid sound effect!", Level.WARNING);
 			}
 		}
 		

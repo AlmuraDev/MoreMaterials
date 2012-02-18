@@ -83,7 +83,7 @@ public class SMListener implements Listener {
 			return;
 		}
 		if (!WebManager.newVer.equals(plugin.getDescription().getVersion())) {
-			event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("An Update is available!", Level.WARNING));
+			event.getPlayer().sendMessage(MainManager.getUtils().getMessage("An Update is available!", Level.WARNING));
 		}
 	}
 
@@ -93,7 +93,7 @@ public class SMListener implements Listener {
 			return;
 		}
 		if (Main.isDebugging()) {
-			event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("You just crafted " + event.getResult().getType().name() + "!", Level.WARNING));
+			event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You just crafted " + event.getResult().getType().name() + "!", Level.WARNING));
 		}
 		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getResult());
 		Map<String, Material> materials = MainManager.getSmpManager().getMaterial(spoutItemStack.getMaterial().getName());
@@ -101,11 +101,11 @@ public class SMListener implements Listener {
 			Material material = materials.get(materialName);
 			if (material == spoutItemStack.getMaterial()) {
 				if (!(event.getPlayer().hasPermission("morematerials.craft")) || !event.getPlayer().hasPermission("morematerials.craft." + materialName)) {
-					event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("You do not have permission to do that!", Level.SEVERE));
+					event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
 				} else if (Main.isDebugging()) {
-					event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("You are allowed to craft that!", Level.WARNING));
+					event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You are allowed to craft that!", Level.WARNING));
 				}
 				if (material instanceof SMCustomItem && ((SMCustomItem) material).getKeepEnchanting()) {
 					ItemStack result = event.getResult();

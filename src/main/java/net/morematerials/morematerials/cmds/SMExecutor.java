@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.manager.MainManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -53,7 +54,7 @@ public class SMExecutor implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
-			sender.sendMessage(this.plugin.getMessage(
+			sender.sendMessage(MainManager.getUtils().getMessage(
 				"This server is running " + this.plugin.getDescription().getName() + " " +
 				"v" + plugin.getDescription().getVersion() + "! " +
 				"Credits to " + authors + "!")
@@ -62,12 +63,12 @@ public class SMExecutor implements CommandExecutor {
 		}
 		String first = args[0];
 		if (first.equalsIgnoreCase("?") || first.equalsIgnoreCase("help")) {
-			sender.sendMessage(this.plugin.getMessage("Help page", Level.SEVERE));
-			sender.sendMessage(this.plugin.getMessage("---------------------------------"));
+			sender.sendMessage(MainManager.getUtils().getMessage("Help page", Level.SEVERE));
+			sender.sendMessage(MainManager.getUtils().getMessage("---------------------------------"));
 			//TODO cant we read them from the plugin.yml?
-			sender.sendMessage(this.plugin.getMessage("/sm -> " + ChatColor.GOLD + "Basic informations, and help!", Level.WARNING));
-			sender.sendMessage(this.plugin.getMessage("/smgive -> " + ChatColor.GOLD + "Commands to give any custom material!", Level.WARNING));
-			sender.sendMessage(this.plugin.getMessage("/smadmin -> " + ChatColor.GOLD + "Administration commands!", Level.WARNING));
+			sender.sendMessage(MainManager.getUtils().getMessage("/sm -> " + ChatColor.GOLD + "Basic informations, and help!", Level.WARNING));
+			sender.sendMessage(MainManager.getUtils().getMessage("/smgive -> " + ChatColor.GOLD + "Commands to give any custom material!", Level.WARNING));
+			sender.sendMessage(MainManager.getUtils().getMessage("/smadmin -> " + ChatColor.GOLD + "Administration commands!", Level.WARNING));
 		}
 		if (first.equalsIgnoreCase("fixme")) {
 			if (!(sender instanceof Player)) {
@@ -75,8 +76,8 @@ public class SMExecutor implements CommandExecutor {
 			}
 			Player player = (Player) sender;
 			SpoutItemStack itemStack = new SpoutItemStack(player.getItemInHand());
-			player.sendMessage(this.plugin.getMessage("The item in your hand is custom: " + itemStack.isCustomItem()));
-			player.sendMessage(this.plugin.getMessage("It's called " + itemStack.getMaterial().getName() + "!"));
+			player.sendMessage(MainManager.getUtils().getMessage("The item in your hand is custom: " + itemStack.isCustomItem()));
+			player.sendMessage(MainManager.getUtils().getMessage("It's called " + itemStack.getMaterial().getName() + "!"));
 		}
 		return true;
 	}

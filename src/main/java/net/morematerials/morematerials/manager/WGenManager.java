@@ -55,7 +55,7 @@ public class WGenManager extends BlockPopulator {
 			try {
 				active.createNewFile();
 			} catch (Exception e) {
-				this.plugin.log("Couldn't read wgen.yml.");
+				MainManager.getUtils().log("Couldn't read wgen.yml.");
 			}
 		}
 		// Loading the wgen.yml

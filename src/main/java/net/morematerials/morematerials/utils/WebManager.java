@@ -24,15 +24,16 @@
 
 package net.morematerials.morematerials.utils;
 
+import com.sun.net.httpserver.HttpServer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.logging.Level;
+import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.manager.MainManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.sun.net.httpserver.HttpServer;
-import net.morematerials.morematerials.Main;
 
 public class WebManager {
 	private Main instance;
@@ -56,13 +57,13 @@ public class WebManager {
 			String inputLine = in.readLine();
 			in.close();
 		    if (inputLine.equals("Working!")) {
-		    	this.instance.log("Assets-Host listening on " + this.instance.getAssetsUrl());
+		    	MainManager.getUtils().log("Assets-Host listening on " + this.instance.getAssetsUrl());
 		    } else {
-		    	this.instance.log("Assets-Host not listening on " + this.instance.getAssetsUrl(), Level.SEVERE);
+		    	MainManager.getUtils().log("Assets-Host not listening on " + this.instance.getAssetsUrl(), Level.SEVERE);
 		    }
 		} catch (Exception exception) {
 	    	System.out.println(exception);
-	    	this.instance.log("DEBUG" + this.instance.getAssetsUrl());
+	    	MainManager.getUtils().log("DEBUG" + this.instance.getAssetsUrl());
 		}
 	}
 
@@ -75,7 +76,7 @@ public class WebManager {
 			// Last entry is always newest version!
 			newest = versions.getString(versions.length()-1);
 		} catch (Exception exception) {
-	    	this.instance.log(exception.getMessage(), Level.SEVERE);
+	    	MainManager.getUtils().log(exception.getMessage(), Level.SEVERE);
 		}
 		if (!version.equals(newest)) {
 			newVer = newest;

@@ -52,7 +52,7 @@ public class SmpManager {
 		String[] files = materials.list();
 		for (String file : files) {
 			if (file.endsWith(".smp")) {
-				System.out.println(plugin.getMessage("Loading " + file));
+				System.out.println(MainManager.getUtils().getMessage("Loading " + file));
 				try {
 					ZipFile smpFile = getSmpHandle(file);
 				
@@ -100,7 +100,7 @@ public class SmpManager {
 				this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpFileName
 			);
 		} catch(IOException Exception) {
-			this.plugin.log("Couldn't load " + smpFileName + ".", Level.SEVERE);
+			MainManager.getUtils().log("Couldn't load " + smpFileName + ".", Level.SEVERE);
 			return null;
 		}
 	}
