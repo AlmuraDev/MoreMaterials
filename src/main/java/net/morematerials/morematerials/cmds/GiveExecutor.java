@@ -27,6 +27,7 @@ package net.morematerials.morematerials.cmds;
 import java.util.Map;
 import java.util.logging.Level;
 import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -63,7 +64,7 @@ public class GiveExecutor implements CommandExecutor {
 		}
 		
 		SpoutPlayer player = (SpoutPlayer) sender;
-		Map<String, Material> material = instance.getSmpManager().getMaterial(args[0]);
+		Map<String, Material> material = MainManager.getSmpManager().getMaterial(args[0]);
 		
 		//Permission check
 		if (!instance.hasPermission(sender, "morematerials.give", true)

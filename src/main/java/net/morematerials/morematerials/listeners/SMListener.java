@@ -26,9 +26,8 @@ package net.morematerials.morematerials.listeners;
 
 import java.util.Map;
 import java.util.logging.Level;
-
 import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.SmpManager;
+import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.materials.MaterialAction;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
@@ -46,6 +45,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.event.inventory.InventoryCraftEvent;
@@ -55,11 +55,9 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SMListener implements Listener {
 
-	private SmpManager smpManager;
-	private Main plugin;
+	private JavaPlugin plugin;
 
-	public SMListener(Main plugin) {
-		this.smpManager = plugin.getSmpManager();
+	public SMListener(JavaPlugin plugin) {
 		this.plugin = plugin;
 	}
 
@@ -74,7 +72,7 @@ public class SMListener implements Listener {
 		);
 
 		if (block.isCustomBlock()) {
-			SMCustomBlock customBlock = (SMCustomBlock) this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
+			SMCustomBlock customBlock = (SMCustomBlock) MainManager.getSmpManager().getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
 			//TODO block toggle
 		}
 	}
@@ -85,7 +83,7 @@ public class SMListener implements Listener {
 			return;
 		}
 		if (!WebManager.newVer.equals(plugin.getDescription().getVersion())) {
-			event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("An Update is available!", Level.WARNING));
+			event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("An Update is available!", Level.WARNING));
 		}
 	}
 
@@ -95,19 +93,19 @@ public class SMListener implements Listener {
 			return;
 		}
 		if (Main.isDebugging()) {
-			event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("You just crafted " + event.getResult().getType().name() + "!", Level.WARNING));
+			event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("You just crafted " + event.getResult().getType().name() + "!", Level.WARNING));
 		}
 		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getResult());
-		Map<String, Material> materials = this.smpManager.getMaterial(spoutItemStack.getMaterial().getName());
+		Map<String, Material> materials = MainManager.getSmpManager().getMaterial(spoutItemStack.getMaterial().getName());
 		for (String materialName : materials.keySet()) {
 			Material material = materials.get(materialName);
 			if (material == spoutItemStack.getMaterial()) {
 				if (!(event.getPlayer().hasPermission("morematerials.craft")) || !event.getPlayer().hasPermission("morematerials.craft." + materialName)) {
-					event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("You do not have permission to do that!", Level.SEVERE));
+					event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
 				} else if (Main.isDebugging()) {
-					event.getPlayer().sendMessage(this.smpManager.getPlugin().getMessage("You are allowed to craft that!", Level.WARNING));
+					event.getPlayer().sendMessage(MainManager.getSmpManager().getPlugin().getMessage("You are allowed to craft that!", Level.WARNING));
 				}
 				if (material instanceof SMCustomItem && ((SMCustomItem) material).getKeepEnchanting()) {
 					ItemStack result = event.getResult();
@@ -143,7 +141,7 @@ public class SMListener implements Listener {
 
 			// This only applies for custom blocks
 			if (block.isCustomBlock()) {
-				Object item = this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock(), 1));
+				Object item = MainManager.getSmpManager().getMaterial(new SpoutItemStack(block.getCustomBlock(), 1));
 				if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getFallMultiplier() != 1) {
 					event.setDamage((int) (event.getDamage() * ((SMCustomBlock) item).getFallMultiplier()));
 				}
@@ -175,7 +173,7 @@ public class SMListener implements Listener {
 			return;
 		}
 
-		Object item = this.smpManager.getMaterial(itemStack);
+		Object item = MainManager.getSmpManager().getMaterial(itemStack);
 
 		// Do damage if valid.
 		if (item != null && item instanceof SMCustomItem && ((SMCustomItem) item).getDamage() != null) {
@@ -202,7 +200,7 @@ public class SMListener implements Listener {
 		// This only applies for custom blocks
 		Object item = null;
 		if (block.isCustomBlock()) {
-			item = this.smpManager.getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
+			item = MainManager.getSmpManager().getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
 		}
 
 		// Setting the player walkspeed.
@@ -246,7 +244,7 @@ public class SMListener implements Listener {
 		}
 		
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
-		Object object = this.smpManager.getMaterial(new SpoutItemStack(player.getItemInHand()));
+		Object object = MainManager.getSmpManager().getMaterial(new SpoutItemStack(player.getItemInHand()));
 
 		SMCustomItem item = null;
 
@@ -264,7 +262,7 @@ public class SMListener implements Listener {
 			}
 			if (action == Action.LEFT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
-					Object blockMaterial = this.smpManager.getMaterial(
+					Object blockMaterial = MainManager.getSmpManager().getMaterial(
 						new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1)
 					);
 					if (blockMaterial instanceof SMCustomBlock) {
@@ -279,7 +277,7 @@ public class SMListener implements Listener {
 			}
 			if (action == Action.RIGHT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
-					Object blockMaterial = this.smpManager.getMaterial(
+					Object blockMaterial = MainManager.getSmpManager().getMaterial(
 									new SpoutItemStack(((SpoutBlock) event.getClickedBlock()).getCustomBlock().getBlockItem(), 1));
 					if (blockMaterial instanceof SMCustomBlock) {
 						block = (SMCustomBlock) blockMaterial;
@@ -316,7 +314,7 @@ public class SMListener implements Listener {
 
 		// Adding bypass permission
 		if (useAction.getPermissionsBypass() != null) {
-			player.addAttachment(smpManager.getPlugin(), useAction.getPermissionsBypass(), true);
+			player.addAttachment(plugin, useAction.getPermissionsBypass(), true);
 		}
 
 		// Does it heal or damage the player?
@@ -379,7 +377,7 @@ public class SMListener implements Listener {
 
 		// Playing sounds for items.
 		if (useAction.getSound() != null) {
-			SpoutManager.getSoundManager().playCustomSoundEffect(this.smpManager.getPlugin(), player, useAction.getSound(), false);
+			SpoutManager.getSoundManager().playCustomSoundEffect(MainManager.getSmpManager().getPlugin(), player, useAction.getSound(), false);
 		}
 
 		// Let the player use a specific chat command.
@@ -389,7 +387,7 @@ public class SMListener implements Listener {
 
 		// Removing bypass permission
 		if (useAction.getPermissionsBypass() != null) {
-			player.addAttachment(smpManager.getPlugin(), useAction.getPermissionsBypass(), false);
+			player.addAttachment(plugin, useAction.getPermissionsBypass(), false);
 		}
 	}
 }

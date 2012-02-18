@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials;
+package net.morematerials.morematerials.manager;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -84,7 +85,7 @@ public class WGenManager extends BlockPopulator {
 			return;
 		}
 		for (ConfigurationSection entry : this.populators.get(world.getName())) {
-			Object material = this.plugin.getSmpManager().getMaterial(entry.getName());
+			Object material = MainManager.getSmpManager().getMaterial(entry.getName());
 			
 			// If given material was not found
 			if (!(material instanceof SMCustomBlock)) {

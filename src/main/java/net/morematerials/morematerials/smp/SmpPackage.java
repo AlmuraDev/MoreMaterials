@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials;
+package net.morematerials.morematerials.smp;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

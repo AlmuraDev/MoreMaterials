@@ -30,10 +30,12 @@ import java.util.logging.Level;
 import net.morematerials.morematerials.cmds.AdminExecutor;
 import net.morematerials.morematerials.cmds.GiveExecutor;
 import net.morematerials.morematerials.cmds.SMExecutor;
-import net.morematerials.morematerials.listeners.SMListener;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
+import net.morematerials.morematerials.listeners.SMListener;
+import net.morematerials.morematerials.manager.LegacyManager;
+import net.morematerials.morematerials.manager.MainManager;
+import net.morematerials.morematerials.smp.SmpManager;
 import net.morematerials.morematerials.stats.StatHooker;
-import net.morematerials.morematerials.utils.WebManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -46,7 +48,7 @@ public class Main extends JavaPlugin {
 	// Used for handling smp files.
 	private SmpManager smpManager;
 	// Used for website related stuff.
-	private WebManager webmanager;
+	//private WebManager webmanager;
 	// Used for legacy material related stuff
 	private LegacyManager legacyManager;
 	private int port;
@@ -74,21 +76,15 @@ public class Main extends JavaPlugin {
 			this.readConfig();
 		} catch (Exception e) {
 		}
-
-		this.webmanager = new WebManager(this);
+		
 
 		try {
 			// Let the plugin check for updates and initialize all files and folders.
 			checkIntegrityAndUpdate();
 		} catch (IOException exception) {
 		}
-
-
-
-		// Initialize all managers we need.
-		this.smpManager = new SmpManager(this);
-		this.legacyManager = new LegacyManager(this);
-		new WGenManager(this);
+		
+		new MainManager(this);
 
 		// Registered events for all Materials in this manager.
 		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
@@ -97,8 +93,6 @@ public class Main extends JavaPlugin {
 		getCommand("mm").setExecutor(new SMExecutor(this));
 		getCommand("mmgive").setExecutor(new GiveExecutor(this));
 		getCommand("mmadmin").setExecutor(new AdminExecutor(this));
-		//TODO remove this when website is done.
-		new StatHooker(this);
 	}
 
 	private void readConfig() throws Exception {
@@ -154,19 +148,6 @@ public class Main extends JavaPlugin {
 			file.createNewFile();
 		}
 	}
-
-	public SmpManager getSmpManager() {
-		return this.smpManager;
-	}
-
-	public LegacyManager getLegacyManager() {
-		return this.legacyManager;
-	}
-
-	public WebManager getWebManager() {
-		return this.webmanager;
-	}
-
 	public String getAssetsUrl() {
 		return "http://" + this.hostname + ":" + this.getPort() + "/";
 	}

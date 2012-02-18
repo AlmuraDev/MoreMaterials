@@ -26,6 +26,7 @@ package net.morematerials.morematerials.cmds;
 
 import java.util.Set;
 import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,22 +48,22 @@ public class AdminExecutor implements CommandExecutor {
 		// Parameter is "install"
 		if (args.length > 1 && "install".equals(args[0])) {
 			if (args.length > 2) {
-				this.instance.getSmpManager().install(args[1], args[2]);
+				MainManager.getSmpManager().install(args[1], args[2]);
 			} else {
-				this.instance.getSmpManager().install(args[1], "-1");
+				MainManager.getSmpManager().install(args[1], "-1");
 			}
 		}
 
 		// Parameter is "uninstall"
 		if (args.length >= 2&& "uninstall".equals(args[0])) {
-			this.instance.getSmpManager().uninstall(args[1]);
+			MainManager.getSmpManager().uninstall(args[1]);
 		}
 		if (args.length == 0) {
 			return false;
 		}
 		// Parameter is "list"
 		if ("list".equals(args[0])) {
-			Set<String> packages = this.instance.getSmpManager().getPackages();
+			Set<String> packages = MainManager.getSmpManager().getPackages();
 			for (String smpName : packages) {
 				sender.sendMessage(this.instance.getMessage(smpName));
 			}

@@ -24,7 +24,7 @@
 
 package net.morematerials.morematerials.materials;
 
-import net.morematerials.morematerials.SmpPackage;
+import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 

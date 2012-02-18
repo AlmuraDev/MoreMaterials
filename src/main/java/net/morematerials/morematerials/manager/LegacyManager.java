@@ -22,13 +22,15 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials;
+
+package net.morematerials.morematerials.manager;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipe;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import org.bukkit.configuration.ConfigurationSection;
@@ -43,12 +45,10 @@ import org.getspout.spoutapi.material.Material;
 public class LegacyManager {
 	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
 	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
-	private SmpManager smpManager;
 	private Main plugin;
 
 	public LegacyManager(Main plugin) {
 		this.plugin = plugin;
-		this.smpManager = plugin.getSmpManager();
 		this.load();
 	}
 
@@ -96,7 +96,7 @@ public class LegacyManager {
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
 				} else {
-					Map<String, Material> materialList = this.smpManager.getMaterial(materialName);
+					Map<String, Material> materialList = MainManager.getSmpManager().getMaterial(materialName);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 				SpoutFurnaceRecipe fRecipe = new SpoutFurnaceRecipe(new SpoutItemStack(ingredient,1), new SpoutItemStack(material,amount)
@@ -144,7 +144,7 @@ public class LegacyManager {
 				if (ingredientitem.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientitem));
 				} else {
-					Map<String, Material> materialList = this.smpManager.getMaterial(ingredientitem);
+					Map<String, Material> materialList = MainManager.getSmpManager().getMaterial(ingredientitem);
 					ingredient =  materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 

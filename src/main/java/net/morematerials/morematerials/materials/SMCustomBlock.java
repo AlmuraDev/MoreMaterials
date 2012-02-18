@@ -26,7 +26,7 @@ package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
 
-import net.morematerials.morematerials.SmpPackage;
+import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
 import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;

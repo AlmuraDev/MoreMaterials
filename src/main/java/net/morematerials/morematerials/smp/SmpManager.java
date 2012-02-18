@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials;
+package net.morematerials.morematerials.smp;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.ZipFile;
+import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.manager.MainManager;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
 
@@ -105,10 +107,10 @@ public class SmpManager {
 
 	public void install(String smpName, String version) {
 		if (!this.smpPackages.containsKey(smpName)) {
-			this.plugin.getWebManager().downloadSmp(smpName, version);
+			MainManager.getWebManager().downloadSmp(smpName, version);
 			ZipFile smpFile = getSmpHandle(smpName + ".smp");
 			this.smpPackages.put(smpName, new SmpPackage(this, smpFile, smpName));
-			this.plugin.getLegacyManager().reload();
+			MainManager.getLegacyManager().reload();
 		}
 	}
 
@@ -118,7 +120,7 @@ public class SmpManager {
 			this.smpPackages.remove(smpName);
 			File delete = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpName + ".smp");
 			delete.delete();
-			this.plugin.getLegacyManager().reload();
+			MainManager.getLegacyManager().reload();
 		}
 	}
 	
