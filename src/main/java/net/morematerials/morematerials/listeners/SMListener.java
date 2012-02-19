@@ -115,11 +115,7 @@ public class SMListener implements Listener {
 			SpoutPlayer player = (SpoutPlayer) event.getEntity();
 
 			// Getting the block below the player
-			SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-				player.getLocation().getBlockX(),
-				player.getLocation().getBlockY() - 1,
-				player.getLocation().getBlockZ()
-			);
+			SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(player.getLocation().add(0, -1, 0));
 
 			// This only applies for custom blocks
 			if (block.isCustomBlock()) {
@@ -173,11 +169,7 @@ public class SMListener implements Listener {
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
 		// Getting the block below the player
-		SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(
-			player.getLocation().getBlockX(),
-			player.getLocation().getBlockY() - 1,
-			player.getLocation().getBlockZ()
-		);
+		SpoutBlock block = (SpoutBlock) player.getWorld().getBlockAt(player.getLocation().add(0, -1, 0));
 
 		// This only applies for custom blocks
 		Object item = null;
