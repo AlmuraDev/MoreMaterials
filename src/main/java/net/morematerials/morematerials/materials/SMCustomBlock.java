@@ -42,7 +42,6 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
-	private String redstoneTransform = null;
 	
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
@@ -58,7 +57,6 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		Float ljumpMultiplier = (float) config.getDouble("JumpHeight", 1);
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
 		String stepSound = config.getString("StepSound", null);
-		String lredstoneTransform = config.getString("RedstoneTransform", null);
 
 		if (hardness != 0) {
 			this.setHardness((float) hardness);
@@ -80,10 +78,6 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 			}
 		}
 		
-		if (lredstoneTransform != null) {
-			this.redstoneTransform = lredstoneTransform;
-		}
-
 		if (config.isConfigurationSection("Lclick")) {
 			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
 		}
@@ -123,9 +117,5 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	
 	public MaterialAction getActionWalk() {
 		return this.actionWalk;
-	}
-	
-	public String getRedstoneTransform() {
-		return this.redstoneTransform;
 	}
 }
