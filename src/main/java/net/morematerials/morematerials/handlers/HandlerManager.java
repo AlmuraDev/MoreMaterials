@@ -29,13 +29,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 
 public class HandlerManager {
-	private Map<String,Class<?>> handlers = new HashMap<String,Class<?>>();
+	private Map<String, Class<?>> handlers = new HashMap<String, Class<?>>();
+
 	public HandlerManager(Main instance) {
 		File folder = new File(instance.getDataFolder() + File.separator + "handlers");
 		if (!folder.exists()) {
@@ -43,15 +42,17 @@ public class HandlerManager {
 		}
 		try {
 			load(instance.getDataFolder() + File.separator + "handlers");
-		} catch (Exception ex) {
-			Logger.getLogger(HandlerManager.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (Exception exception) {
 		}
 	}
+
 	public void load(String directory) throws Exception {
 		File dir = new File(directory);
 
 		// Load the vote listener instances.
-		ClassLoader loader = new URLClassLoader(new URL[] { dir.toURI().toURL() }, GenericHandler.class.getClassLoader());
+		ClassLoader loader = new URLClassLoader(
+			new URL[] { dir.toURI().toURL() }, GenericHandler.class.getClassLoader()
+		);
 		for (File file : dir.listFiles()) {
 			String name = file.getName().substring(0, file.getName().lastIndexOf("."));
 			Class<?> clazz = loader.loadClass(name);
@@ -60,14 +61,15 @@ public class HandlerManager {
 				MainManager.getUtils().log("Not a handler: " + clazz.getSimpleName());
 				continue;
 			}
-			handlers.put(name,  clazz);
+			this.handlers.put(name, clazz);
 			MainManager.getUtils().log("Loaded handler: " + clazz.getSimpleName());
 		}
 	}
 
 	public Class<?> getHandler(String handler) {
-		if(handlers.containsKey(handler)) return handlers.get(handler);
+		if (handlers.containsKey(handler)) {
+			return handlers.get(handler);
+		}
 		return null;
 	}
-
 }

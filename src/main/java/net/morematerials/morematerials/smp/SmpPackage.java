@@ -32,17 +32,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
+import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipe;
@@ -60,7 +58,6 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 
 public class SmpPackage {
-
 	private SmpManager smpManager = null;
 	public String name = "";
 	private ZipFile smpFile = null;
@@ -85,7 +82,9 @@ public class SmpPackage {
 					try {
 						materials.get(materialName).load(this.smpFile.getInputStream(entry));
 					} catch (Exception e) {
-						MainManager.getUtils().log("Error loading YML " + materialName + " from " + this.name + ".", Level.WARNING);
+						MainManager.getUtils().log(
+							"Error loading YML " + materialName + " from " + this.name + ".", Level.WARNING
+						);
 					}
 				}
 			}
@@ -98,12 +97,16 @@ public class SmpPackage {
 			// Initialize all crafting recipes
 			for (String materialName : this.customBlocksList.keySet()) {
 				if (materials.get(materialName).contains("Recipes")) {
-					this.loadCraftingRecipe(materialName, this.customBlocksList.get(materialName), materials.get(materialName));
+					this.loadCraftingRecipe(
+						materialName, this.customBlocksList.get(materialName), materials.get(materialName)
+					);
 				}
 			}
 			for (String materialName : this.customItemsList.keySet()) {
 				if (materials.get(materialName).contains("Recipes")) {
-					this.loadCraftingRecipe(materialName, this.customItemsList.get(materialName), materials.get(materialName));
+					this.loadCraftingRecipe(
+						materialName, this.customItemsList.get(materialName), materials.get(materialName)
+					);
 				}
 			}
 
@@ -118,13 +121,6 @@ public class SmpPackage {
 		}
 	}
 
-	public void unload() {
-		this.customBlocksList.clear();
-		this.customItemsList.clear();
-		this.craftingRecipeList.clear();
-		this.furnaceRecipeList.clear();
-	}
-
 	private void loadMaterial(String materialName, YamlConfiguration config, ZipFile smpFile) {
 		try {
 			String textureName = this.cacheFile(materialName + ".png");
@@ -133,6 +129,7 @@ public class SmpPackage {
 					// Initialize a block.
 					GenericCuboidBlockDesign design = this.getCuboidDesign(textureName);
 					float brightness = (float) config.getDouble("Brightness", 0.2);
+					//TODO check this values, remove wrong ones.
 					design.setBrightness(brightness);
 					design.setMinBrightness(brightness);
 					design.setMaxBrightness(brightness);
@@ -152,10 +149,14 @@ public class SmpPackage {
 					this.customItemsList.put(materialName, customItem);
 				}
 			} catch (Exception e) {
-				MainManager.getUtils().log("Couldn't load material " + materialName + " from " + this.name + ".", Level.WARNING);
+				MainManager.getUtils().log(
+					"Couldn't load material " + materialName + " from " + this.name + ".", Level.WARNING
+				);
 			}
 		} catch (Exception e) {
-			MainManager.getUtils().log("Couldn't load texture " + materialName + ".png from " + this.name + ".", Level.WARNING);
+			MainManager.getUtils().log(
+				"Couldn't load texture " + materialName + ".png from " + this.name + ".", Level.WARNING
+			);
 		}
 	}
 
@@ -167,7 +168,7 @@ public class SmpPackage {
 		}
 		// This allows us to have multiple recipes.
 		for (Object orecipe : recipes) {
-			//TODO unsafe cast warning remove
+			// TODO unsafe cast warning remove
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			String type = (String) recipe.get("type");
 			Integer amount = (Integer) recipe.get("amount");
@@ -184,16 +185,13 @@ public class SmpPackage {
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 				SpoutFurnaceRecipe fRecipe;
-				fRecipe = new SpoutFurnaceRecipe(
-					new SpoutItemStack(ingredient, 1),
-					new SpoutItemStack(material, 1)
-				);
+				fRecipe = new SpoutFurnaceRecipe(new SpoutItemStack(ingredient, 1), new SpoutItemStack(material, 1));
 				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
 				this.furnaceRecipeList.add(fRecipe);
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
 					new SpoutItemStack(material, amount)
-				).shape("abc", "def", "ghi");
+				).shape("abc","def", "ghi");
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else if (type.equalsIgnoreCase("shapeless")) {
@@ -201,25 +199,35 @@ public class SmpPackage {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				MainManager.getUtils().log("Couldn't load crafting recipe for " + materialName + " from " + this.name + ".", Level.WARNING);
+				MainManager.getUtils().log(
+					"Couldn't load crafting recipe for " + materialName + " from " + this.name + ".", Level.WARNING
+				);
 			}
 		}
 	}
 
 	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
-		//TODO get sizes for url version
 		GenericCuboidBlockDesign design;
 		File textureFile = null;
-		if (this.getSmpManager().getPlugin().useAssetsServer()) {
-			textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName.substring(textureName.lastIndexOf("/")));
+		if (Main.getConf().getBoolean("Use-WebServer")) {
+			textureFile = new File(
+				this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
+				textureName.substring(textureName.lastIndexOf("/"))
+			);
 		} else {
-			textureFile = new File(this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache", textureName);
+			textureFile = new File(
+				this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
+				textureName
+			);
 		}
 		BufferedImage bufferedImage = ImageIO.read(textureFile);
 
 		// for different textures on each block side
 		if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
-			Texture texture = new Texture(this.smpManager.getPlugin(), textureName, bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth());
+			Texture texture = new Texture(
+				this.smpManager.getPlugin(), textureName,
+				bufferedImage.getWidth() * 8, bufferedImage.getWidth(), bufferedImage.getWidth()
+			);
 			int[] idMap = new int[6];
 			for (int i = 0; i < 6; i++) {
 				idMap[i] = i;
@@ -229,7 +237,9 @@ public class SmpPackage {
 			);
 			// default block, with same texture on each side
 		} else {
-			design = new GenericCuboidBlockDesign(this.smpManager.getPlugin(), textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1);
+			design = new GenericCuboidBlockDesign(
+				this.smpManager.getPlugin(), textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1
+			);
 		}
 		return design;
 	}
@@ -250,7 +260,8 @@ public class SmpPackage {
 					continue;
 				}
 
-				// this character is required for matching the current material into the recipe
+				// this character is required for matching the current material
+				// into the recipe
 				char a = (char) ('a' + currentColumn + currentLine * 3);
 
 				// getting the correct material
@@ -263,7 +274,7 @@ public class SmpPackage {
 					Map<String, Material> materialList = this.smpManager.getMaterial(ingredientitem);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
-				
+
 				if (ingredient == null) {
 					ingredient = MaterialData.getMaterial(ingredientitem);
 				}
@@ -316,7 +327,7 @@ public class SmpPackage {
 		tempDir.mkdir();
 		File cacheFile = new File(tempDir, result + fileName.substring(fileName.lastIndexOf(".")));
 		// No need of creating the file again, its already present!
-		if (!cacheFile.exists()) {		
+		if (!cacheFile.exists()) {
 			OutputStream out = new FileOutputStream(cacheFile);
 			int read;
 			byte[] bytes = new byte[1024];
@@ -327,8 +338,9 @@ public class SmpPackage {
 			out.close();
 		}
 		inputStream.close();
-		if (this.smpManager.getPlugin().useAssetsServer()) {
-			result = this.smpManager.getPlugin().getAssetsUrl() + result + fileName.substring(fileName.lastIndexOf("."));
+		if (Main.getConf().getBoolean("Use-WebServer")) {
+			result = "http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port") + "/"
+				+ result + fileName.substring(fileName.lastIndexOf("."));
 			return result;
 		} else {
 			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
@@ -383,15 +395,8 @@ public class SmpPackage {
 	public SmpManager getSmpManager() {
 		return this.smpManager;
 	}
-	
-	public int getMaterialNumber() {
-		return customBlocksList.size() + customItemsList.size();
-	}
 
-	public Collection<Material> getAllMaterials() {
-		Set<Material> toRet = new HashSet<Material>();
-		toRet.addAll(customItemsList.values());
-		toRet.addAll(customBlocksList.values());
-		return toRet;
+	public int getMaterialCount() {
+		return customBlocksList.size() + customItemsList.size();
 	}
 }

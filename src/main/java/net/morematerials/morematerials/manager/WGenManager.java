@@ -48,9 +48,9 @@ public class WGenManager extends BlockPopulator {
 
 	public WGenManager(Main plugin) {
 		this.plugin = plugin;
-		
+
 		// Create new materials file, if none found.
-		File active = new File(plugin.getDataFolder().getPath() + File.separator + "wgen.yml");
+		File active = new File(plugin.getDataFolder().getPath(), "wgen.yml");
 		if (!active.exists()) {
 			try {
 				active.createNewFile();
@@ -59,7 +59,7 @@ public class WGenManager extends BlockPopulator {
 			}
 		}
 		// Loading the wgen.yml
-		File wgenYml = new File(plugin.getDataFolder().getPath() + File.separator + "wgen.yml");
+		File wgenYml = new File(plugin.getDataFolder().getPath(), "wgen.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(wgenYml);
 		for (String worldName : config.getKeys(false)) {
 			Set<ConfigurationSection> pops = new HashSet<ConfigurationSection>();
@@ -70,7 +70,7 @@ public class WGenManager extends BlockPopulator {
 			}
 			this.populators.put(worldName, pops);
 		}
-		
+
 		// Registering for worlds.
 		for (World world : this.plugin.getServer().getWorlds()) {
 			if (this.populators.containsKey(world.getName())) {
@@ -81,17 +81,20 @@ public class WGenManager extends BlockPopulator {
 
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
+		// Do not do anything for world which are not defined in wgen.yml.
 		if (!this.populators.containsKey(world.getName())) {
 			return;
 		}
+		
+		// Doing all wgen stuff for this world.
 		for (ConfigurationSection entry : this.populators.get(world.getName())) {
 			Object material = MainManager.getSmpManager().getMaterial(entry.getName());
-			
+
 			// If given material was not found
 			if (!(material instanceof SMCustomBlock)) {
 				continue;
 			}
-			
+
 			// Getting values
 			Integer chance = entry.getInt("Chance", 0);
 			Integer minY = entry.getInt("MinY", 0);
@@ -105,26 +108,25 @@ public class WGenManager extends BlockPopulator {
 			if (rn > chance) {
 				return;
 			}
-			
+
 			// Calculate how many veins will be present in this chunk.
 			int howMany = random.nextInt(veins - 1) + 1;
 			// Calculate how large a vein may become.
 			int howLarge = random.nextInt(veinSize - 1) + 1;
-			
+
 			int x;
 			int y;
 			int z;
 			Block curBlock;
-			
+
 			for (int i = 0; i < howMany; i++) {
-				
 				// Get a random block in this chunk.
 				x = random.nextInt(16);
 				y = random.nextInt(maxY - minY) + minY;
 				z = random.nextInt(16);
-				
+
 				curBlock = chunk.getBlock(x, y, z);
-				
+
 				// Generate this vein.
 				for (int j = 1; j < howLarge; j++) {
 					for (String replacement : replaces.split(" ")) {
@@ -136,8 +138,6 @@ public class WGenManager extends BlockPopulator {
 					curBlock = curBlock.getRelative(BlockFace.values()[rn]);
 				}
 			}
-
 		}
 	}
-
 }

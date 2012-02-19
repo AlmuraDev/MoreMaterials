@@ -21,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.morematerials.morematerials.manager;
 
 import net.morematerials.morematerials.Main;
@@ -30,54 +31,55 @@ import net.morematerials.morematerials.stats.StatHooker;
 import net.morematerials.morematerials.utils.WebManager;
 
 public class MainManager {
-
-	private static SmpManager smp;
-	private static LegacyManager lm;
-	private static WebManager wm;
-	private static WGenManager wgm;
-	private static StatHooker sh;
-	private static Utils u = new Utils();
-	private static HandlerManager hm;
+	private static SmpManager smpManager;
+	private static LegacyManager legacyManager;
+	private static WebManager webManager;
+	private static WGenManager wgenManager;
+	private static StatHooker statsHooker;
+	private static Utils utils;
+	private static HandlerManager handlerManager;
 
 	public MainManager(Main plugin) {
-		if (smp != null) {
+		if (smpManager != null) {
 			throw new IllegalStateException("Cannot re-initialize MainManager!");
 		}
-		hm = new HandlerManager(plugin);
-		wm = new WebManager(plugin);
-		smp = new SmpManager(plugin);
-		lm = new LegacyManager(plugin);
-		wgm = new WGenManager(plugin);
-		
-		//TODO remove this when website is done.
-		sh = new StatHooker(plugin);
+
+		utils = new Utils(plugin);
+		handlerManager = new HandlerManager(plugin);
+		webManager = new WebManager(plugin);
+		smpManager = new SmpManager(plugin);
+		legacyManager = new LegacyManager(plugin);
+		wgenManager = new WGenManager(plugin);
+
+		// TODO remove this when api supports this.
+		statsHooker = new StatHooker(plugin);
 	}
 
 	public static SmpManager getSmpManager() {
-		return smp;
+		return smpManager;
 	}
 
 	public static LegacyManager getLegacyManager() {
-		return lm;
+		return legacyManager;
 	}
 
 	public static WebManager getWebManager() {
-		return wm;
+		return webManager;
 	}
-	
+
 	public static WGenManager getWGenManager() {
-		return wgm;
+		return wgenManager;
 	}
-	
+
 	public static StatHooker getStatHooker() {
-		return sh;
+		return statsHooker;
 	}
-	
+
 	public static Utils getUtils() {
-		return u;
+		return utils;
 	}
 	
 	public static HandlerManager getHandlerManager() {
-		return hm;
+		return handlerManager;
 	}
 }

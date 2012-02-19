@@ -22,7 +22,6 @@
  THE SOFTWARE.
  */
 
-
 package net.morematerials.morematerials.manager;
 
 import java.io.File;
@@ -53,39 +52,31 @@ public class LegacyManager {
 	}
 
 	private void load() {
-		File materials = new File(plugin.getDataFolder().getPath() + File.separator + "legacyrecipes.yml");
+		File materials = new File(plugin.getDataFolder().getPath(), "legacyrecipes.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(materials);
 		for (String itemId : config.getKeys(false)) {
 			if (itemId.matches("^[0-9]+$")) {
 				Material material = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(itemId));
 				if (material != null) {
 					this.loadCraftingRecipe(itemId, material, config.getConfigurationSection(itemId));
+				} else {
+					MainManager.getUtils().log("LegacyManager: material not found: " + itemId, Level.WARNING);
 				}
+			} else {
+				MainManager.getUtils().log("LegacyManager: incorrect value: " + itemId, Level.WARNING);
 			}
 		}
 	}
 
-	public void unload() {
-		this.craftingRecipeList.clear();
-		this.furnaceRecipeList.clear();
-	}
-
-	public void reload() {
-		this.unload();
-		this.load();
-	}
-
-
 	private void loadCraftingRecipe(String materialName, Material material, ConfigurationSection configurationSection) {
-		//TODO unsafe cast warning remove
-		List<Object> recipes = configurationSection.getList("Recipes");
+		List<?> recipes = configurationSection.getList("Recipes");
 		// Make sure we have a valid list.
 		if (recipes == null) {
 			return;
 		}
 		// This allows us to have multiple recipes.
 		for (Object orecipe : recipes) {
-			//TODO unsafe cast warning remove
+			// TODO unsafe cast warning remove
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			String type = (String) recipe.get("type");
 			Integer amount = (Integer) recipe.get("amount");
@@ -99,7 +90,9 @@ public class LegacyManager {
 					Map<String, Material> materialList = MainManager.getSmpManager().getMaterial(materialName);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
-				SpoutFurnaceRecipe fRecipe = new SpoutFurnaceRecipe(new SpoutItemStack(ingredient,1), new SpoutItemStack(material,amount)
+				SpoutFurnaceRecipe fRecipe = new SpoutFurnaceRecipe(
+					new SpoutItemStack(ingredient, 1),
+					new SpoutItemStack(material, amount)
 				);
 				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
 				this.furnaceRecipeList.add(fRecipe);
@@ -110,15 +103,19 @@ public class LegacyManager {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else if (type.equalsIgnoreCase("shapeless")) {
-				SpoutShapelessRecipe sRecipe = new SpoutShapelessRecipe(new SpoutItemStack(material, amount));
+				SpoutShapelessRecipe sRecipe = new SpoutShapelessRecipe(
+					new SpoutItemStack(material, amount)
+				);
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				MainManager.getUtils().log("Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.", Level.WARNING);
+				MainManager.getUtils().log(
+					"Couldn't load crafting recipe for " + materialName + ".png from legacyrecipes.yml.",
+					Level.WARNING
+				);
 			}
 		}
 	}
-	
 
 	private void doRecipe(Recipe recipe, String ingredients) {
 		Integer currentLine = 0;
@@ -145,7 +142,7 @@ public class LegacyManager {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientitem));
 				} else {
 					Map<String, Material> materialList = MainManager.getSmpManager().getMaterial(ingredientitem);
-					ingredient =  materialList.get((String) materialList.keySet().toArray()[0]);
+					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
 
 				// Do not require an "air-block" in empty fields :D

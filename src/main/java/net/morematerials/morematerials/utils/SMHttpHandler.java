@@ -29,9 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import net.morematerials.morematerials.Main;
-
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -48,30 +46,31 @@ class SMHttpHandler implements HttpHandler {
 		// Determine which asset we want
 		String fileName = exchange.getRequestURI().getPath().substring(1);
 		
-		// Used to check for working server.
+		// Add the required response headers
 		Headers headers = exchange.getResponseHeaders();
-		if (fileName.equals("status")) {
+		if (fileName.endsWith(".png")) {
+			headers.add("Content-Type", "image/png");
+		} else if (fileName.endsWith(".ogg")) {
+			headers.add("Content-Type", "application/ogg");
+		} else {
 			headers.add("Content-Type", "text/plain");
+		}
+		
+		// Status checking page.
+		if (fileName.equals("status")) {
 			exchange.sendResponseHeaders(200, 0);
 			OutputStream outputStream = exchange.getResponseBody();
 			outputStream.write("Working!".getBytes());
 			outputStream.close();
 		// Delivering assets
 		} else {
-			// Add the required response headers
-			if (fileName.endsWith(".png")) {
-				headers.add("Content-Type", "image/png");
-			} else if (fileName.endsWith(".ogg")) {
-				headers.add("Content-Type", "application/ogg");
-			}
-	
 			// Read the file
 			File file = new File(this.instance.getDataFolder().getPath() + File.separator + "cache", fileName);
 			byte[] bytearray = new byte[(int) file.length()];
 			FileInputStream inputStream = new FileInputStream(file);
 			BufferedInputStream buffer = new BufferedInputStream(inputStream);
 			buffer.read(bytearray, 0, bytearray.length);
-	
+
 			// Send response.
 			exchange.sendResponseHeaders(200, file.length());
 			OutputStream outputStream = exchange.getResponseBody();

@@ -24,8 +24,6 @@
 
 package net.morematerials.morematerials.materials;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.morematerials.morematerials.handlers.GenericHandler;
 import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
@@ -34,7 +32,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 
 public class SMCustomItem extends GenericCustomItem {
-	
 	private Integer damage = null;
 	private Integer maxDurability = null;
 	private MaterialAction actionL = null;
@@ -42,7 +39,7 @@ public class SMCustomItem extends GenericCustomItem {
 	private boolean stackable = true;
 	private SmpPackage smpPackage = null;
 	private boolean keepEnchanting = false;
-	private GenericHandler ghandler;
+	private GenericHandler handler;
 
 	public SMCustomItem(SmpPackage smpPackage, String name, String texture) {
 		super(smpPackage.getSmpManager().getPlugin(), name, texture);
@@ -76,18 +73,19 @@ public class SMCustomItem extends GenericCustomItem {
 		
 		if(handler != null) {
 			Class<?> clazz=MainManager.getHandlerManager().getHandler(handler);
-			if(clazz==null) {
+			if (clazz == null) {
 				MainManager.getUtils().log("Invalid handler name: "+handler+"!");
 			} else {
 				try {
-					ghandler = (GenericHandler) clazz.newInstance();
-				} catch (Exception ex) {
-					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
+					this.handler = (GenericHandler) clazz.newInstance();
+				} catch (Exception exceptions) {
 				} 
 			}
-			ghandler.createAndInit(GenericHandler.MaterialType.ITEM, smpPackage.getSmpManager().getPlugin());
+			this.handler.createAndInit(GenericHandler.MaterialType.ITEM, smpPackage.getSmpManager().getPlugin());
 		}
-		if(ghandler==null) ghandler = new TheBasicHandler();
+		if (this.handler == null) {
+			this.handler = new TheBasicHandler();
+		}
 		this.stackable = lstackable;
 		this.keepEnchanting = lkeepEnchanting;
 	}
@@ -117,6 +115,6 @@ public class SMCustomItem extends GenericCustomItem {
 	}
 	
 	public GenericHandler getHandler() {
-		return this.ghandler;
+		return this.handler;
 	}
 }

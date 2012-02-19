@@ -21,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
@@ -29,16 +30,12 @@ import net.morematerials.morematerials.handlers.GenericHandler;
 import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
 import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
-import org.getspout.spoutapi.player.SpoutPlayer;
 import org.getspout.spoutapi.sound.SoundEffect;
 
 public class SMCustomBlock extends GenericCuboidCustomBlock {
-
 	private MaterialAction actionL = null;
 	private MaterialAction actionR = null;
 	private MaterialAction actionWalk = null;
@@ -46,8 +43,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
-	private String redstoneTransform = null;
-	private GenericHandler ghandler;
+	private GenericHandler handler;
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
 		super(smpPackage.getSmpManager().getPlugin(), name, opaque, design);
@@ -62,7 +58,6 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		Float ljumpMultiplier = (float) config.getDouble("JumpHeight", 1);
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
 		String stepSound = config.getString("StepSound", null);
-		String lredstoneTransform = config.getString("RedstoneTransform", null);
 		String handler = config.getString("Handler", null);
 
 		if (hardness != 0) {
@@ -85,10 +80,6 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 			}
 		}
 
-		if (lredstoneTransform != null) {
-			this.redstoneTransform = lredstoneTransform;
-		}
-
 		if (config.isConfigurationSection("Lclick")) {
 			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
 		}
@@ -107,14 +98,17 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 				MainManager.getUtils().log("Invalid handler name: " + handler + "!");
 			} else {
 				try {
-					ghandler = (GenericHandler) clazz.newInstance();
+					this.handler = (GenericHandler) clazz.newInstance();
 				} catch (Exception ex) {
 					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
 				}
-				ghandler.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
+				this.handler.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
 			}
 		}
-		if(ghandler==null) ghandler = new TheBasicHandler();
+		if (this.handler == null) {
+			this.handler = new TheBasicHandler();
+		}
+		
 		this.speedMultiplier = lspeedMultiplier;
 		this.jumpMultiplier = ljumpMultiplier;
 		this.fallMultiplier = lfallMultiplier;
@@ -144,16 +138,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		return this.actionWalk;
 	}
 
-	public String getRedstoneTransform() {
-		return this.redstoneTransform;
-	}
-
 	public GenericHandler getHandler() {
-		return ghandler;
-	}
-
-	@Override
-	public void onBlockClicked(World world, int x, int y, int z, SpoutPlayer player) {
-		ghandler.onActivation(new Location(world,x,y,z), player);
+		return this.handler;
 	}
 }

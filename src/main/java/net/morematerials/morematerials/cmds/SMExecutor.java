@@ -24,12 +24,10 @@
 
 package net.morematerials.morematerials.cmds;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
-
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
-
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,39 +36,38 @@ import org.bukkit.entity.Player;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 public class SMExecutor implements CommandExecutor {
-
 	private Main plugin;
-	private String authors;
 
 	public SMExecutor(Main plugin) {
 		this.plugin = plugin;
-		this.authors = "";
-		ArrayList<String> authors = this.plugin.getDescription().getAuthors();
-		for (String author : authors) {
-			this.authors += ", " + author;
-		}
-		this.authors = this.authors.substring(3);
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(MainManager.getUtils().getMessage(
 				"This server is running " + this.plugin.getDescription().getName() + " " +
 				"v" + plugin.getDescription().getVersion() + "! " +
-				"Credits to " + authors + "!")
+				"Credits to " + StringUtils.join(this.plugin.getDescription().getAuthors(), ", ") + "!")
 			);
 			return true;
 		}
-		String first = args[0];
-		if (first.equalsIgnoreCase("?") || first.equalsIgnoreCase("help")) {
+
+		// Help parameter.
+		if (args[0].equalsIgnoreCase("?") || args[0].equalsIgnoreCase("help")) {
 			sender.sendMessage(MainManager.getUtils().getMessage("Help page", Level.SEVERE));
 			sender.sendMessage(MainManager.getUtils().getMessage("---------------------------------"));
+			
 			//TODO cant we read them from the plugin.yml?
+			Object commands = this.plugin.getDescription().getCommands();
+			sender.sendMessage(MainManager.getUtils().getMessage(commands.getClass().getName()));
 			sender.sendMessage(MainManager.getUtils().getMessage("/sm -> " + ChatColor.GOLD + "Basic informations, and help!", Level.WARNING));
 			sender.sendMessage(MainManager.getUtils().getMessage("/smgive -> " + ChatColor.GOLD + "Commands to give any custom material!", Level.WARNING));
 			sender.sendMessage(MainManager.getUtils().getMessage("/smadmin -> " + ChatColor.GOLD + "Administration commands!", Level.WARNING));
 		}
-		if (first.equalsIgnoreCase("fixme")) {
+		
+		// This is some kind of weird command - do we actualy need it?
+		if (args[0].equalsIgnoreCase("fixme")) {
 			if (!(sender instanceof Player)) {
 				return false;
 			}
@@ -79,6 +76,7 @@ public class SMExecutor implements CommandExecutor {
 			player.sendMessage(MainManager.getUtils().getMessage("The item in your hand is custom: " + itemStack.isCustomItem()));
 			player.sendMessage(MainManager.getUtils().getMessage("It's called " + itemStack.getMaterial().getName() + "!"));
 		}
+		
 		return true;
 	}
 }

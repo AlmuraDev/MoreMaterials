@@ -25,59 +25,67 @@
 package net.morematerials.morematerials.manager;
 
 import java.util.logging.Level;
+import net.morematerials.morematerials.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-
-
 public class Utils {
+	private Main plugin;
+
+	protected Utils(Main plugin) {
+		this.plugin = plugin;
+	}
 
 	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
 		// Allow console
 		if (!(sender instanceof Player)) {
 			return true;
-			// Or players with this permission
+		// Or players with this permission
 		} else if (sender.hasPermission("morematerials.*")) {
 			return true;
+		// Or players with this permission
 		} else if (((Player) sender).hasPermission(perm)) {
 			return true;
 		}
+		
+		// Display message in verbose mode.
 		if (verbose) {
 			sender.sendMessage(getMessage("You do not have permission to do that! You need " + perm + "!", Level.SEVERE));
 		}
 		return false;
 	}
-	
-	// Generalize all console or chat output!
+
+	// Generalize all chat output!
 	public String getMessage(String logMessage) {
 		return this.getMessage(logMessage, Level.INFO);
 	}
-	
+
 	public String getMessage(String logMessage, Level level) {
 		if (level == Level.WARNING) {
-			return ChatColor.GREEN + "[" + "MoreMaterials" + "] " + ChatColor.YELLOW + logMessage;
+			return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
 		} else if (level == Level.SEVERE) {
-			return ChatColor.GREEN + "[" + "MoreMaterials" + "] " + ChatColor.RED + logMessage;
+			return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.RED + logMessage;
 		}
-		return ChatColor.GREEN + "[" + "MoreMaterials" + "] " + ChatColor.WHITE + logMessage;
+		return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
 	}
-	
+
+	// Generalize all console output!
 	public void log(String logMessage) {
 		this.log(logMessage, Level.INFO);
 	}
-	
+
 	public void log(String logMessage, Level level) {
 		if (level == Level.WARNING) {
-			//TODO add console text color yellow
-			System.out.println("[" + "MoreMaterials" + "] Warning: " + logMessage);
+			// TODO add console text color yellow
+			System.out.println("[" + this.plugin.getDescription().getName() + "] Warning: " + logMessage);
 		} else if (level == Level.SEVERE) {
-			//TODO add console text color red
-			System.out.println("[" + "MoreMaterials" + "] ERROR: " + logMessage);
+			// TODO add console text color red
+			System.out.println("[" + this.plugin.getDescription().getName() + "] ERROR: " + logMessage);
 		} else {
-			//TODO add console text color normal
-			System.out.println("[" + "MoreMaterials" + "] " + logMessage);
+			// TODO add console text color normal
+			System.out.println("[" + this.plugin.getDescription().getName() + "] " + logMessage);
 		}
 	}
-	
+
 }

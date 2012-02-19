@@ -29,6 +29,7 @@ import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 
 public class StatHooker {
+
 	public StatHooker(final Main plugin) {
 		try {
 			Metrics metrics = new Metrics();
@@ -41,7 +42,7 @@ public class StatHooker {
 
 				@Override
 				public int getValue() {
-					return MainManager.getSmpManager().getMaterialNumber();
+					return MainManager.getSmpManager().getMaterialCount();
 				}
 			});
 			metrics.beginMeasuringPlugin(plugin);

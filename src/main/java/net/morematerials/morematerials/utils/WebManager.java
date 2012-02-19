@@ -37,80 +37,86 @@ import org.json.JSONObject;
 
 public class WebManager {
 	private Main instance;
-	public static String newVer = null;
+	public static String newestVer = null;
+
 	public WebManager(Main plugin) {
 		this.instance = plugin;
-		if (plugin.useAssetsServer()) {
-			this.startAssetsServer(plugin.getPort());
+		if (Main.getConf().getBoolean("Use-WebServer")) {
+			this.startAssetsServer();
 		}
+		checkForUpdate();
 	}
 
-	private void startAssetsServer(Integer port) {
+	private void startAssetsServer() {
 		HttpServer server;
 		try {
-			server = HttpServer.create(new InetSocketAddress(port), 0);
-		    server.createContext("/", new SMHttpHandler(this.instance));
-		    server.setExecutor(null);
-		    server.start();
-		    URL assetsStatus = new URL(this.instance.getAssetsUrl() + "status");
-    		BufferedReader in = new BufferedReader(new InputStreamReader(assetsStatus.openStream()));
+			server = HttpServer.create(new InetSocketAddress(Main.getConf().getInt("Port")), 0);
+			server.createContext("/", new SMHttpHandler(this.instance));
+			server.setExecutor(null);
+			server.start();
+			URL assetsStatus = new URL("http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port") + "/" + "status");
+			BufferedReader in = new BufferedReader(new InputStreamReader(assetsStatus.openStream()));
 			String inputLine = in.readLine();
 			in.close();
-		    if (inputLine.equals("Working!")) {
-		    	MainManager.getUtils().log("Assets-Host listening on " + this.instance.getAssetsUrl());
-		    } else {
-		    	MainManager.getUtils().log("Assets-Host not listening on " + this.instance.getAssetsUrl(), Level.SEVERE);
-		    }
+			if (inputLine.equals("Working!")) {
+				MainManager.getUtils().log(
+					"Assets-Host listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port")
+				);
+			} else {
+				MainManager.getUtils().log(
+					"Assets-Host not listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port"), Level.SEVERE
+					);
+			}
 		} catch (Exception exception) {
-	    	System.out.println(exception);
-	    	MainManager.getUtils().log("DEBUG" + this.instance.getAssetsUrl());
 		}
 	}
 
-	public boolean updateAvailable() {
+	public void checkForUpdate() {
 		String version = this.instance.getDescription().getVersion();
 		String newest = version;
 		try {
 			JSONObject json = this.readJsonFromApi("action=version");
 			JSONArray versions = json.getJSONArray("versions");
 			// Last entry is always newest version!
-			newest = versions.getString(versions.length()-1);
+			newest = versions.getString(versions.length() - 1);
 		} catch (Exception exception) {
-	    	MainManager.getUtils().log(exception.getMessage(), Level.SEVERE);
+			MainManager.getUtils().log(exception.getMessage(), Level.SEVERE);
 		}
 		if (!version.equals(newest)) {
-			newVer = newest;
+			newestVer = newest;
 		}
-		return !newest.equals(version);
 	}
-	
+
 	private JSONObject readJsonFromApi(String params) throws Exception {
 		JSONObject json = new JSONObject();
 		try {
-			URL versionCheck = new URL(this.instance.getApiUrl() + "?" + params);
+			URL versionCheck = new URL(Main.getConf().getString("ApiUrl") + "?" + params);
 			BufferedReader in = new BufferedReader(new InputStreamReader(versionCheck.openStream()));
-		    StringBuilder sb = new StringBuilder();
-		    int cp;
-		    while ((cp = in.read()) != -1) {
-		      sb.append((char) cp);
-		    }
+			StringBuilder sb = new StringBuilder();
+			int cp;
+			while ((cp = in.read()) != -1) {
+				sb.append((char) cp);
+			}
 			in.close();
 			json = new JSONObject(sb.toString());
 		} catch (Exception e) {
 		}
+
 		// We always have "error" which is true | false from our json. If not something went wrong!
 		if (!json.has("error")) {
 			throw new Exception("Cannot access API!");
 		}
+		
 		// If error is specified, data contains always our error message.
 		if (json.getBoolean("error")) {
 			throw new Exception(json.getString("data"));
 		}
+		
 		// Else data contains the response json.
 		return json.getJSONObject("data");
 	}
 
 	public void downloadSmp(String smpName, String version) {
-		//TODO here should a .smp be downloaded (version -1 = newest)
+		// TODO here should a .smp be downloaded (version -1 = newest) (for this plugin version!)
 	}
 }

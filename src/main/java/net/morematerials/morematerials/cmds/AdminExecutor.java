@@ -25,7 +25,6 @@
 package net.morematerials.morematerials.cmds;
 
 import java.util.Set;
-import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,18 +32,12 @@ import org.bukkit.command.CommandSender;
 
 public class AdminExecutor implements CommandExecutor {
 
-	private Main instance;
-
-	public AdminExecutor(Main plugin) {
-		instance = plugin;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-		if (!MainManager.getUtils().hasPermission(sender, "morematerials.admin", true)) {
+		if (!MainManager.getUtils().hasPermission(sender, "morematerials.admin", true) || args.length == 0) {
 			return false;
 		}
+		
 		// Parameter is "install"
 		if (args.length > 1 && "install".equals(args[0])) {
 			if (args.length > 2) {
@@ -55,12 +48,10 @@ public class AdminExecutor implements CommandExecutor {
 		}
 
 		// Parameter is "uninstall"
-		if (args.length >= 2&& "uninstall".equals(args[0])) {
+		if (args.length >= 2 && "uninstall".equals(args[0])) {
 			MainManager.getSmpManager().uninstall(args[1]);
 		}
-		if (args.length == 0) {
-			return false;
-		}
+		
 		// Parameter is "list"
 		if ("list".equals(args[0])) {
 			Set<String> packages = MainManager.getSmpManager().getPackages();
@@ -72,6 +63,7 @@ public class AdminExecutor implements CommandExecutor {
 		// Parameter is "updates"
 		if ("updates".equals(args[0])) {
 			//TODO check all smp versions for newer ones. (found in _version_smp file)
+			//TODO show list with all updateable packages.
 		}
 
 		return true;
