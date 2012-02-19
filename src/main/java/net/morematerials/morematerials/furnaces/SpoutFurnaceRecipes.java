@@ -33,11 +33,11 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class SpoutFurnaceRecipes extends FurnaceRecipes {
-
 	private static Map<String, net.minecraft.server.ItemStack> spoutMap = new HashMap<String, net.minecraft.server.ItemStack>();
 
 	public SpoutFurnaceRecipes() {
-		super();// Important to do, to preserve original furnace recipes!
+		// Preserve original furnace recipes.
+		super();
 	}
 
 	@Override

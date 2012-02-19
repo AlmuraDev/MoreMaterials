@@ -27,11 +27,12 @@ package net.morematerials.morematerials.furnaces;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 public class SpoutFurnaceRecipe {
-	private SpoutItemStack ingredient, result;
+	private SpoutItemStack ingredient;
+	private SpoutItemStack result;
 
-	public SpoutFurnaceRecipe(SpoutItemStack ing, SpoutItemStack res) {
-		ingredient = ing;
-		result = res;
+	public SpoutFurnaceRecipe(SpoutItemStack ingredient, SpoutItemStack result) {
+		this.ingredient = ingredient;
+		this.result = result;
 	}
 
 	public SpoutItemStack getIngredient() {

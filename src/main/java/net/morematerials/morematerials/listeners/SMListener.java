@@ -32,20 +32,17 @@ import net.morematerials.morematerials.materials.MaterialAction;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
 import net.morematerials.morematerials.utils.WebManager;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.event.inventory.InventoryCraftEvent;
@@ -54,35 +51,18 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SMListener implements Listener {
+	private Main plugin;
 
-	private JavaPlugin plugin;
-
-	public SMListener(JavaPlugin plugin) {
+	public SMListener(Main plugin) {
 		this.plugin = plugin;
 	}
 
 	@EventHandler
-	public void BlockRedstone(BlockRedstoneEvent event) {
-		Block redstone = event.getBlock();
-		Boolean on = redstone.getData() == 0;
-
-		// Getting the block below the redstone
-		SpoutBlock block = (SpoutBlock) redstone.getLocation().getWorld().getBlockAt(
-			redstone.getX(), redstone.getY() - 1, redstone.getZ()
-		);
-
-		if (block.isCustomBlock()) {
-			SMCustomBlock customBlock = (SMCustomBlock) MainManager.getSmpManager().getMaterial(new SpoutItemStack(block.getCustomBlock().getBlockItem(), 1));
-			//TODO block toggle
-		}
-	}
-
-	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent event) {
-		if (WebManager.newVer == null) {
+		if (!event.getPlayer().isOp() || WebManager.newestVer == null) {
 			return;
 		}
-		if (!WebManager.newVer.equals(plugin.getDescription().getVersion())) {
+		if (!WebManager.newestVer.equals(plugin.getDescription().getVersion())) {
 			event.getPlayer().sendMessage(MainManager.getUtils().getMessage("An Update is available!", Level.WARNING));
 		}
 	}
@@ -92,21 +72,24 @@ public class SMListener implements Listener {
 		if (event.getResult() == null) {
 			return;
 		}
-		if (Main.isDebugging()) {
+		if (Main.getConf().getBoolean("DebugMode")) {
 			event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You just crafted " + event.getResult().getType().name() + "!", Level.WARNING));
 		}
+		// Getting the object we want to craft.
 		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getResult());
 		Map<String, Material> materials = MainManager.getSmpManager().getMaterial(spoutItemStack.getMaterial().getName());
 		for (String materialName : materials.keySet()) {
 			Material material = materials.get(materialName);
+			// We need to do this, because when requesting by name, multiple items can occur.
 			if (material == spoutItemStack.getMaterial()) {
 				if (!(event.getPlayer().hasPermission("morematerials.craft")) || !event.getPlayer().hasPermission("morematerials.craft." + materialName)) {
 					event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
-				} else if (Main.isDebugging()) {
+				} else if (Main.getConf().getBoolean("DebugMode")) {
 					event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You are allowed to craft that!", Level.WARNING));
 				}
+				// If we want to put all enchantings of ingredient to our result.
 				if (material instanceof SMCustomItem && ((SMCustomItem) material).getKeepEnchanting()) {
 					ItemStack result = event.getResult();
 					for (ItemStack[] ingredients : event.getRecipe()) {
@@ -226,7 +209,9 @@ public class SMListener implements Listener {
 			walkAction = ((SMCustomBlock) item).getActionWalk();
 		}
 		
+		//TODO check if the block is also a different than the last saved one.
 		if (walkAction != null) {
+			//TODO stor here the player block.
 			this.doMaterialAction(walkAction, player, (SMCustomBlock) item);
 	
 			// Materials can be consumed.
@@ -377,7 +362,7 @@ public class SMListener implements Listener {
 
 		// Playing sounds for items.
 		if (useAction.getSound() != null) {
-			SpoutManager.getSoundManager().playCustomSoundEffect(MainManager.getSmpManager().getPlugin(), player, useAction.getSound(), false);
+			SpoutManager.getSoundManager().playCustomSoundEffect(this.plugin, player, useAction.getSound(), false);
 		}
 
 		// Let the player use a specific chat command.

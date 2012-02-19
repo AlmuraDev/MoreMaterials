@@ -32,58 +32,38 @@ import net.morematerials.morematerials.cmds.GiveExecutor;
 import net.morematerials.morematerials.cmds.SMExecutor;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import net.morematerials.morematerials.listeners.SMListener;
-import net.morematerials.morematerials.manager.LegacyManager;
 import net.morematerials.morematerials.manager.MainManager;
-import net.morematerials.morematerials.smp.SmpManager;
-import net.morematerials.morematerials.stats.StatHooker;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
-
-	// Used for handling smp files.
-	private SmpManager smpManager;
-	// Used for website related stuff.
-	//private WebManager webmanager;
-	// Used for legacy material related stuff
-	private LegacyManager legacyManager;
-	private int port;
-	private String hostname;
-	private boolean useAssetsServer;
-	private String apiUrl = "http://www.morematerials.net/api.php";
-	private static boolean debug = false;
-	
-	@Override
-	public void onDisable() {
-		this.smpManager.unload();
-		this.legacyManager.unload();
-	}
+	private static FileConfiguration config;
 
 	@Override
 	public void onEnable() {
-		// Workaround for hooking into FurnaceRecipes, because bukkit doesn't support this.	
-		try{
+		// Workaround for hooking into FurnaceRecipes, because bukkit doesn't support this.
+		try {
 			SpoutFurnaceRecipes.hook(this);
-		} catch(Throwable ex) { // Not exception!
+		} catch (Throwable exception) {
 			MainManager.getUtils().log("Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!", Level.SEVERE);
 		}
-		
+
+		// Regind the config
 		try {
 			this.readConfig();
-		} catch (Exception e) {
+		} catch (Exception exception) {
+			MainManager.getUtils().log("Error reading configuration file!", Level.SEVERE);
 		}
-		
 
+		// Let the plugin check for updates and initialize all files and folders.
 		try {
-			// Let the plugin check for updates and initialize all files and folders.
-			checkIntegrityAndUpdate();
+			checkIntegrity();
 		} catch (IOException exception) {
+			MainManager.getUtils().log("Could not access default files!", Level.SEVERE);
 		}
-		
+
+		// Our super all-you-can-eat manager :D
 		new MainManager(this);
 
 		// Registered events for all Materials in this manager.
@@ -91,35 +71,32 @@ public class Main extends JavaPlugin {
 
 		// Chat command stuff
 		getCommand("mm").setExecutor(new SMExecutor(this));
-		getCommand("mmgive").setExecutor(new GiveExecutor(this));
-		getCommand("mmadmin").setExecutor(new AdminExecutor(this));
+		getCommand("mmgive").setExecutor(new GiveExecutor());
+		getCommand("mmadmin").setExecutor(new AdminExecutor());
 	}
 
 	private void readConfig() throws Exception {
-		FileConfiguration cfg = this.getConfig();
-		cfg.addDefault("Port", 8180);
-		cfg.addDefault("Hostname", Bukkit.getServer().getIp());
-		cfg.addDefault("Use-WebServer", true);
-		cfg.addDefault("DebugMode", false);
-		cfg.options().copyDefaults(true);
+		// First we parse our config file and merge with defaults.
+		config = this.getConfig();
+		config.addDefault("Port", 8180);
+		config.addDefault("Hostname", Bukkit.getServer().getIp());
+		config.addDefault("Use-WebServer", true);
+		config.addDefault("DebugMode", false);
+		config.options().copyDefaults(true);
+		// Then we save our config
 		this.saveConfig();
-
-		//TODO Do we realy need defaults here? Should already be set above!
-		this.port = cfg.getInt("Port", 8180);
-		this.hostname = cfg.getString("Hostname", Bukkit.getServer().getIp());
-		this.useAssetsServer = cfg.getBoolean("Use-WebServer",true);
-		debug = cfg.getBoolean("DebugMode",false);
+		// This option should not be saved into the file
+		config.set("ApiUrl", "http://www.morematerials.net/api.php");
 	}
 
-	private void checkIntegrityAndUpdate() throws IOException {
-		//this.webmanager.updateAvailable();
-
+	private void checkIntegrity() throws IOException {
 		// Create all used files and folders if not present.
 		File file;
 		// Contains all smp files.
 		file = new File(this.getDataFolder().getPath() + File.separator + "materials");
 		if (!file.exists()) {
 			file.mkdirs();
+			// TODO We should download the default.smp here
 		}
 		// Contains all legacy item crafting stuff.
 		file = new File(this.getDataFolder().getPath(), "legacyrecipes.yml");
@@ -132,22 +109,8 @@ public class Main extends JavaPlugin {
 			file.createNewFile();
 		}
 	}
-	public String getAssetsUrl() {
-		return "http://" + this.hostname + ":" + this.getPort() + "/";
-	}
 
-	public int getPort() {
-		return this.port;
-	}
-	public boolean useAssetsServer() {
-		return useAssetsServer;
-	}
-	
-	public static boolean isDebugging() {
-		return debug;
-	}
-
-	public String getApiUrl() {
-		return this.apiUrl ;
+	public static FileConfiguration getConf() {
+		return config;
 	}
 }

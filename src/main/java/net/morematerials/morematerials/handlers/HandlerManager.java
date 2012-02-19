@@ -28,6 +28,7 @@ import java.io.File;
 import net.morematerials.morematerials.Main;
 
 public class HandlerManager {
+	
 	public HandlerManager(Main instance) {
 		File folder = new File(instance.getDataFolder() + File.separator + "handlers");
 		if (!folder.exists()) {
@@ -35,7 +36,7 @@ public class HandlerManager {
 		}
 		File[] files = folder.listFiles();
 		for (File file : files) {
-			//TODO do whatever you are planning to do here
+			// TODO do whatever you are planning to do here
 		}
 	}
 }

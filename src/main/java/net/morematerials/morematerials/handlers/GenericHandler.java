@@ -29,7 +29,10 @@ import org.bukkit.Location;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public abstract class GenericHandler {
+	
 	public abstract void onActivation(Location location, SpoutPlayer player);
+
 	public abstract void init(Main instance);
+
 	public abstract void shutdown();
 }

@@ -26,7 +26,6 @@ package net.morematerials.morematerials.cmds;
 
 import java.util.Map;
 import java.util.logging.Level;
-import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,15 +36,9 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class GiveExecutor implements CommandExecutor {
-	private Main instance;
-
-	public GiveExecutor(Main plugin) {
-		instance = plugin;
-	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		
 		// Sender has to be a player.
 		if (!(sender instanceof Player)) {
 			return true;
@@ -62,11 +55,11 @@ public class GiveExecutor implements CommandExecutor {
 		if (args.length > 1) {
 			amount = Integer.parseInt(args[1]);
 		}
-		
+
 		SpoutPlayer player = (SpoutPlayer) sender;
 		Map<String, Material> material = MainManager.getSmpManager().getMaterial(args[0]);
-		
-		//Permission check
+
+		// Permission check
 		if (!MainManager.getUtils().hasPermission(sender, "morematerials.give", true)
 			&& !MainManager.getUtils().hasPermission(sender, "morematerials.give." + args[0], true)
 		) {
@@ -76,7 +69,7 @@ public class GiveExecutor implements CommandExecutor {
 			sender.sendMessage(MainManager.getUtils().getMessage("Material " + args[0] + " not found!", Level.SEVERE));
 		} else if (material.size() == 1) {
 			for (String key : material.keySet()) {
-				player.getInventory().addItem(new SpoutItemStack( material.get(key), amount));
+				player.getInventory().addItem(new SpoutItemStack(material.get(key), amount));
 				sender.sendMessage(MainManager.getUtils().getMessage("You received " + amount + "object(s) of " + args[0] + "."));
 			}
 		} else {
