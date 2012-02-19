@@ -63,11 +63,11 @@ public class Utils {
 
 	public String getMessage(String logMessage, Level level) {
 		if (level == Level.WARNING) {
-			return ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
+			return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
 		} else if (level == Level.SEVERE) {
-			return ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + ChatColor.RED + logMessage;
+			return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.RED + logMessage;
 		}
-		return ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
+		return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
 	}
 
 	// Generalize all console output!
@@ -78,13 +78,13 @@ public class Utils {
 	public void log(String logMessage, Level level) {
 		if (level == Level.WARNING) {
 			// TODO add console text color yellow
-			System.out.println("[" + plugin.getDescription().getName() + "] Warning: " + logMessage);
+			System.out.println("[" + this.plugin.getDescription().getName() + "] Warning: " + logMessage);
 		} else if (level == Level.SEVERE) {
 			// TODO add console text color red
-			System.out.println("[" + plugin.getDescription().getName() + "] ERROR: " + logMessage);
+			System.out.println("[" + this.plugin.getDescription().getName() + "] ERROR: " + logMessage);
 		} else {
 			// TODO add console text color normal
-			System.out.println("[" + plugin.getDescription().getName() + "] " + logMessage);
+			System.out.println("[" + this.plugin.getDescription().getName() + "] " + logMessage);
 		}
 	}
 

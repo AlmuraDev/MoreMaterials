@@ -69,8 +69,7 @@ public class LegacyManager {
 	}
 
 	private void loadCraftingRecipe(String materialName, Material material, ConfigurationSection configurationSection) {
-		// TODO unsafe cast warning remove
-		List<Object> recipes = configurationSection.getList("Recipes");
+		List<?> recipes = configurationSection.getList("Recipes");
 		// Make sure we have a valid list.
 		if (recipes == null) {
 			return;

@@ -25,8 +25,10 @@
 package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.morematerials.morematerials.handlers.GenericHandler;
+import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
-
 import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
@@ -34,7 +36,6 @@ import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
 import org.getspout.spoutapi.sound.SoundEffect;
 
 public class SMCustomBlock extends GenericCuboidCustomBlock {
-
 	private MaterialAction actionL = null;
 	private MaterialAction actionR = null;
 	private MaterialAction actionWalk = null;
@@ -42,7 +43,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
-	
+	private GenericHandler handler;
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, Boolean opaque, GenericCuboidBlockDesign design) {
 		super(smpPackage.getSmpManager().getPlugin(), name, opaque, design);
@@ -57,6 +58,7 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		Float ljumpMultiplier = (float) config.getDouble("JumpHeight", 1);
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
 		String stepSound = config.getString("StepSound", null);
+		String handler = config.getString("Handler", null);
 
 		if (hardness != 0) {
 			this.setHardness((float) hardness);
@@ -69,27 +71,44 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 		if (lightLevel > 0) {
 			this.setLightLevel(lightLevel);
 		}
-		
+
 		if (stepSound != null) {
 			try {
 				this.setStepSound(SoundEffect.getSoundEffectFromName(stepSound.toUpperCase()));
-			} catch(Exception exception) {
+			} catch (Exception exception) {
 				MainManager.getUtils().log("Tried to set invalid sound effect!", Level.WARNING);
 			}
 		}
-		
+
 		if (config.isConfigurationSection("Lclick")) {
 			this.actionL = new MaterialAction(config.getConfigurationSection("Lclick"), this.smpPackage);
 		}
-		
+
 		if (config.isConfigurationSection("Rclick")) {
 			this.actionR = new MaterialAction(config.getConfigurationSection("Rclick"), this.smpPackage);
 		}
-		
+
 		if (config.isConfigurationSection("WalkAction")) {
 			this.actionWalk = new MaterialAction(config.getConfigurationSection("WalkAction"), this.smpPackage);
 		}
 
+		if (handler != null) {
+			Class<?> clazz = MainManager.getHandlerManager().getHandler(handler);
+			if (clazz == null) {
+				MainManager.getUtils().log("Invalid handler name: " + handler + "!");
+			} else {
+				try {
+					this.handler = (GenericHandler) clazz.newInstance();
+				} catch (Exception ex) {
+					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				this.handler.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
+			}
+		}
+		if (this.handler == null) {
+			this.handler = new TheBasicHandler();
+		}
+		
 		this.speedMultiplier = lspeedMultiplier;
 		this.jumpMultiplier = ljumpMultiplier;
 		this.fallMultiplier = lfallMultiplier;
@@ -106,16 +125,20 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	public Float getFallMultiplier() {
 		return this.fallMultiplier;
 	}
-	
+
 	public MaterialAction getActionL() {
 		return this.actionL;
 	}
-	
+
 	public MaterialAction getActionR() {
 		return this.actionR;
 	}
-	
+
 	public MaterialAction getActionWalk() {
 		return this.actionWalk;
+	}
+
+	public GenericHandler getHandler() {
+		return this.handler;
 	}
 }

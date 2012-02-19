@@ -40,7 +40,6 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
-
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
@@ -208,7 +207,6 @@ public class SmpPackage {
 	}
 
 	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
-		// TODO get sizes for url version
 		GenericCuboidBlockDesign design;
 		File textureFile = null;
 		if (Main.getConf().getBoolean("Use-WebServer")) {

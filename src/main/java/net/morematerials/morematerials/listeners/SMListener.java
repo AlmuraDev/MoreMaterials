@@ -21,7 +21,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
 package net.morematerials.morematerials.listeners;
 
 import java.util.Map;
@@ -201,19 +200,19 @@ public class SMListener implements Listener {
 		} else {
 			player.setJumpingMultiplier(1);
 		}
-		
+
 		MaterialAction walkAction = null;
-		
+
 		// Getting the walk action.
 		if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getActionWalk() != null) {
 			walkAction = ((SMCustomBlock) item).getActionWalk();
 		}
-		
-		//TODO check if the block is also a different than the last saved one.
+
+		//TODO check if the block is also different than the last saved one.
 		if (walkAction != null) {
-			//TODO stor here the player block.
+			//TODO save here the block for the player.
 			this.doMaterialAction(walkAction, player, (SMCustomBlock) item);
-	
+
 			// Materials can be consumed.
 			if (walkAction.getConsume()) {
 				block.setType(org.bukkit.Material.AIR);
@@ -227,14 +226,21 @@ public class SMListener implements Listener {
 		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_AIR) {
 			return;
 		}
-		
+
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
-		Object object = MainManager.getSmpManager().getMaterial(new SpoutItemStack(player.getItemInHand()));
+		Object object = null;
+		if(event.getPlayer().getItemInHand()!=null)
+		object=MainManager.getSmpManager().getMaterial(new SpoutItemStack(player.getItemInHand()));
 
 		SMCustomItem item = null;
 
-		if (object instanceof SMCustomItem) {
+		if (object != null && object instanceof SMCustomItem) {
 			item = (SMCustomItem) object;
+			if (event.getClickedBlock() != null) {
+				item.getHandler().onActivation(event.getClickedBlock().getLocation(), player);
+			} else {
+				item.getHandler().onActivation(null, player);
+			}
 		}
 		SMCustomBlock block = null;
 
@@ -276,7 +282,7 @@ public class SMListener implements Listener {
 		if (useAction == null) {
 			return;
 		}
-		
+
 		this.doMaterialAction(useAction, player, block);
 
 		// Materials can be consumed.
@@ -292,7 +298,7 @@ public class SMListener implements Listener {
 				player.setItemInHand(itemInHand);
 			}
 		}
-		
+
 	}
 
 	private void doMaterialAction(MaterialAction useAction, SpoutPlayer player, SMCustomBlock block) {
