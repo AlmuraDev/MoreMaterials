@@ -46,7 +46,7 @@ public class StatHooker {
 				}
 			});
 			metrics.beginMeasuringPlugin(plugin);
-			System.out.println("Stat tracking activated!");
+			MainManager.getUtils().log("Stat tracking activated!");
 		} catch (Exception e) {
 			MainManager.getUtils().log("Stats error!", Level.SEVERE);
 		}

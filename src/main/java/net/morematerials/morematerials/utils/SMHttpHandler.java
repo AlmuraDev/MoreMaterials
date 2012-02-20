@@ -41,7 +41,6 @@ class SMHttpHandler implements HttpHandler {
 		this.instance = instance;
 	}
 
-	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		// Determine which asset we want
 		String fileName = exchange.getRequestURI().getPath().substring(1);

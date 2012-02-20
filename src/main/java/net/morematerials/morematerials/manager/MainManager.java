@@ -31,6 +31,7 @@ import net.morematerials.morematerials.stats.StatHooker;
 import net.morematerials.morematerials.utils.WebManager;
 
 public class MainManager {
+	private static Main plugin;
 	private static SmpManager smpManager;
 	private static LegacyManager legacyManager;
 	private static WebManager webManager;
@@ -39,20 +40,12 @@ public class MainManager {
 	private static Utils utils;
 	private static HandlerManager handlerManager;
 
-	public MainManager(Main plugin) {
+	public MainManager(Main main) {
 		if (smpManager != null) {
 			throw new IllegalStateException("Cannot re-initialize MainManager!");
 		}
-
+		plugin = main;
 		utils = new Utils(plugin);
-		handlerManager = new HandlerManager(plugin);
-		webManager = new WebManager(plugin);
-		smpManager = new SmpManager(plugin);
-		legacyManager = new LegacyManager(plugin);
-		wgenManager = new WGenManager(plugin);
-
-		// TODO remove this when api supports this.
-		statsHooker = new StatHooker(plugin);
 	}
 
 	public static SmpManager getSmpManager() {
@@ -81,5 +74,16 @@ public class MainManager {
 	
 	public static HandlerManager getHandlerManager() {
 		return handlerManager;
+	}
+
+	public static void init() {
+		handlerManager = new HandlerManager(plugin);
+		webManager = new WebManager(plugin);
+		smpManager = new SmpManager(plugin);
+		legacyManager = new LegacyManager(plugin);
+		wgenManager = new WGenManager(plugin);
+
+		// TODO remove this when api supports this.
+		statsHooker = new StatHooker(plugin);
 	}
 }

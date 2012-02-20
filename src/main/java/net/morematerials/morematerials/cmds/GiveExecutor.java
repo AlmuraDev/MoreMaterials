@@ -37,7 +37,6 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class GiveExecutor implements CommandExecutor {
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// Sender has to be a player.
 		if (!(sender instanceof Player)) {

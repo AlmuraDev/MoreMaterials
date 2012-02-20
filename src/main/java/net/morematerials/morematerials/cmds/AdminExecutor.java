@@ -32,7 +32,6 @@ import org.bukkit.command.CommandSender;
 
 public class AdminExecutor implements CommandExecutor {
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!MainManager.getUtils().hasPermission(sender, "morematerials.admin", true) || args.length == 0) {
 			return false;
