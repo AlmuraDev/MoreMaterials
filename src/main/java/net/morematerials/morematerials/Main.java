@@ -42,6 +42,9 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// We need utils to be working for further code.
+		new MainManager(this);
+		
 		// Workaround for hooking into FurnaceRecipes, because bukkit doesn't support this.
 		try {
 			SpoutFurnaceRecipes.hook(this);
@@ -64,7 +67,7 @@ public class Main extends JavaPlugin {
 		}
 
 		// Our super all-you-can-eat manager :D
-		new MainManager(this);
+		MainManager.init();
 
 		// Registered events for all Materials in this manager.
 		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
