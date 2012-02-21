@@ -25,14 +25,14 @@
       <groupId>org.getspout</groupId>
       <artifactId>spoutpluginapi</artifactId>
       <version>dev-SNAPSHOT</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.afforess</groupId>
       <artifactId>craftbukkit</artifactId>
       <version>${craftbukkit.version}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

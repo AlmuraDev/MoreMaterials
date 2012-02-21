@@ -135,8 +135,7 @@ public class SmpPackage {
 					design.setMaxBrightness(brightness);
 					SMCustomBlock customBlock = new SMCustomBlock(
 						this, config.getString("Title", materialName),
-						//TODO get transparency from image file!
-						!config.getBoolean("Transparency", false), design
+						config.getInt("BlockID",1), design
 					);
 					customBlock.setConfig(config);
 					this.customBlocksList.put(materialName, customBlock);
