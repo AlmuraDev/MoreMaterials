@@ -81,7 +81,8 @@ public class Main extends JavaPlugin {
 	private void readConfig() throws Exception {
 		// First we parse our config file and merge with defaults.
 		config = this.getConfig();
-		config.addDefault("Port", 8180);
+		config.addDefault("PublicPort", 8180);
+        config.addDefault("BindPort", 8180);
 		config.addDefault("Hostname", Bukkit.getServer().getIp());
 		config.addDefault("Use-WebServer", true);
 		config.addDefault("DebugMode", false);
