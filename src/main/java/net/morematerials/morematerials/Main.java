@@ -52,7 +52,7 @@ public class Main extends JavaPlugin {
 			MainManager.getUtils().log("Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!", Level.SEVERE);
 		}
 
-		// Regind the config
+		// Read the config
 		try {
 			this.readConfig();
 		} catch (Exception exception) {
@@ -61,7 +61,7 @@ public class Main extends JavaPlugin {
 
 		// Let the plugin check for updates and initialize all files and folders.
 		try {
-			checkIntegrity();
+			this.checkIntegrity();
 		} catch (IOException exception) {
 			MainManager.getUtils().log("Could not access default files!", Level.SEVERE);
 		}
@@ -81,7 +81,8 @@ public class Main extends JavaPlugin {
 	private void readConfig() throws Exception {
 		// First we parse our config file and merge with defaults.
 		config = this.getConfig();
-		config.addDefault("Port", 8180);
+		config.addDefault("PublicPort", 8180);
+		config.addDefault("BindPort", 8180);
 		config.addDefault("Hostname", Bukkit.getServer().getIp());
 		config.addDefault("Use-WebServer", true);
 		config.addDefault("DebugMode", false);
@@ -99,7 +100,7 @@ public class Main extends JavaPlugin {
 		file = new File(this.getDataFolder().getPath() + File.separator + "materials");
 		if (!file.exists()) {
 			file.mkdirs();
-			// TODO We should download the default.smp here
+			//TODO We should download the default.smp here
 		}
 		// Contains all legacy item crafting stuff.
 		file = new File(this.getDataFolder().getPath(), "legacyrecipes.yml");

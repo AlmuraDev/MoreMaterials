@@ -50,21 +50,21 @@ public class WebManager {
 	private void startAssetsServer() {
 		HttpServer server;
 		try {
-			server = HttpServer.create(new InetSocketAddress(Main.getConf().getInt("Port")), 0);
+			server = HttpServer.create(new InetSocketAddress(Main.getConf().getInt("BindPort")), 0);
 			server.createContext("/", new SMHttpHandler(this.instance));
 			server.setExecutor(null);
 			server.start();
-			URL assetsStatus = new URL("http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port") + "/" + "status");
+			URL assetsStatus = new URL("http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("PublicPort") + "/" + "status");
 			BufferedReader in = new BufferedReader(new InputStreamReader(assetsStatus.openStream()));
 			String inputLine = in.readLine();
 			in.close();
 			if (inputLine.equals("Working!")) {
 				MainManager.getUtils().log(
-					"Assets-Host listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port")
+					"Assets-Host listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("BindPort")
 				);
 			} else {
 				MainManager.getUtils().log(
-					"Assets-Host not listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port"), Level.SEVERE
+					"Assets-Host not listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("BindPort"), Level.SEVERE
 					);
 			}
 		} catch (Exception exception) {
