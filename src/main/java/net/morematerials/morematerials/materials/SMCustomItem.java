@@ -71,10 +71,10 @@ public class SMCustomItem extends GenericCustomTool {
 			this.actionR = new MaterialAction(config.getConfigurationSection("Rclick"), this.smpPackage);
 		}
 		
-		if(rhandler != null) {
-			Class<?> clazz=MainManager.getHandlerManager().getHandler(rhandler);
+		if (rhandler != null) {
+			Class<?> clazz = MainManager.getHandlerManager().getHandler(rhandler);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: "+rhandler+"!");
+				MainManager.getUtils().log("Invalid handler name: " + rhandler + "!");
 			} else {
 				try {
 					this.handler = (GenericHandler) clazz.newInstance();
