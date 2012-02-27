@@ -127,7 +127,7 @@ public class SmpPackage {
 			try {
 				if (config.getString("Type", "").equals("Block")) {
 					// Initialize a block.
-					GenericCuboidBlockDesign design = this.getCuboidDesign(textureName);
+					GenericCuboidBlockDesign design = this.getCuboidDesign(textureName, config.getInt("BlockID", 1));
 					float brightness = (float) config.getDouble("Brightness", 0.2);
 					//TODO check this values, remove wrong ones.
 					design.setBrightness(brightness);
@@ -205,7 +205,7 @@ public class SmpPackage {
 		}
 	}
 
-	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
+	private GenericCuboidBlockDesign getCuboidDesign(String textureName, int blockID) throws IOException {
 		GenericCuboidBlockDesign design;
 		File textureFile = null;
 		if (Main.getConf().getBoolean("Use-WebServer")) {
@@ -239,6 +239,9 @@ public class SmpPackage {
 			design = new GenericCuboidBlockDesign(
 				this.smpManager.getPlugin(), textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1
 			);
+		}
+		if (blockID == 20) {
+			design.setRenderPass(1);
 		}
 		return design;
 	}
