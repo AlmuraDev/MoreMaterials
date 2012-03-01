@@ -41,6 +41,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 import net.morematerials.morematerials.Main;
+import net.morematerials.morematerials.materials.CustomShape;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
 import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipe;
@@ -49,6 +50,7 @@ import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
@@ -127,7 +129,16 @@ public class SmpPackage {
 			try {
 				if (config.getString("Type", "").equals("Block")) {
 					// Initialize a block.
-					GenericCuboidBlockDesign design = this.getCuboidDesign(textureName, config.getInt("BlockID", 1));
+					GenericBlockDesign design;
+					if (smpFile.getEntry(materialName + ".shape") != null) {
+						design = new CustomShape(
+							this.smpManager,
+							smpFile.getInputStream(smpFile.getEntry(materialName + ".shape")),
+							textureName, config.getInt("BlockID", 1)
+						);
+					} else {
+						design = this.getCuboidDesign(textureName, config.getInt("BlockID", 1));
+					}
 					float brightness = (float) config.getDouble("Brightness", 0.2);
 					//TODO check this values, remove wrong ones.
 					design.setBrightness(brightness);
