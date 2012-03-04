@@ -352,7 +352,7 @@ public class SmpPackage {
 		}
 		inputStream.close();
 		if (Main.getConf().getBoolean("Use-WebServer")) {
-			result = "http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port") + "/"
+			result = "http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("PublicPort") + "/"
 				+ result + fileName.substring(fileName.lastIndexOf("."));
 			return result;
 		} else {
