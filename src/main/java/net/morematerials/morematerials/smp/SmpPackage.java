@@ -44,11 +44,13 @@ import me.znickq.furnaceapi.SpoutFurnaceRecipe;
 import me.znickq.furnaceapi.SpoutFurnaceRecipes;
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
+import net.morematerials.morematerials.materials.CustomShape;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
@@ -127,7 +129,16 @@ public class SmpPackage {
 			try {
 				if (config.getString("Type", "").equals("Block")) {
 					// Initialize a block.
-					GenericCuboidBlockDesign design = this.getCuboidDesign(textureName);
+					GenericBlockDesign design;
+					if (smpFile.getEntry(materialName + ".shape") != null) {
+						design = new CustomShape(
+							this.smpManager,
+							smpFile.getInputStream(smpFile.getEntry(materialName + ".shape")),
+							textureName, config.getInt("BlockID", 1)
+						);
+					} else {
+						design = this.getCuboidDesign(textureName, config.getInt("BlockID", 1));
+					}
 					float brightness = (float) config.getDouble("Brightness", 0.2);
 					//TODO check this values, remove wrong ones.
 					design.setBrightness(brightness);
@@ -205,7 +216,7 @@ public class SmpPackage {
 		}
 	}
 
-	private GenericCuboidBlockDesign getCuboidDesign(String textureName) throws IOException {
+	private GenericCuboidBlockDesign getCuboidDesign(String textureName, int blockID) throws IOException {
 		GenericCuboidBlockDesign design;
 		File textureFile = null;
 		if (Main.getConf().getBoolean("Use-WebServer")) {
@@ -239,6 +250,9 @@ public class SmpPackage {
 			design = new GenericCuboidBlockDesign(
 				this.smpManager.getPlugin(), textureName, bufferedImage.getWidth(), 0, 0, 0, 1, 1, 1
 			);
+		}
+		if (blockID == 20) {
+			design.setRenderPass(1);
 		}
 		return design;
 	}
@@ -338,7 +352,7 @@ public class SmpPackage {
 		}
 		inputStream.close();
 		if (Main.getConf().getBoolean("Use-WebServer")) {
-			result = "http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("Port") + "/"
+			result = "http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("PublicPort") + "/"
 				+ result + fileName.substring(fileName.lastIndexOf("."));
 			return result;
 		} else {

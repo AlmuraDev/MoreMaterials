@@ -31,11 +31,11 @@ import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 import org.bukkit.configuration.ConfigurationSection;
-import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
-import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
+import org.getspout.spoutapi.block.design.GenericBlockDesign;
+import org.getspout.spoutapi.material.block.GenericCustomBlock;
 import org.getspout.spoutapi.sound.SoundEffect;
 
-public class SMCustomBlock extends GenericCuboidCustomBlock {
+public class SMCustomBlock extends GenericCustomBlock {
 	private MaterialAction actionL = null;
 	private MaterialAction actionR = null;
 	private MaterialAction actionWalk = null;
@@ -45,8 +45,8 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 	private SmpPackage smpPackage;
 	private GenericHandler handler;
 
-	public SMCustomBlock(SmpPackage smpPackage, String name, int blockID, GenericCuboidBlockDesign design) {
-		super(smpPackage.getSmpManager().getPlugin(), name, blockID);
+	public SMCustomBlock(SmpPackage smpPackage, String name, int blockID, GenericBlockDesign design) {
+		super(smpPackage.getSmpManager().getPlugin(), name, blockID, design);
 		this.smpPackage = smpPackage;
 	}
 

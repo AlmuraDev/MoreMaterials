@@ -42,6 +42,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachment;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.event.inventory.InventoryCraftEvent;
@@ -297,7 +298,9 @@ public class SMListener implements Listener {
 
 		// Adding bypass permission
 		if (useAction.getPermissionsBypass() != null) {
-			player.addAttachment(plugin, useAction.getPermissionsBypass(), true);
+			// Permission should last about 10 ticks, which is enough for the plugins to take care.
+			PermissionAttachment attachment = player.addAttachment(this.plugin, 10);
+			attachment.setPermission(useAction.getPermissionsBypass(), true);
 		}
 
 		// Does it heal or damage the player?
@@ -366,11 +369,6 @@ public class SMListener implements Listener {
 		// Let the player use a specific chat command.
 		if (useAction.getAction() != null) {
 			player.chat(useAction.getAction());
-		}
-
-		// Removing bypass permission
-		if (useAction.getPermissionsBypass() != null) {
-			player.addAttachment(plugin, useAction.getPermissionsBypass(), false);
 		}
 	}
 }
