@@ -85,7 +85,7 @@ public class CustomShape extends GenericBlockDesign {
 		
 		String boundingString = config.getString("BoundingBox");
 		String[] boundingBox = boundingString.split(" ");
-		List<Object> shapes = config.getList("Shapes");
+		List<?> shapes = config.getList("Shapes");
 
 		// Bounding box
 		int xMin = Integer.parseInt(boundingBox[0]);
