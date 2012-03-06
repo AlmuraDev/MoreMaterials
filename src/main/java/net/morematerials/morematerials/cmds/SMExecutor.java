@@ -25,6 +25,7 @@
 package net.morematerials.morematerials.cmds;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
@@ -58,7 +59,7 @@ public class SMExecutor implements CommandExecutor {
 			// Someone specified the command to get help for.
 			if (args.length > 1) {
 				// TODO unsafe cast warning remove
-				HashMap<String, Object> commands = (HashMap<String, Object>) this.plugin.getDescription().getCommands();
+				Map<String, Object> commands = (HashMap<String, Object>) this.plugin.getDescription().getCommands().values();
 				if (!commands.containsKey(args[1])) {
 					return false;
 				}
@@ -76,7 +77,7 @@ public class SMExecutor implements CommandExecutor {
 				sender.sendMessage(MainManager.getUtils().getMessage("---------------------------------"));
 				// Getting commands from plugin.yml
 				// TODO unsafe cast warning remove
-				HashMap<String, Object> commands = (HashMap<String, Object>) this.plugin.getDescription().getCommands();
+				HashMap<String, Object> commands = (HashMap<String, Object>) this.plugin.getDescription().getCommands().values();
 				for (String commandsEntry : commands.keySet()) {
 					// TODO unsafe cast warning remove
 					HashMap<String, Object> commandInfo = (HashMap<String, Object>) commands.get(commandsEntry);

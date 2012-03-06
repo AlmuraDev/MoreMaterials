@@ -160,7 +160,7 @@ public class SmpPackage {
 	}
 
 	private void loadCraftingRecipe(String materialName, Material material, YamlConfiguration config) {
-		List<Object> recipes = config.getList("Recipes");
+		List<?> recipes = config.getList("Recipes");
 		// Make sure we have a valid list.
 		if (recipes == null) {
 			return;
