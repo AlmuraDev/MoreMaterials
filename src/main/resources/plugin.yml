@@ -1,10 +1,11 @@
 name: MoreMaterials
-version: 1.6.3
+version: 1.7
 description: Custom blocks and items!
 authors: [ZNickq, IceReaper]
 website: http://www.morematerials.net
 
 depend: [Spout]
+softdepend: [FurnaceAPI]
 main: net.morematerials.morematerials.Main
 
 commands:

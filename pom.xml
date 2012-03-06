@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.morematerials</groupId>
   <artifactId>MoreMaterials</artifactId>
-  <version>1.0</version>
+  <version>1.7</version>
   <packaging>jar</packaging>
   <name>MoreMaterials</name>
   <url>http://maven.apache.org</url>
@@ -33,6 +33,12 @@
       <artifactId>craftbukkit</artifactId>
       <version>${craftbukkit.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.znickq</groupId>
+      <artifactId>FurnaceAPI</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
 

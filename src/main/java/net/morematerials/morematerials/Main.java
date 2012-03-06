@@ -27,10 +27,10 @@ package net.morematerials.morematerials;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
+import me.znickq.furnaceapi.SpoutFurnaceRecipes;
 import net.morematerials.morematerials.cmds.AdminExecutor;
 import net.morematerials.morematerials.cmds.GiveExecutor;
 import net.morematerials.morematerials.cmds.SMExecutor;
-import net.morematerials.morematerials.furnaces.SpoutFurnaceRecipes;
 import net.morematerials.morematerials.listeners.SMListener;
 import net.morematerials.morematerials.manager.MainManager;
 import org.bukkit.Bukkit;
@@ -44,13 +44,6 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		// We need utils to be working for further code.
 		new MainManager(this);
-		
-		// Workaround for hooking into FurnaceRecipes, because bukkit doesn't support this.
-		try {
-			SpoutFurnaceRecipes.hook(this);
-		} catch (Throwable exception) {
-			MainManager.getUtils().log("Could not hook into the notchian furnace! This means the cb you're using doesn't support furnace recipes!", Level.SEVERE);
-		}
 
 		// Read the config
 		try {

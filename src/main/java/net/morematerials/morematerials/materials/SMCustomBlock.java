@@ -47,7 +47,6 @@ public class SMCustomBlock extends GenericCuboidCustomBlock {
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, int blockID, GenericCuboidBlockDesign design) {
 		super(smpPackage.getSmpManager().getPlugin(), name, blockID);
-		//super(smpPackage.getSmpManager().getPlugin(), name, opaque, design);
 		this.smpPackage = smpPackage;
 	}
 
