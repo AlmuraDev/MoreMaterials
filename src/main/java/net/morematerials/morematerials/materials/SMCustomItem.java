@@ -28,8 +28,14 @@ import net.morematerials.morematerials.handlers.GenericHandler;
 import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
+import org.bukkit.Bukkit;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SMCustomItem extends GenericCustomTool {
 	private Integer damage = null;
@@ -40,6 +46,13 @@ public class SMCustomItem extends GenericCustomTool {
 	private SmpPackage smpPackage = null;
 	private boolean keepEnchanting = false;
 	private GenericHandler handler;
+
+	@Override
+	public boolean onItemInteract(SpoutPlayer player, SpoutBlock block, BlockFace face) {
+		PlayerInteractEvent event = new PlayerInteractEvent(player,Action.RIGHT_CLICK_BLOCK,player.getItemInHand(),block,face);
+		Bukkit.getPluginManager().callEvent(event);
+		return event.isCancelled();
+	}
 
 	public SMCustomItem(SmpPackage smpPackage, String name, String texture) {
 		super(smpPackage.getSmpManager().getPlugin(), name, texture);
