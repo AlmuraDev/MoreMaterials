@@ -75,7 +75,7 @@ public class LegacyManager {
 		}
 		// This allows us to have multiple recipes.
 		for (Object orecipe : recipes) {
-			// TODO unsafe cast warning remove
+			@SuppressWarnings("unchecked")
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			String type = (String) recipe.get("type");
 			Integer amount = (Integer) recipe.get("amount");

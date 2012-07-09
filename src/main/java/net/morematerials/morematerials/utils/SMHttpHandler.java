@@ -36,6 +36,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+@SuppressWarnings("restriction")
 class SMHttpHandler implements HttpHandler {
 	private Main instance;
 

@@ -103,7 +103,7 @@ public class CustomShape extends GenericBlockDesign {
 		setQuadNumber(shapes.toArray().length);
 		int i = 0;
 		for (Object oshape : shapes) {
-			//TODO unsafe cast warning remove
+			@SuppressWarnings("unchecked")
 			Map<String, Object> shape = (Map<String, Object>) oshape;
 			String cords = (String) shape.get("Coords");
 			Quad quad = new Quad(i, texture.getSubTexture(textureId[(Integer) shape.get("Texture")]));

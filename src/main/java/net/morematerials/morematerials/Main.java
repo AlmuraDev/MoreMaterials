@@ -75,10 +75,8 @@ public class Main extends JavaPlugin {
 	private void readConfig() throws Exception {
 		// First we parse our config file and merge with defaults.
 		config = this.getConfig();
-		//TODO get a free port
 		config.addDefault("PublicPort", 8180);
 		config.addDefault("BindPort", 8180);
-		//TODO implement more methods to get ip
 		config.addDefault("Hostname", Bukkit.getServer().getIp());
 		config.addDefault("Use-WebServer", true);
 		config.options().copyDefaults(true);

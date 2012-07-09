@@ -140,7 +140,6 @@ public class SmpPackage {
 						design = this.getCuboidDesign(textureName, config.getInt("BlockID", 1));
 					}
 					float brightness = (float) config.getDouble("Brightness", 0.2);
-					//TODO check this values, remove wrong ones.
 					design.setBrightness(brightness);
 					design.setMinBrightness(brightness);
 					design.setMaxBrightness(brightness);
@@ -178,7 +177,7 @@ public class SmpPackage {
 		}
 		// This allows us to have multiple recipes.
 		for (Object orecipe : recipes) {
-			// TODO unsafe cast warning remove
+			@SuppressWarnings("unchecked")
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			String type = (String) recipe.get("type");
 			Integer amount = (Integer) recipe.get("amount");

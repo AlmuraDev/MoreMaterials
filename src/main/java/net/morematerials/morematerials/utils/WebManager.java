@@ -35,9 +35,9 @@ import net.morematerials.morematerials.manager.MainManager;
 
 import com.sun.net.httpserver.HttpServer;
 
+@SuppressWarnings("restriction")
 public class WebManager {
 	private Main instance;
-	public static String newestVer = null;
 
 	public WebManager(Main plugin) {
 		this.instance = plugin;

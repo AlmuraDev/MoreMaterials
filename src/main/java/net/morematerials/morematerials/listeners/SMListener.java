@@ -31,7 +31,6 @@ import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.materials.MaterialAction;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
-import net.morematerials.morematerials.utils.WebManager;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -41,7 +40,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
@@ -52,6 +50,7 @@ import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+@SuppressWarnings("deprecation")
 public class SMListener implements Listener {
 	private Main plugin;
 
@@ -60,22 +59,9 @@ public class SMListener implements Listener {
 	}
 
 	@EventHandler
-	public void PlayerJoin(PlayerJoinEvent event) {
-		if (!event.getPlayer().isOp() || WebManager.newestVer == null) {
-			return;
-		}
-		if (!WebManager.newestVer.equals(plugin.getDescription().getVersion())) {
-			event.getPlayer().sendMessage(MainManager.getUtils().getMessage("An Update is available!", Level.WARNING));
-		}
-	}
-
-	@EventHandler
 	public void InventoryCraft(InventoryCraftEvent event) {
 		if (event.getResult() == null) {
 			return;
-		}
-		if (Main.getConf().getBoolean("DebugMode")) {
-			event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You just crafted " + event.getResult().getType().name() + "!", Level.WARNING));
 		}
 		// Getting the object we want to craft.
 		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getResult());
@@ -88,8 +74,6 @@ public class SMListener implements Listener {
 					event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You do not have permission to do that!", Level.SEVERE));
 					event.setCancelled(true);
 					return;
-				} else if (Main.getConf().getBoolean("DebugMode")) {
-					event.getPlayer().sendMessage(MainManager.getUtils().getMessage("You are allowed to craft that!", Level.WARNING));
 				}
 				// If we want to put all enchantings of ingredient to our result.
 				if (material instanceof SMCustomItem && ((SMCustomItem) material).getKeepEnchanting()) {
@@ -207,9 +191,7 @@ public class SMListener implements Listener {
 			((SMCustomBlock) item).getStepHandler().onActivation(event.getTo(), player);
 		}
 
-		//TODO check if the block is also different than the last saved one.
 		if (walkAction != null) {
-			//TODO save here the block for the player.
 			this.doMaterialAction(walkAction, player, (SMCustomBlock) item);
 
 			// Materials can be consumed.
@@ -368,14 +350,15 @@ public class SMListener implements Listener {
 
 		// Does it affect Experience?
 		if (useAction.getExperience() != 0) {
-			//TODO when using negative xp, we should also substract player level!
-			player.giveExp(useAction.getExperience());
+			float xp = player.getExp();
+			player.setExp(0);
+			player.setLevel(0);
+			player.giveExp((int) xp - useAction.getExperience());
 		}
 
 		// Does it return another item?
 		if (useAction.getReturnedItem() != null) {
 			player.getInventory().addItem(new SpoutItemStack(useAction.getReturnedItem(), 1));
-			//TODO deprecated but required - remove asap
 			player.updateInventory();
 		}
 
