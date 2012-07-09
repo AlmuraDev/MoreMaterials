@@ -25,10 +25,9 @@
 package net.morematerials.morematerials.manager;
 
 import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.handlers.HandlerManager;
 import net.morematerials.morematerials.smp.SmpManager;
 import net.morematerials.morematerials.stats.StatHooker;
-import net.morematerials.morematerials.utils.WebManager;
+import net.morematerials.morematerials.utils.Utils;
 
 public class MainManager {
 	private static Main plugin;

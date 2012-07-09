@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.manager;
+package net.morematerials.morematerials.utils;
 
 import java.util.logging.Level;
 
@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 public class Utils {
 	private Main plugin;
 
-	protected Utils(Main plugin) {
+	public Utils(Main plugin) {
 		this.plugin = plugin;
 	}
 

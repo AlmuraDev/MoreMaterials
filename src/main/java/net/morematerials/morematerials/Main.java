@@ -35,7 +35,6 @@ import net.morematerials.morematerials.manager.MainManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -64,8 +63,7 @@ public class Main extends JavaPlugin {
 		MainManager.init();
 
 		// Registered events for all Materials in this manager.
-		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvents(new SMListener(this), this);
+		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
 
 		// Chat command stuff
 		getCommand("mm").setExecutor(new SMExecutor(this));
@@ -77,7 +75,11 @@ public class Main extends JavaPlugin {
 		config = this.getConfig();
 		config.addDefault("PublicPort", 8180);
 		config.addDefault("BindPort", 8180);
-		config.addDefault("Hostname", Bukkit.getServer().getIp());
+		String defaultIp = Bukkit.getServer().getIp();
+		if (defaultIp.equals("")) {
+			defaultIp = "127.0.0.1";
+		}
+		config.addDefault("Hostname", defaultIp);
 		config.addDefault("Use-WebServer", true);
 		config.options().copyDefaults(true);
 		// Then we save our config
@@ -89,7 +91,7 @@ public class Main extends JavaPlugin {
 		File file;
 		String path = this.getDataFolder().getPath();
 		// Contains all smp files.
-		file = new File(path + File.separator + "materials");
+		file = new File(path, "materials");
 		if (!file.exists()) {
 			file.mkdirs();
 		}

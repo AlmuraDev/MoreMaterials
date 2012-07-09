@@ -104,12 +104,15 @@ public class SMCustomItem extends GenericCustomTool {
 			}
 			this.handlerL.createAndInit(GenericHandler.MaterialType.ITEM, smpPackage.getSmpManager().getPlugin());
 		}
+		
 		if (this.handlerR == null) {
 			this.handlerR = new TheBasicHandler();
 		}
+		
 		if (this.handlerL == null) {
 			this.handlerL = new TheBasicHandler();
 		}
+		
 		this.keepEnchanting = lkeepEnchanting;
 	}
 	
