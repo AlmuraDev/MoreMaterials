@@ -47,8 +47,8 @@ public class SMCustomBlock extends GenericCustomBlock {
 	private SmpPackage smpPackage;
 	private GenericHandler handler;
 
-	public SMCustomBlock(SmpPackage smpPackage, String name, int blockID, GenericBlockDesign design) {
-		super(smpPackage.getSmpManager().getPlugin(), name, blockID, design);
+	public SMCustomBlock(SmpPackage smpPackage, String name, int blockID, GenericBlockDesign design, Boolean rotatable) {
+		super(smpPackage.getSmpManager().getPlugin(), name, blockID, design, rotatable);
 		this.smpPackage = smpPackage;
 	}
 

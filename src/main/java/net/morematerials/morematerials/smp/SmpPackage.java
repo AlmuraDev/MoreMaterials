@@ -146,7 +146,7 @@ public class SmpPackage {
 					design.setMaxBrightness(brightness);
 					SMCustomBlock customBlock = new SMCustomBlock(
 						this, config.getString("Title", materialName),
-						config.getInt("BlockID", 1), design
+						config.getInt("BlockID", 1), design, config.getBoolean("Rotation", true)
 					);
 					customBlock.setConfig(config);
 					this.customBlocksList.put(materialName, customBlock);
