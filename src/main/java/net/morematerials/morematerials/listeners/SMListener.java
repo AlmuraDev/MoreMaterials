@@ -364,7 +364,7 @@ public class SMListener implements Listener {
 
 		// Playing sounds for items.
 		if (useAction.getSound() != null) {
-			SpoutManager.getSoundManager().playCustomSoundEffect(this.plugin, player, useAction.getSound(), false);
+			SpoutManager.getSoundManager().playCustomSoundEffect(this.plugin, player, useAction.getSound(), false, player.getLocation());
 		}
 
 		// Let the player use a specific chat command.

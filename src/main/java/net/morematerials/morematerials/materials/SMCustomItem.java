@@ -64,6 +64,9 @@ public class SMCustomItem extends GenericCustomTool {
 		Boolean lkeepEnchanting = config.getBoolean("KeepEnchanting", false);
 		String rhandler = config.getString("Rclick.Handler", null);
 		String lhandler = config.getString("Lclick.Handler", null);
+		//TODO implement these two
+		Short ldurability = (short) config.getInt("Durability", 0);
+		Boolean lstackable = config.getBoolean("Durability", true);
 		
 		if (ldamage != null && ldamage > 0) {
 			this.damage = ldamage;
