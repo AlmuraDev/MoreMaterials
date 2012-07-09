@@ -45,7 +45,9 @@ public class SMCustomBlock extends GenericCustomBlock {
 	private Float jumpMultiplier = (float) 1;
 	private Float fallMultiplier = (float) 1;
 	private SmpPackage smpPackage;
-	private GenericHandler handler;
+	private GenericHandler handlerR;
+	private GenericHandler handlerL;
+	private GenericHandler stepHandler;
 
 	public SMCustomBlock(SmpPackage smpPackage, String name, int blockID, GenericBlockDesign design, Boolean rotatable) {
 		super(smpPackage.getSmpManager().getPlugin(), name, blockID, design, rotatable);
@@ -60,7 +62,9 @@ public class SMCustomBlock extends GenericCustomBlock {
 		Float ljumpMultiplier = (float) config.getDouble("JumpHeight", 1);
 		Float lfallMultiplier = (float) config.getDouble("FallDamage", 1);
 		String stepSound = config.getString("StepSound", null);
-		String handler = config.getString("Handler", null);
+		String handlerR = config.getString("Rclick.Handler", null);
+		String handlerL = config.getString("Lclick.Handler", null);
+		String stepHandler = config.getString("WalkAction.Handler", null);
 
 		if (hardness != 0) {
 			this.setHardness((float) hardness);
@@ -94,21 +98,58 @@ public class SMCustomBlock extends GenericCustomBlock {
 			this.actionWalk = new MaterialAction(config.getConfigurationSection("WalkAction"), this.smpPackage);
 		}
 
-		if (handler != null) {
-			Class<?> clazz = MainManager.getHandlerManager().getHandler(handler);
+		if (handlerR != null) {
+			Class<?> clazz = MainManager.getHandlerManager().getHandler(handlerR);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: " + handler + "!");
+				MainManager.getUtils().log("Invalid handler name: " + handlerR + "!");
 			} else {
 				try {
-					this.handler = (GenericHandler) clazz.newInstance();
+					this.handlerR = (GenericHandler) clazz.newInstance();
 				} catch (Exception ex) {
 					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
 				}
-				this.handler.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
+				this.handlerR.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
 			}
 		}
-		if (this.handler == null) {
-			this.handler = new TheBasicHandler();
+		
+		if (handlerL != null) {
+			Class<?> clazz = MainManager.getHandlerManager().getHandler(handlerL);
+			if (clazz == null) {
+				MainManager.getUtils().log("Invalid handler name: " + handlerL + "!");
+			} else {
+				try {
+					this.handlerL = (GenericHandler) clazz.newInstance();
+				} catch (Exception ex) {
+					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				this.handlerL.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
+			}
+		}
+		
+		if (stepHandler != null) {
+			Class<?> clazz = MainManager.getHandlerManager().getHandler(stepHandler);
+			if (clazz == null) {
+				MainManager.getUtils().log("Invalid handler name: " + stepHandler + "!");
+			} else {
+				try {
+					this.stepHandler = (GenericHandler) clazz.newInstance();
+				} catch (Exception ex) {
+					Logger.getLogger(SMCustomBlock.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				this.stepHandler.createAndInit(GenericHandler.MaterialType.BLOCK, smpPackage.getSmpManager().getPlugin());
+			}
+		}
+
+		if (this.handlerR == null) {
+			this.handlerR = new TheBasicHandler();
+		}
+		
+		if (this.handlerL == null) {
+			this.handlerL = new TheBasicHandler();
+		}
+		
+		if (this.stepHandler == null) {
+			this.stepHandler = new TheBasicHandler();
 		}
 		
 		this.speedMultiplier = lspeedMultiplier;
@@ -140,7 +181,15 @@ public class SMCustomBlock extends GenericCustomBlock {
 		return this.actionWalk;
 	}
 
-	public GenericHandler getHandler() {
-		return this.handler;
+	public GenericHandler getHandlerL() {
+		return this.handlerL;
+	}
+
+	public GenericHandler getHandlerR() {
+		return this.handlerR;
+	}
+
+	public GenericHandler getStepHandler() {
+		return this.stepHandler;
 	}
 }

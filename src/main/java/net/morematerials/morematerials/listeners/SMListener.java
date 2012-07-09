@@ -202,6 +202,10 @@ public class SMListener implements Listener {
 		if (item != null && item instanceof SMCustomBlock && ((SMCustomBlock) item).getActionWalk() != null) {
 			walkAction = ((SMCustomBlock) item).getActionWalk();
 		}
+		
+		if (item != null && item instanceof SMCustomBlock) {
+			((SMCustomBlock) item).getStepHandler().onActivation(event.getTo(), player);
+		}
 
 		//TODO check if the block is also different than the last saved one.
 		if (walkAction != null) {
@@ -232,9 +236,9 @@ public class SMListener implements Listener {
 		if (object != null && object instanceof SMCustomItem) {
 			item = (SMCustomItem) object;
 			if (event.getClickedBlock() != null) {
-				item.getHandler().onActivation(event.getClickedBlock().getLocation(), player);
+				item.getHandlerR().onActivation(event.getClickedBlock().getLocation(), player);
 			} else {
-				item.getHandler().onActivation(null, player);
+				item.getHandlerR().onActivation(null, player);
 			}
 		}
 		SMCustomBlock block = null;
@@ -245,6 +249,11 @@ public class SMListener implements Listener {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			if (item != null) {
 				useAction = item.getActionL();
+				if (action == Action.LEFT_CLICK_AIR) {
+					item.getHandlerL().onActivation(null, player);
+				} else if (action == Action.LEFT_CLICK_BLOCK) {
+					item.getHandlerL().onActivation(event.getClickedBlock().getLocation(), player);
+				}
 			}
 			if (action == Action.LEFT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
@@ -254,12 +263,18 @@ public class SMListener implements Listener {
 					if (blockMaterial instanceof SMCustomBlock) {
 						block = (SMCustomBlock) blockMaterial;
 						useAction = block.getActionL();
+						block.getHandlerL().onActivation(event.getClickedBlock().getLocation(), player);
 					}
 				}
 			}
 		} else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
 			if (item != null) {
 				useAction = item.getActionR();
+				if (action == Action.RIGHT_CLICK_AIR) {
+					item.getHandlerR().onActivation(null, player);
+				} else if (action == Action.RIGHT_CLICK_BLOCK) {
+					item.getHandlerR().onActivation(event.getClickedBlock().getLocation(), player);
+				}
 			}
 			if (action == Action.RIGHT_CLICK_BLOCK) {
 				if (((SpoutBlock) event.getClickedBlock()).getCustomBlock() != null) {
@@ -268,6 +283,7 @@ public class SMListener implements Listener {
 					if (blockMaterial instanceof SMCustomBlock) {
 						block = (SMCustomBlock) blockMaterial;
 						useAction = block.getActionR();
+						block.getHandlerR().onActivation(event.getClickedBlock().getLocation(), player);
 					}
 				}
 			}
@@ -370,12 +386,14 @@ public class SMListener implements Listener {
 
 		// Let the player use a specific chat command.
 		if (useAction.getAction() != null) {
-			player.chat(useAction.getAction());
+			String command = useAction.getAction();
+			player.chat(command.replace("{PLAYERNAME}", player.getName()));
 		}
 
 		// Let the player use a specific chat command.
 		if (useAction.getConsoleAction() != null) {
-			plugin.getServer().getConsoleSender().sendMessage(useAction.getConsoleAction());
+			String command = useAction.getConsoleAction();
+			plugin.getServer().getConsoleSender().sendMessage(command.replace("{PLAYERNAME}", player.getName()));
 		}
 	}
 }
