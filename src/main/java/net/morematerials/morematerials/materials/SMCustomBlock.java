@@ -26,10 +26,12 @@ package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.morematerials.morematerials.handlers.GenericHandler;
 import net.morematerials.morematerials.handlers.TheBasicHandler;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;

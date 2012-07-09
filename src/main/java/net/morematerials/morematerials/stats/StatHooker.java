@@ -25,6 +25,7 @@
 package net.morematerials.morematerials.stats;
 
 import java.util.logging.Level;
+
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 
@@ -32,20 +33,8 @@ public class StatHooker {
 
 	public StatHooker(final Main plugin) {
 		try {
-			Metrics metrics = new Metrics();
-			// Add our plotters
-			metrics.addCustomData(plugin, new Metrics.Plotter() {
-				@Override
-				public String getColumnName() {
-					return "Total Custom Materials";
-				}
-
-				@Override
-				public int getValue() {
-					return MainManager.getSmpManager().getMaterialCount();
-				}
-			});
-			metrics.beginMeasuringPlugin(plugin);
+			MetricsLite metrics = new MetricsLite(plugin);
+			metrics.start();
 			MainManager.getUtils().log("Stat tracking activated!");
 		} catch (Exception e) {
 			MainManager.getUtils().log("Stats error!", Level.SEVERE);

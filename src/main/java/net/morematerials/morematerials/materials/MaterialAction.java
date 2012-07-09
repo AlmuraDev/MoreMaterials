@@ -25,8 +25,10 @@
 package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
+
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;

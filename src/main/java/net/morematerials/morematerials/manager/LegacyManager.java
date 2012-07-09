@@ -25,13 +25,12 @@
 package net.morematerials.morematerials.manager;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import me.znickq.furnaceapi.SpoutFurnaceRecipe;
-import me.znickq.furnaceapi.SpoutFurnaceRecipes;
+
 import net.morematerials.morematerials.Main;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
@@ -42,8 +41,6 @@ import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.Material;
 
 public class LegacyManager {
-	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
-	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 	private Main plugin;
 
 	public LegacyManager(Main plugin) {
@@ -82,7 +79,8 @@ public class LegacyManager {
 			Integer amount = (Integer) recipe.get("amount");
 			amount = amount == null ? 1 : amount;
 			if (type.equalsIgnoreCase("furnace")) {
-				String ingredientName = (String) recipe.get("ingredients");
+				//TODO implement furnace recipes
+				/*String ingredientName = (String) recipe.get("ingredients");
 				Material ingredient;
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
@@ -95,7 +93,7 @@ public class LegacyManager {
 					new SpoutItemStack(material, amount)
 				);
 				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
-				this.furnaceRecipeList.add(fRecipe);
+				this.furnaceRecipeList.add(fRecipe);*/
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
 					new SpoutItemStack(material, amount)
@@ -166,6 +164,5 @@ public class LegacyManager {
 
 		// Putting the recipe into the register
 		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
-		this.craftingRecipeList.add(recipe);
 	}
 }

@@ -24,16 +24,16 @@
 
 package net.morematerials.morematerials.utils;
 
-import com.sun.net.httpserver.HttpServer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.logging.Level;
+
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import com.sun.net.httpserver.HttpServer;
 
 public class WebManager {
 	private Main instance;
@@ -44,7 +44,6 @@ public class WebManager {
 		if (Main.getConf().getBoolean("Use-WebServer")) {
 			this.startAssetsServer();
 		}
-		checkForUpdate();
 	}
 
 	private void startAssetsServer() {
@@ -65,58 +64,9 @@ public class WebManager {
 			} else {
 				MainManager.getUtils().log(
 					"Assets-Host not listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("BindPort"), Level.SEVERE
-					);
+				);
 			}
 		} catch (Exception exception) {
 		}
-	}
-
-	public void checkForUpdate() {
-		String version = this.instance.getDescription().getVersion();
-		String newest = version;
-		try {
-			JSONObject json = this.readJsonFromApi("action=version");
-			JSONArray versions = json.getJSONArray("versions");
-			// Last entry is always newest version!
-			newest = versions.getString(versions.length() - 1);
-		} catch (Exception exception) {
-			MainManager.getUtils().log(exception.getMessage(), Level.SEVERE);
-		}
-		if (!version.equals(newest)) {
-			newestVer = newest;
-		}
-	}
-
-	private JSONObject readJsonFromApi(String params) throws Exception {
-		JSONObject json = new JSONObject();
-		try {
-			URL versionCheck = new URL(Main.getConf().getString("ApiUrl") + "?" + params);
-			BufferedReader in = new BufferedReader(new InputStreamReader(versionCheck.openStream()));
-			StringBuilder sb = new StringBuilder();
-			int cp;
-			while ((cp = in.read()) != -1) {
-				sb.append((char) cp);
-			}
-			in.close();
-			json = new JSONObject(sb.toString());
-		} catch (Exception e) {
-		}
-
-		// We always have "error" which is true | false from our json. If not something went wrong!
-		if (!json.has("error")) {
-			throw new Exception("Cannot access API!");
-		}
-		
-		// If error is specified, data contains always our error message.
-		if (json.getBoolean("error")) {
-			throw new Exception(json.getString("data"));
-		}
-		
-		// Else data contains the response json.
-		return json.getJSONObject("data");
-	}
-
-	public void downloadSmp(String smpName, String version) {
-		// TODO here should a .smp be downloaded (version -1 = newest) (for this plugin version!)
 	}
 }

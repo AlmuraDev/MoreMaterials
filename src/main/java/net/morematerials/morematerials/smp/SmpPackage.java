@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -39,14 +38,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import javax.imageio.ImageIO;
-import me.znickq.furnaceapi.SpoutFurnaceRecipe;
-import me.znickq.furnaceapi.SpoutFurnaceRecipes;
+
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.materials.CustomShape;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Recipe;
 import org.getspout.spoutapi.SpoutManager;
@@ -65,8 +65,6 @@ public class SmpPackage {
 	private ZipFile smpFile = null;
 	private Map<String, SMCustomBlock> customBlocksList = new HashMap<String, SMCustomBlock>();
 	private Map<String, SMCustomItem> customItemsList = new HashMap<String, SMCustomItem>();
-	private List<SpoutFurnaceRecipe> furnaceRecipeList = new ArrayList<SpoutFurnaceRecipe>();
-	private List<Recipe> craftingRecipeList = new ArrayList<Recipe>();
 
 	public SmpPackage(SmpManager smpManager, ZipFile smpFile, String name) {
 		this.name = name;
@@ -184,7 +182,8 @@ public class SmpPackage {
 			Integer amount = (Integer) recipe.get("amount");
 			amount = amount == null ? 1 : amount;
 			if (type.equalsIgnoreCase("furnace")) {
-				String ingredientName = (String) recipe.get("ingredients");
+				//TODO fix furnace recipes
+				/*String ingredientName = (String) recipe.get("ingredients");
 				Material ingredient;
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
@@ -196,8 +195,7 @@ public class SmpPackage {
 				}
 				SpoutFurnaceRecipe fRecipe;
 				fRecipe = new SpoutFurnaceRecipe(new SpoutItemStack(ingredient, 1), new SpoutItemStack(material, 1));
-				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
-				this.furnaceRecipeList.add(fRecipe);
+				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);*/
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
 					new SpoutItemStack(material, amount)
@@ -312,7 +310,6 @@ public class SmpPackage {
 
 		// Putting the recipe into the register
 		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
-		this.craftingRecipeList.add(recipe);
 	}
 
 	public String cacheFile(String fileName) throws Exception {
@@ -407,9 +404,5 @@ public class SmpPackage {
 
 	public SmpManager getSmpManager() {
 		return this.smpManager;
-	}
-
-	public int getMaterialCount() {
-		return customBlocksList.size() + customItemsList.size();
 	}
 }

@@ -27,14 +27,15 @@ package net.morematerials.morematerials;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import me.znickq.furnaceapi.SpoutFurnaceRecipes;
-import net.morematerials.morematerials.cmds.AdminExecutor;
+
 import net.morematerials.morematerials.cmds.GiveExecutor;
 import net.morematerials.morematerials.cmds.SMExecutor;
 import net.morematerials.morematerials.listeners.SMListener;
 import net.morematerials.morematerials.manager.MainManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -42,66 +43,60 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// We need utils to be working for further code.
+		// First initialize all managers.
 		new MainManager(this);
 
-		// Read the config
+		// Then read the config
 		try {
 			this.readConfig();
 		} catch (Exception exception) {
-			MainManager.getUtils().log("Error reading configuration file!", Level.SEVERE);
+			MainManager.getUtils().log("Error reading config!", Level.SEVERE);
 		}
 
-		// Let the plugin check for updates and initialize all files and folders.
+		// Let the plugin initialize all files and folders.
 		try {
 			this.checkIntegrity();
 		} catch (IOException exception) {
-			MainManager.getUtils().log("Could not access default files!", Level.SEVERE);
+			MainManager.getUtils().log("Couldn't access files!", Level.SEVERE);
 		}
 
-		// Our super all-you-can-eat manager :D
+		// Start the magic...
 		MainManager.init();
 
 		// Registered events for all Materials in this manager.
-		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(new SMListener(this), this);
 
 		// Chat command stuff
 		getCommand("mm").setExecutor(new SMExecutor(this));
 		getCommand("mmgive").setExecutor(new GiveExecutor());
-		getCommand("mmadmin").setExecutor(new AdminExecutor());
 	}
 
 	private void readConfig() throws Exception {
 		// First we parse our config file and merge with defaults.
 		config = this.getConfig();
+		//TODO get a free port
 		config.addDefault("PublicPort", 8180);
 		config.addDefault("BindPort", 8180);
+		//TODO implement more methods to get ip
 		config.addDefault("Hostname", Bukkit.getServer().getIp());
 		config.addDefault("Use-WebServer", true);
-		config.addDefault("DebugMode", false);
 		config.options().copyDefaults(true);
 		// Then we save our config
 		this.saveConfig();
-		// This option should not be saved into the file
-		config.set("ApiUrl", "http://www.morematerials.net/api.php");
 	}
 
 	private void checkIntegrity() throws IOException {
 		// Create all used files and folders if not present.
 		File file;
+		String path = this.getDataFolder().getPath();
 		// Contains all smp files.
-		file = new File(this.getDataFolder().getPath() + File.separator + "materials");
+		file = new File(path + File.separator + "materials");
 		if (!file.exists()) {
 			file.mkdirs();
-			//TODO We should download the default.smp here
 		}
 		// Contains all legacy item crafting stuff.
-		file = new File(this.getDataFolder().getPath(), "legacyrecipes.yml");
-		if (!file.exists()) {
-			file.createNewFile();
-		}
-		// Contains all wgen stuff.
-		file = new File(this.getDataFolder().getPath(), "wgen.yml");
+		file = new File(path, "legacyrecipes.yml");
 		if (!file.exists()) {
 			file.createNewFile();
 		}

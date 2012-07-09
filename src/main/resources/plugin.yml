@@ -1,11 +1,10 @@
 name: MoreMaterials
-version: 1.7
+version: 1.8
 description: Custom blocks and items!
 authors: [ZNickq, IceReaper]
 website: http://www.morematerials.net
 
 depend: [Spout]
-softdepend: [FurnaceAPI]
 main: net.morematerials.morematerials.Main
 
 commands:
@@ -16,14 +15,6 @@ commands:
     description: Gives you a custom material.
     usage: /<command> [custom material] {amount}
     permission: morematerials.give
-  mmadmin:
-    description: Internal helper functions.
-    usage: |
-      /<command> [list] - List all currently installed smp files.
-      /<command> [updates] - List all updatable smp files.
-      /<command> [install] [smpPackage] {version} - Install specified smp file in specified version (Defaults to latest).
-      /<command> [uninstall] [smpPackage] - Uninstall specified smp file.
-    permission: morematerials.admin
 
 permissions:
   morematerials.*:
@@ -31,17 +22,10 @@ permissions:
     default: op
     children:
       morematerials.admin: true
-      morematerials.craft.*: true
+      morematerials.craft: true
   morematerials.admin:
-    description: Access to smp commands.
-    default: op
-    children:
-      morematerials.give: true
-  morematerials.give:
-    description: Allows spawning MoreMaterials blocks and items.
+    description: Access to commands.
     default: op
   morematerials.craft:
     description: Allows crafting of MoreMaterials blocks and items.
     default: true
-    children:
-      morematerials.craft.material: true

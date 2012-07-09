@@ -26,7 +26,9 @@ package net.morematerials.morematerials.cmds;
 
 import java.util.Map;
 import java.util.logging.Level;
+
 import net.morematerials.morematerials.manager.MainManager;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -50,29 +52,29 @@ public class GiveExecutor implements CommandExecutor {
 		}
 
 		// Amount of objects to give.
-		int amount = 1;
-		if (args.length > 1) {
-			amount = Integer.parseInt(args[1]);
-		}
+		int amount = args.length > 1 ? Integer.parseInt(args[1]) : 1;
 
 		SpoutPlayer player = (SpoutPlayer) sender;
 		Map<String, Material> material = MainManager.getSmpManager().getMaterial(args[0]);
 
 		// Permission check
-		if (!MainManager.getUtils().hasPermission(sender, "morematerials.give", true)
-			&& !MainManager.getUtils().hasPermission(sender, "morematerials.give." + args[0], true)
-		) {
+		if (!MainManager.getUtils().hasPermission(sender, "morematerials.admin", true)) {
 			return true;
 		}
+		
 		if (material.isEmpty()) {
 			sender.sendMessage(MainManager.getUtils().getMessage("Material " + args[0] + " not found!", Level.SEVERE));
 		} else if (material.size() == 1) {
 			for (String key : material.keySet()) {
 				player.getInventory().addItem(new SpoutItemStack(material.get(key), amount));
-				sender.sendMessage(MainManager.getUtils().getMessage("You received " + amount + "object(s) of " + args[0] + "."));
+				sender.sendMessage(MainManager.getUtils().getMessage(
+					"You received " + amount + "object(s) of " + args[0] + "."
+				));
 			}
 		} else {
-			sender.sendMessage(MainManager.getUtils().getMessage("Material " + args[0] + " multiple times found, please specify!", Level.WARNING));
+			sender.sendMessage(MainManager.getUtils().getMessage(
+				"Material " + args[0] + " multiple times found, please specify!", Level.WARNING
+			));
 			for (String key : material.keySet()) {
 				player.sendMessage(MainManager.getUtils().getMessage("- " + key));
 			}

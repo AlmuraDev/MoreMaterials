@@ -26,14 +26,14 @@ package net.morematerials.morematerials.smp;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.ZipFile;
+
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
+
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
 
@@ -49,51 +49,18 @@ public class SmpManager {
 	private void loadAllPackages() {
 		// Getting all .smp files.
 		File materials = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials");
-		String[] files = materials.list();
-		for (String file : files) {
+		for (String file : materials.list()) {
 			if (file.endsWith(".smp")) {
 				MainManager.getUtils().log("Loading " + file);
-				try {
-					ZipFile smpFile = getSmpHandle(file);
-
-					// When file could not be loaded.
-					if (smpFile == null) {
-						continue;
-					}
-
-					// Ignore private files.
-					if (smpFile.getEntry("_version_plugin") == null) {
-						this.smpPackages.put(
-							file.replaceAll("\\.smp$", ""),
-							new SmpPackage(this, smpFile, file.replaceAll("\\.smp$", ""))
-						);
-						continue;
-					}
-
-					// Getting smp version.
-					InputStream versionStream = smpFile.getInputStream(smpFile.getEntry("_version_plugin"));
-					String version = "";
-					int rChar;
-					while ((rChar = versionStream.read()) != -1) {
-						version += (char) rChar;
-					}
-
-					// Checking if an update is required.
-					if (!this.plugin.getDescription().getVersion().equals(version)) {
-						// Update this .smp file.
-						smpFile.close();
-						File delete = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials", file);
-						delete.delete();
-						this.install(file.replaceAll("\\.smp$", ""), "-1");
-					// Load the .smp file.
-					} else if (smpFile != null) {
-						this.smpPackages.put(
-							file.replaceAll("\\.smp$", ""),
-							new SmpPackage(this, smpFile, file.replaceAll("\\.smp$", ""))
-						);
-					}
-				} catch (IOException exception) {
+				ZipFile smpFile = getSmpHandle(file);
+				// When file could not be loaded.
+				if (smpFile == null) {
+					continue;
 				}
+				this.smpPackages.put(
+					file.replaceAll("\\.smp$", ""),
+					new SmpPackage(this, smpFile, file.replaceAll("\\.smp$", ""))
+				);
 			}
 		}
 	}
@@ -104,25 +71,6 @@ public class SmpManager {
 		} catch (IOException Exception) {
 			MainManager.getUtils().log("Couldn't load " + smpFileName + ".", Level.SEVERE);
 			return null;
-		}
-	}
-
-	public void install(String smpName, String version) {
-		if (!this.smpPackages.containsKey(smpName)) {
-			MainManager.getWebManager().downloadSmp(smpName, version);
-			ZipFile smpFile = getSmpHandle(smpName + ".smp");
-			this.smpPackages.put(smpName, new SmpPackage(this, smpFile, smpName));
-			MainManager.getUtils().log("Installed " + smpName + ".", Level.SEVERE);
-		}
-	}
-
-	public void uninstall(String smpName) {
-		if (this.smpPackages.containsKey(smpName)) {
-			File delete = new File(
-				this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpName + ".smp"
-			);
-			delete.delete();
-			MainManager.getUtils().log("Uninstalled " + smpName + ". Restart to apply changes.", Level.SEVERE);
 		}
 	}
 
@@ -157,19 +105,8 @@ public class SmpManager {
 		return null;
 	}
 
-	public Set<String> getPackages() {
-		return this.smpPackages.keySet();
-	}
-
 	public Main getPlugin() {
 		return this.plugin;
 	}
 
-	public int getMaterialCount() {
-		int toRet = 0;
-		for (SmpPackage smp : this.smpPackages.values()) {
-			toRet += smp.getMaterialCount();
-		}
-		return toRet;
-	}
 }

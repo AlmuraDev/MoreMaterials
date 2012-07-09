@@ -25,7 +25,9 @@
 package net.morematerials.morematerials.manager;
 
 import java.util.logging.Level;
+
 import net.morematerials.morematerials.Main;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,13 +79,10 @@ public class Utils {
 
 	public void log(String logMessage, Level level) {
 		if (level == Level.WARNING) {
-			// TODO add console text color yellow
 			System.out.println("[" + this.plugin.getDescription().getName() + "] Warning: " + logMessage);
 		} else if (level == Level.SEVERE) {
-			// TODO add console text color red
 			System.out.println("[" + this.plugin.getDescription().getName() + "] ERROR: " + logMessage);
 		} else {
-			// TODO add console text color normal
 			System.out.println("[" + this.plugin.getDescription().getName() + "] " + logMessage);
 		}
 	}

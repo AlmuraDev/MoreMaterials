@@ -29,6 +29,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 
@@ -51,7 +52,8 @@ public class HandlerManager {
 
 		// Load the vote listener instances.
 		ClassLoader loader = new URLClassLoader(
-			new URL[] { dir.toURI().toURL() }, GenericHandler.class.getClassLoader()
+			new URL[] { dir.toURI().toURL() },
+			GenericHandler.class.getClassLoader()
 		);
 		for (File file : dir.listFiles()) {
 			String name = file.getName().substring(0, file.getName().lastIndexOf("."));

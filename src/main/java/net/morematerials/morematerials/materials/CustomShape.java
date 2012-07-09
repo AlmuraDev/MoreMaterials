@@ -103,6 +103,7 @@ public class CustomShape extends GenericBlockDesign {
 		setQuadNumber(shapes.toArray().length);
 		int i = 0;
 		for (Object oshape : shapes) {
+			//TODO unsafe cast warning remove
 			Map<String, Object> shape = (Map<String, Object>) oshape;
 			String cords = (String) shape.get("Coords");
 			Quad quad = new Quad(i, texture.getSubTexture(textureId[(Integer) shape.get("Texture")]));
@@ -120,10 +121,6 @@ public class CustomShape extends GenericBlockDesign {
 			setQuad(quad);
 			i++;
 		}
-	}
-
-	private void setLightSource(int i, String string, String string2, String string3) {
-		setLightSource(i, Integer.parseInt(string), Integer.parseInt(string2), Integer.parseInt(string3));
 	}
 
 }

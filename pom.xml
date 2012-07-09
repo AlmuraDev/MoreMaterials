@@ -3,12 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.morematerials</groupId>
   <artifactId>MoreMaterials</artifactId>
-  <version>1.7</version>
   <packaging>jar</packaging>
+  <version>1.8</version>
   <name>MoreMaterials</name>
-  <url>http://maven.apache.org</url>
+  <url>http://www.morematerials.net</url>
 
   <repositories>
+    <repository>
+      <id>bukkit-repo</id>
+      <url>http://repo.bukkit.org</url>
+    </repository>
     <repository>
       <id>spout-repo</id>
       <url>http://repo.spout.org</url>
@@ -17,28 +21,22 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <craftbukkit.version>1.2.5-R0.1-SNAPSHOT</craftbukkit.version>
+    <craftbukkit.version>1.2.5-R4.1-SNAPSHOT</craftbukkit.version>
+    <spoutplugin.version>dev-SNAPSHOT</spoutplugin.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.getspout</groupId>
       <artifactId>spoutpluginapi</artifactId>
-      <version>dev-SNAPSHOT</version>
+      <version>${spoutplugin.version}</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
-      <groupId>com.afforess</groupId>
+      <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
       <version>${craftbukkit.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>me.znickq</groupId>
-      <artifactId>FurnaceAPI</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <type>jar</type>
     </dependency>
   </dependencies>
 

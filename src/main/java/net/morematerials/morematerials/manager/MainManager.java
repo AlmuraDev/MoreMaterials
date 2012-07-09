@@ -35,7 +35,6 @@ public class MainManager {
 	private static SmpManager smpManager;
 	private static LegacyManager legacyManager;
 	private static WebManager webManager;
-	private static WGenManager wgenManager;
 	private static StatHooker statsHooker;
 	private static Utils utils;
 	private static HandlerManager handlerManager;
@@ -60,10 +59,6 @@ public class MainManager {
 		return webManager;
 	}
 
-	public static WGenManager getWGenManager() {
-		return wgenManager;
-	}
-
 	public static StatHooker getStatHooker() {
 		return statsHooker;
 	}
@@ -81,9 +76,6 @@ public class MainManager {
 		webManager = new WebManager(plugin);
 		smpManager = new SmpManager(plugin);
 		legacyManager = new LegacyManager(plugin);
-		wgenManager = new WGenManager(plugin);
-
-		// TODO remove this when api supports this.
 		statsHooker = new StatHooker(plugin);
 	}
 }
