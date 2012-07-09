@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.github.Zarklord1.FurnaceApi.FurnaceRecipes;
+
 import net.morematerials.morematerials.Main;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -79,8 +81,7 @@ public class LegacyManager {
 			Integer amount = (Integer) recipe.get("amount");
 			amount = amount == null ? 1 : amount;
 			if (type.equalsIgnoreCase("furnace")) {
-				//TODO implement furnace recipes
-				/*String ingredientName = (String) recipe.get("ingredients");
+				String ingredientName = (String) recipe.get("ingredients");
 				Material ingredient;
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
@@ -88,12 +89,7 @@ public class LegacyManager {
 					Map<String, Material> materialList = MainManager.getSmpManager().getMaterial(materialName);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
-				SpoutFurnaceRecipe fRecipe = new SpoutFurnaceRecipe(
-					new SpoutItemStack(ingredient, 1),
-					new SpoutItemStack(material, amount)
-				);
-				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);
-				this.furnaceRecipeList.add(fRecipe);*/
+				FurnaceRecipes.CustomFurnaceRecipe(new SpoutItemStack(material, amount), ingredient.getRawId(), ingredient.getRawData());
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
 					new SpoutItemStack(material, amount)

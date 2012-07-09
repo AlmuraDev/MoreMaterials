@@ -4,7 +4,7 @@ description: Custom blocks and items!
 authors: [ZNickq, IceReaper]
 website: http://www.morematerials.net
 
-depend: [Spout]
+depend: [Spout, Furnace Api]
 main: net.morematerials.morematerials.Main
 
 commands:

@@ -41,6 +41,8 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
+import com.github.Zarklord1.FurnaceApi.FurnaceRecipes;
+
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.materials.CustomShape;
@@ -182,8 +184,7 @@ public class SmpPackage {
 			Integer amount = (Integer) recipe.get("amount");
 			amount = amount == null ? 1 : amount;
 			if (type.equalsIgnoreCase("furnace")) {
-				//TODO fix furnace recipes
-				/*String ingredientName = (String) recipe.get("ingredients");
+				String ingredientName = (String) recipe.get("ingredients");
 				Material ingredient;
 				if (ingredientName.matches("^[0-9]+$")) {
 					ingredient = org.getspout.spoutapi.material.MaterialData.getMaterial(Integer.parseInt(ingredientName));
@@ -193,9 +194,7 @@ public class SmpPackage {
 					Map<String, Material> materialList = this.smpManager.getMaterial(materialName);
 					ingredient = materialList.get((String) materialList.keySet().toArray()[0]);
 				}
-				SpoutFurnaceRecipe fRecipe;
-				fRecipe = new SpoutFurnaceRecipe(new SpoutItemStack(ingredient, 1), new SpoutItemStack(material, 1));
-				SpoutFurnaceRecipes.registerSpoutRecipe(fRecipe);*/
+				FurnaceRecipes.CustomFurnaceRecipe(new SpoutItemStack(material, amount), ingredient.getRawId(), ingredient.getRawData());
 			} else if (type.equalsIgnoreCase("shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(
 					new SpoutItemStack(material, amount)
