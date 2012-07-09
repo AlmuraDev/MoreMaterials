@@ -372,5 +372,10 @@ public class SMListener implements Listener {
 		if (useAction.getAction() != null) {
 			player.chat(useAction.getAction());
 		}
+
+		// Let the player use a specific chat command.
+		if (useAction.getConsoleAction() != null) {
+			plugin.getServer().getConsoleSender().sendMessage(useAction.getConsoleAction());
+		}
 	}
 }

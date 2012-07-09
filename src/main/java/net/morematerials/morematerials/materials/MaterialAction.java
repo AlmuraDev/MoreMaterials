@@ -38,6 +38,7 @@ public class MaterialAction {
 	private SmpPackage smpPackage = null;
 	private String sound = null;
 	private String action = null;
+	private String consoleAction = null;
 	private Boolean consume = false;
 	private Integer health = 0;
 	private Integer hunger = 0;
@@ -51,6 +52,7 @@ public class MaterialAction {
 
 		String lsound = config.getString("Sound", "");
 		String laction = config.getString("Command", "");
+		String lconsoleAction = config.getString("ConsoleCommand", "");
 		Boolean lconsume = config.getBoolean("Consume", false);
 		Integer lhealth = config.getInt("Health", 0);
 		Integer lhunger = config.getInt("Hunger", 0);
@@ -71,6 +73,10 @@ public class MaterialAction {
 
 		if (!laction.equals("")) {
 			this.action = laction;
+		}
+
+		if (!lconsoleAction.equals("")) {
+			this.consoleAction = lconsoleAction;
 		}
 		
 		if (lhealth != 0) {
@@ -104,6 +110,10 @@ public class MaterialAction {
 
 	public String getAction() {
 		return this.action;
+	}
+
+	public String getConsoleAction() {
+		return this.consoleAction;
 	}
 
 	public Boolean getConsume() {
