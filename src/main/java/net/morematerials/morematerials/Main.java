@@ -25,84 +25,77 @@
 package net.morematerials.morematerials;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 
-import net.morematerials.morematerials.cmds.GiveExecutor;
-import net.morematerials.morematerials.cmds.SMExecutor;
+import net.morematerials.morematerials.commands.GiveExecutor;
+import net.morematerials.morematerials.commands.GeneralExecutor;
 import net.morematerials.morematerials.listeners.SMListener;
-import net.morematerials.morematerials.manager.MainManager;
+import net.morematerials.morematerials.manager.HandlerManager;
+import net.morematerials.morematerials.manager.UtilsManager;
+import net.morematerials.morematerials.manager.WebManager;
+import net.morematerials.morematerials.metrics.MetricsLite;
+import net.morematerials.morematerials.smp.SmpManager;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
-	private static FileConfiguration config;
+
+	private HandlerManager handlerManager;
+	private SmpManager smpManager;
+	private UtilsManager utilsManager;
+	private WebManager webManager;
 
 	@Override
 	public void onEnable() {
-		// First initialize all managers.
-		new MainManager(this);
-
-		// Then read the config
-		try {
-			this.readConfig();
-		} catch (Exception exception) {
-			MainManager.getUtils().log("Error reading config!", Level.SEVERE);
-		}
-
-		// Let the plugin initialize all files and folders.
-		try {
-			this.checkIntegrity();
-		} catch (IOException exception) {
-			MainManager.getUtils().log("Couldn't access files!", Level.SEVERE);
-		}
-
-		// Start the magic...
-		MainManager.init();
-
-		// Registered events for all Materials in this manager.
-		this.getServer().getPluginManager().registerEvents(new SMListener(this), this);
-
-		// Chat command stuff
-		getCommand("mm").setExecutor(new SMExecutor(this));
-		getCommand("mmgive").setExecutor(new GiveExecutor());
-	}
-
-	private void readConfig() throws Exception {
-		// First we parse our config file and merge with defaults.
-		config = this.getConfig();
-		config.addDefault("PublicPort", 8180);
-		config.addDefault("BindPort", 8180);
-		String defaultIp = Bukkit.getServer().getIp();
-		if (defaultIp.equals("")) {
-			defaultIp = "127.0.0.1";
-		}
-		config.addDefault("Hostname", defaultIp);
-		config.addDefault("Use-WebServer", true);
-		config.options().copyDefaults(true);
-		// Then we save our config
-		this.saveConfig();
-	}
-
-	private void checkIntegrity() throws IOException {
-		// Create all used files and folders if not present.
+		// Try to create the required folders.
 		File file;
-		String path = this.getDataFolder().getPath();
-		// Contains all smp files.
-		file = new File(path, "materials");
-		if (!file.exists()) {
-			file.mkdirs();
+		String[] folders = { "materials", "handlers" };
+		for (String folder : folders) {
+			file = new File(this.getDataFolder().getPath(), folder);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
 		}
-		// Contains all legacy item crafting stuff.
-		file = new File(path, "legacyrecipes.yml");
-		if (!file.exists()) {
-			file.createNewFile();
+
+		// Initialize all managers.
+		this.utilsManager = new UtilsManager(this);
+		this.webManager = new WebManager(this);
+		this.smpManager = new SmpManager(this);
+		this.handlerManager = new HandlerManager(this);
+
+		// Metrics.
+		try {
+			MetricsLite metrics = new MetricsLite(this);
+			metrics.start();
+			this.utilsManager.log("Stat tracking activated!");
+		} catch (Exception exception) {
+			this.utilsManager.log("Stat tracking error!", Level.SEVERE);
 		}
+
+		// Registered events.
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(new SMListener(this), this);
+
+		// Reigster chat commands.
+		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
+		this.getCommand("mmgive").setExecutor(new GiveExecutor(this));
 	}
 
-	public static FileConfiguration getConf() {
-		return config;
+	public HandlerManager getHandlerManager() {
+		return this.handlerManager;
 	}
+
+	public SmpManager getSmpManager() {
+		return this.smpManager;
+	}
+
+	public UtilsManager getUtilsManager() {
+		return this.utilsManager;
+	}
+
+	public WebManager getWebManager() {
+		return this.webManager;
+	}
+
 }

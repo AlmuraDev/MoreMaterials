@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.utils;
+package net.morematerials.morematerials.http;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -37,17 +37,18 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 @SuppressWarnings("restriction")
-public class SMHttpHandler implements HttpHandler {
-	private Main instance;
+public class MMHttpHandler implements HttpHandler {
 
-	public SMHttpHandler(Main instance) {
-		this.instance = instance;
+	private File dataFolder;
+
+	public MMHttpHandler(Main plugin) {
+		this.dataFolder = new File(plugin.getDataFolder().getPath(), "cache");
 	}
 
 	public void handle(HttpExchange exchange) throws IOException {
 		// Determine which asset we want
 		String fileName = exchange.getRequestURI().getPath().substring(1);
-		
+
 		// Add the required response headers
 		Headers headers = exchange.getResponseHeaders();
 		if (fileName.endsWith(".png")) {
@@ -57,27 +58,26 @@ public class SMHttpHandler implements HttpHandler {
 		} else {
 			headers.add("Content-Type", "text/plain");
 		}
-		
-		// Status checking page.
-		if (fileName.equals("status")) {
-			exchange.sendResponseHeaders(200, 0);
-			OutputStream outputStream = exchange.getResponseBody();
-			outputStream.write("Working!".getBytes());
-			outputStream.close();
-		// Delivering assets
-		} else {
-			// Read the file
-			File file = new File(this.instance.getDataFolder().getPath() + File.separator + "cache", fileName);
+
+		// Deliver requested asset
+		File file = new File(dataFolder, fileName);
+		if (file.exists()) {
+			// Read asset.
 			byte[] bytearray = new byte[(int) file.length()];
 			FileInputStream inputStream = new FileInputStream(file);
 			BufferedInputStream buffer = new BufferedInputStream(inputStream);
 			buffer.read(bytearray, 0, bytearray.length);
-
-			// Send response.
+			// Return asset.
 			exchange.sendResponseHeaders(200, file.length());
 			OutputStream outputStream = exchange.getResponseBody();
 			outputStream.write(bytearray, 0, bytearray.length);
 			outputStream.close();
+		} else {
+			// No asset found.
+			exchange.sendResponseHeaders(404, 0);
+			OutputStream outputStream = exchange.getResponseBody();
+			outputStream.close();
 		}
 	}
+
 }

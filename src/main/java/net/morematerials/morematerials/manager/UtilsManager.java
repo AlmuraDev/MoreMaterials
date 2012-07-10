@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.utils;
+package net.morematerials.morematerials.manager;
 
 import java.util.logging.Level;
 
@@ -32,30 +32,34 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Utils {
-	private Main plugin;
+public class UtilsManager {
 
-	public Utils(Main plugin) {
-		this.plugin = plugin;
+	private String pluginName;
+
+	public UtilsManager(Main plugin) {
+		this.pluginName = "[" + plugin.getDescription().getName() + "] ";
 	}
 
-	public boolean hasPermission(CommandSender sender, String perm, boolean verbose) {
-		// Allow console
+	public boolean hasPermission(CommandSender sender, String perm) {
+		// Console is allowed to do everything
 		if (!(sender instanceof Player)) {
 			return true;
-		// Or players with this permission
-		} else if (sender.hasPermission("morematerials.*")) {
-			return true;
-		// Or players with this permission
-		} else if (((Player) sender).hasPermission(perm)) {
+		}
+
+		Player player = (Player) sender;
+
+		// OP is allowed to do everything
+		if (player.isOp()) {
 			return true;
 		}
-		
-		// Display message in verbose mode.
-		if (verbose) {
-			sender.sendMessage(getMessage("You do not have permission to do that! You need " + perm + "!", Level.SEVERE));
+
+		// Players with the global permission is allowed to do everything
+		if (sender.hasPermission("morematerials.*")) {
+			return true;
 		}
-		return false;
+
+		// Player is only allowed to do this if he has the permission.
+		return player.hasPermission(perm);
 	}
 
 	// Generalize all chat output!
@@ -63,13 +67,13 @@ public class Utils {
 		return this.getMessage(logMessage, Level.INFO);
 	}
 
-	public String getMessage(String logMessage, Level level) {
+	public String getMessage(String msg, Level level) {
 		if (level == Level.WARNING) {
-			return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.YELLOW + logMessage;
+			return ChatColor.GREEN + this.pluginName + ChatColor.YELLOW + msg;
 		} else if (level == Level.SEVERE) {
-			return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.RED + logMessage;
+			return ChatColor.GREEN + this.pluginName + ChatColor.RED + msg;
 		}
-		return ChatColor.GREEN + "[" + this.plugin.getDescription().getName() + "] " + ChatColor.WHITE + logMessage;
+		return ChatColor.GREEN + this.pluginName + ChatColor.WHITE + msg;
 	}
 
 	// Generalize all console output!
@@ -77,13 +81,13 @@ public class Utils {
 		this.log(logMessage, Level.INFO);
 	}
 
-	public void log(String logMessage, Level level) {
+	public void log(String msg, Level level) {
 		if (level == Level.WARNING) {
-			System.out.println("[" + this.plugin.getDescription().getName() + "] Warning: " + logMessage);
+			System.out.println(this.pluginName + "Warning: " + msg);
 		} else if (level == Level.SEVERE) {
-			System.out.println("[" + this.plugin.getDescription().getName() + "] ERROR: " + logMessage);
+			System.out.println(this.pluginName + "ERROR: " + msg);
 		} else {
-			System.out.println("[" + this.plugin.getDescription().getName() + "] " + logMessage);
+			System.out.println(this.pluginName + msg);
 		}
 	}
 

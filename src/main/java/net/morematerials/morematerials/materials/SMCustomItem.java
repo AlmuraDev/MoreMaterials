@@ -26,7 +26,6 @@ package net.morematerials.morematerials.materials;
 
 import net.morematerials.morematerials.handlers.GenericHandler;
 import net.morematerials.morematerials.handlers.TheBasicHandler;
-import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 
 import org.bukkit.Bukkit;
@@ -46,6 +45,7 @@ public class SMCustomItem extends GenericCustomTool {
 	private boolean keepEnchanting = false;
 	private GenericHandler handlerL;
 	private GenericHandler handlerR;
+	private short durability;
 
 	@Override
 	public boolean onItemInteract(SpoutPlayer player, SpoutBlock block, BlockFace face) {
@@ -64,9 +64,13 @@ public class SMCustomItem extends GenericCustomTool {
 		Boolean lkeepEnchanting = config.getBoolean("KeepEnchanting", false);
 		String rhandler = config.getString("Rclick.Handler", null);
 		String lhandler = config.getString("Lclick.Handler", null);
-		//TODO implement these two
-		Short ldurability = (short) config.getInt("Durability", 0);
-		Boolean lstackable = config.getBoolean("Durability", true);
+		
+		this.durability = (short) config.getInt("Durability", 0);
+		if (this.durability > 0) {
+			this.setMaxDurability(this.durability);
+		}
+		//TODO implement this
+		//Boolean lstackable = config.getBoolean("Stackable", true);
 		
 		if (ldamage != null && ldamage > 0) {
 			this.damage = ldamage;
@@ -81,9 +85,9 @@ public class SMCustomItem extends GenericCustomTool {
 		}
 		
 		if (lhandler != null) {
-			Class<?> clazz = MainManager.getHandlerManager().getHandler(lhandler);
+			Class<?> clazz = this.smpPackage.getSmpManager().getPlugin().getHandlerManager().getHandler(lhandler);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: " + lhandler + "!");
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Invalid handler name: " + lhandler + "!");
 			} else {
 				try {
 					this.handlerR = (GenericHandler) clazz.newInstance();
@@ -93,9 +97,9 @@ public class SMCustomItem extends GenericCustomTool {
 			this.handlerR.createAndInit(GenericHandler.MaterialType.ITEM, smpPackage.getSmpManager().getPlugin());
 		}    
 		if (rhandler != null) {
-			Class<?> clazz = MainManager.getHandlerManager().getHandler(rhandler);
+			Class<?> clazz = this.smpPackage.getSmpManager().getPlugin().getHandlerManager().getHandler(rhandler);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: " + rhandler + "!");
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Invalid handler name: " + rhandler + "!");
 			} else {
 				try {
 					this.handlerL = (GenericHandler) clazz.newInstance();
@@ -138,5 +142,9 @@ public class SMCustomItem extends GenericCustomTool {
 	
 	public GenericHandler getHandlerL() {
 		return this.handlerL;
+	}
+	
+	public short getDurability() {
+		return this.durability;
 	}
 }

@@ -25,48 +25,67 @@
 package net.morematerials.morematerials.manager;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.logging.Level;
 
 import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.utils.SMHttpHandler;
+import net.morematerials.morematerials.http.MMHttpHandler;
 
 import com.sun.net.httpserver.HttpServer;
 
 @SuppressWarnings("restriction")
 public class WebManager {
-	private Main instance;
+
+	private String assetsUrl;
 
 	public WebManager(Main plugin) {
-		this.instance = plugin;
-		if (Main.getConf().getBoolean("Use-WebServer")) {
-			this.startAssetsServer();
+		// Get an unused port.
+		Integer port = 8080;
+		for (Integer i = port; i < port + 100; i++) {
+			try {
+				new ServerSocket(i).close();
+				port = i;
+			} catch (IOException exception) {
+			}
+		}
+
+		// Get the hostname of this machine.
+		String hostname = "127.0.0.1";
+		if (!plugin.getServer().getIp().equals("")) {
+			hostname = plugin.getServer().getIp();
+		} else {
+			try {
+				String url = "http://automation.whatismyip.com/n09230945.asp";
+				InputStream in = new URL(url).openStream();
+				InputStreamReader stream = new InputStreamReader(in);
+				BufferedReader reader = new BufferedReader(stream);
+				hostname = reader.readLine();
+			} catch (IOException exception) {
+			}
+		}
+
+		// Store assetsUrl
+		this.assetsUrl = hostname + ":" + port;
+
+		// Create assets-server.
+		try {
+			HttpServer srv = HttpServer.create(new InetSocketAddress(port), 0);
+			srv.createContext("/", new MMHttpHandler(plugin));
+			srv.setExecutor(null);
+			srv.start();
+			plugin.getUtilsManager().log("Listening: " + this.assetsUrl);
+		} catch (IOException exception) {
+			plugin.getUtilsManager().log("Assets server error!", Level.SEVERE);
 		}
 	}
 
-	private void startAssetsServer() {
-		HttpServer server;
-		try {
-			server = HttpServer.create(new InetSocketAddress(Main.getConf().getInt("BindPort")), 0);
-			server.createContext("/", new SMHttpHandler(this.instance));
-			server.setExecutor(null);
-			server.start();
-			URL assetsStatus = new URL("http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("PublicPort") + "/" + "status");
-			BufferedReader in = new BufferedReader(new InputStreamReader(assetsStatus.openStream()));
-			String inputLine = in.readLine();
-			in.close();
-			if (inputLine.equals("Working!")) {
-				MainManager.getUtils().log(
-					"Assets-Host listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("BindPort")
-				);
-			} else {
-				MainManager.getUtils().log(
-					"Assets-Host not listening on " + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("BindPort"), Level.SEVERE
-				);
-			}
-		} catch (Exception exception) {
-		}
+	public String getAssetsUrl(String asset) {
+		return "http://" + this.assetsUrl + "/" + asset;
 	}
+
 }

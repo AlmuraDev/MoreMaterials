@@ -32,7 +32,6 @@ import java.util.logging.Level;
 import java.util.zip.ZipFile;
 
 import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.manager.MainManager;
 
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
@@ -51,7 +50,7 @@ public class SmpManager {
 		File materials = new File(this.plugin.getDataFolder().getPath() + File.separator + "materials");
 		for (String file : materials.list()) {
 			if (file.endsWith(".smp")) {
-				MainManager.getUtils().log("Loading " + file);
+				this.plugin.getUtilsManager().log("Loading " + file);
 				ZipFile smpFile = getSmpHandle(file);
 				// When file could not be loaded.
 				if (smpFile == null) {
@@ -69,7 +68,7 @@ public class SmpManager {
 		try {
 			return new ZipFile(this.plugin.getDataFolder().getPath() + File.separator + "materials" + File.separator + smpFileName);
 		} catch (IOException Exception) {
-			MainManager.getUtils().log("Couldn't load " + smpFileName + ".", Level.SEVERE);
+			this.plugin.getUtilsManager().log("Couldn't load " + smpFileName + ".", Level.SEVERE);
 			return null;
 		}
 	}

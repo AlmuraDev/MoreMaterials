@@ -26,7 +26,6 @@ package net.morematerials.morematerials.materials;
 
 import java.util.logging.Level;
 
-import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -67,7 +66,7 @@ public class MaterialAction {
 			try {
 				this.sound = smpPackage.cacheFile(lsound);
 			} catch (Exception e) {
-				MainManager.getUtils().log("Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".", Level.WARNING);
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Couldn't load sound " + lsound + ".png from " + smpPackage.name + ".", Level.WARNING);
 			}
 		}
 

@@ -29,42 +29,44 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.handlers.GenericHandler;
 
 public class HandlerManager {
-	private Map<String, Class<?>> handlers = new HashMap<String, Class<?>>();
 
-	public HandlerManager(Main instance) {
-		File folder = new File(instance.getDataFolder() + File.separator + "handlers");
-		if (!folder.exists()) {
-			folder.mkdir();
-		}
-		try {
-			load(instance.getDataFolder() + File.separator + "handlers");
-		} catch (Exception exception) {
+	private Map<String, Class<?>> handlers = new HashMap<String, Class<?>>();
+	private UtilsManager um;
+
+	public HandlerManager(Main plugin) {
+		this.um = plugin.getUtilsManager();
+		File folder = new File(plugin.getDataFolder(), "handlers");
+		for (File file : folder.listFiles()) {
+			// TODO compile .java files here
+			if (file.getName().endsWith(".class")) {
+				this.load(file);
+			}
 		}
 	}
 
-	public void load(String directory) throws Exception {
-		File dir = new File(directory);
-
-		// Load the vote listener instances.
-		ClassLoader loader = new URLClassLoader(
-			new URL[] { dir.toURI().toURL() },
-			GenericHandler.class.getClassLoader()
-		);
-		for (File file : dir.listFiles()) {
-			String name = file.getName().substring(0, file.getName().lastIndexOf("."));
-			Class<?> clazz = loader.loadClass(name);
+	public void load(File handlerClass) {
+		Integer index = handlerClass.getName().lastIndexOf(".");
+		String className = handlerClass.getName().substring(0, index);
+		try {
+			URL[] url = new URL[] { handlerClass.toURI().toURL() };
+			ClassLoader genericLoader = GenericHandler.class.getClassLoader();
+			ClassLoader loader = new URLClassLoader(url, genericLoader);
+			Class<?> clazz = loader.loadClass(className);
 			Object object = clazz.newInstance();
 			if (!(object instanceof GenericHandler)) {
-				MainManager.getUtils().log("Not a handler: " + clazz.getSimpleName());
-				continue;
+				this.um.log("Not a handler: " + className, Level.WARNING);
+			} else {
+				this.handlers.put(className, clazz);
+				this.um.log("Loaded handler: " + className);
 			}
-			this.handlers.put(name, clazz);
-			MainManager.getUtils().log("Loaded handler: " + clazz.getSimpleName());
+		} catch (Exception exception) {
+			this.um.log("Error loading handler: " + className, Level.SEVERE);
 		}
 	}
 

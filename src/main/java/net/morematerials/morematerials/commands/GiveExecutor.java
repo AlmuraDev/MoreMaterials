@@ -22,24 +22,21 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.cmds;
+package net.morematerials.morematerials.commands;
 
-import java.util.Map;
-import java.util.logging.Level;
-
-import net.morematerials.morematerials.manager.MainManager;
+import net.morematerials.morematerials.Main;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.getspout.spoutapi.inventory.SpoutItemStack;
-import org.getspout.spoutapi.material.Material;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class GiveExecutor implements CommandExecutor {
 
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public GiveExecutor(Main main) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {/*
 		// Sender has to be a player.
 		if (!(sender instanceof Player)) {
 			return true;
@@ -80,6 +77,6 @@ public class GiveExecutor implements CommandExecutor {
 			}
 		}
 
-		return true;
+		*/return true;
 	}
 }

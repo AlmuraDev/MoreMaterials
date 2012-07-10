@@ -41,10 +41,6 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
-import com.github.Zarklord1.FurnaceApi.FurnaceRecipes;
-
-import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.materials.CustomShape;
 import net.morematerials.morematerials.materials.SMCustomBlock;
 import net.morematerials.morematerials.materials.SMCustomItem;
@@ -60,6 +56,8 @@ import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
+
+import com.github.Zarklord1.FurnaceApi.FurnaceRecipes;
 
 public class SmpPackage {
 	private SmpManager smpManager = null;
@@ -84,7 +82,7 @@ public class SmpPackage {
 					try {
 						materials.get(materialName).load(this.smpFile.getInputStream(entry));
 					} catch (Exception e) {
-						MainManager.getUtils().log(
+						this.getSmpManager().getPlugin().getUtilsManager().log(
 							"Error loading YML " + materialName + " from " + this.name + ".", Level.WARNING
 						);
 					}
@@ -119,7 +117,7 @@ public class SmpPackage {
 
 			this.smpFile.close();
 		} catch (Exception e) {
-			MainManager.getUtils().log("Couldn't load " + this.name + ".", Level.WARNING);
+			this.getSmpManager().getPlugin().getUtilsManager().log("Couldn't load " + this.name + ".", Level.WARNING);
 		}
 	}
 
@@ -158,12 +156,12 @@ public class SmpPackage {
 					this.customItemsList.put(materialName, customItem);
 				}
 			} catch (Exception e) {
-				MainManager.getUtils().log(
+				this.getSmpManager().getPlugin().getUtilsManager().log(
 					"Couldn't load material " + materialName + " from " + this.name + ".", Level.WARNING
 				);
 			}
 		} catch (Exception e) {
-			MainManager.getUtils().log(
+			this.getSmpManager().getPlugin().getUtilsManager().log(
 				"Couldn't load texture " + materialName + ".png from " + this.name + ".", Level.WARNING
 			);
 		}
@@ -205,7 +203,7 @@ public class SmpPackage {
 				String ingredients = (String) recipe.get("ingredients");
 				this.doRecipe(sRecipe, ingredients);
 			} else {
-				MainManager.getUtils().log(
+				this.getSmpManager().getPlugin().getUtilsManager().log(
 					"Couldn't load crafting recipe for " + materialName + " from " + this.name + ".", Level.WARNING
 				);
 			}
@@ -215,17 +213,14 @@ public class SmpPackage {
 	private GenericCuboidBlockDesign getCuboidDesign(String textureName, int blockID) throws IOException {
 		GenericCuboidBlockDesign design;
 		File textureFile = null;
-		if (Main.getConf().getBoolean("Use-WebServer")) {
-			textureFile = new File(
-				this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
-				textureName.substring(textureName.lastIndexOf("/"))
-			);
-		} else {
-			textureFile = new File(
-				this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
-				textureName
-			);
-		}
+		textureFile = new File(
+			this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
+			textureName.substring(textureName.lastIndexOf("/"))
+		);
+		/*textureFile = new File(
+			this.smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
+			textureName
+		);*/
 		BufferedImage bufferedImage = ImageIO.read(textureFile);
 
 		// for different textures on each block side
@@ -346,14 +341,10 @@ public class SmpPackage {
 			out.close();
 		}
 		inputStream.close();
-		if (Main.getConf().getBoolean("Use-WebServer")) {
-			result = "http://" + Main.getConf().getString("Hostname") + ":" + Main.getConf().getInt("PublicPort") + "/"
-				+ result + fileName.substring(fileName.lastIndexOf("."));
-			return result;
-		} else {
-			SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
-			return cacheFile.getName();
-		}
+		/*SpoutManager.getFileManager().addToCache(this.smpManager.getPlugin(), cacheFile);
+		return cacheFile.getName();*/
+		result = this.getSmpManager().getPlugin().getWebManager().getAssetsUrl(result + fileName.substring(fileName.lastIndexOf(".")));
+		return result;
 	}
 
 	private void setDrops(YamlConfiguration config, String name) {

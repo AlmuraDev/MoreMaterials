@@ -33,7 +33,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import net.morematerials.morematerials.Main;
 import net.morematerials.morematerials.smp.SmpManager;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -47,17 +46,14 @@ public class CustomShape extends GenericBlockDesign {
 	public CustomShape(SmpManager smpManager, InputStream inputStream, String textureName, int blockID) throws IOException {
 		// Make sure texture file is present.
 		File textureFile = null;
-		if (Main.getConf().getBoolean("Use-WebServer")) {
-			textureFile = new File(
-				smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
-				textureName.substring(textureName.lastIndexOf("/"))
-			);
-		} else {
-			textureFile = new File(
-				smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
-				textureName
-			);
-		}
+		textureFile = new File(
+			smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
+			textureName.substring(textureName.lastIndexOf("/"))
+		);
+		/*textureFile = new File(
+			smpManager.getPlugin().getDataFolder().getPath() + File.separator + "cache",
+			textureName
+		);*/
 		
 		// Process texture file
 		BufferedImage bufferedImage = ImageIO.read(textureFile);

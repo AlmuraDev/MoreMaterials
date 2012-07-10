@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 
 import net.morematerials.morematerials.handlers.GenericHandler;
 import net.morematerials.morematerials.handlers.TheBasicHandler;
-import net.morematerials.morematerials.manager.MainManager;
 import net.morematerials.morematerials.smp.SmpPackage;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -82,7 +81,7 @@ public class SMCustomBlock extends GenericCustomBlock {
 			try {
 				this.setStepSound(SoundEffect.getSoundEffectFromName(stepSound.toUpperCase()));
 			} catch (Exception exception) {
-				MainManager.getUtils().log("Tried to set invalid sound effect!", Level.WARNING);
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Tried to set invalid sound effect!", Level.WARNING);
 			}
 		}
 
@@ -99,9 +98,9 @@ public class SMCustomBlock extends GenericCustomBlock {
 		}
 
 		if (handlerR != null) {
-			Class<?> clazz = MainManager.getHandlerManager().getHandler(handlerR);
+			Class<?> clazz = this.smpPackage.getSmpManager().getPlugin().getHandlerManager().getHandler(handlerR);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: " + handlerR + "!");
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Invalid handler name: " + handlerR + "!");
 			} else {
 				try {
 					this.handlerR = (GenericHandler) clazz.newInstance();
@@ -113,9 +112,9 @@ public class SMCustomBlock extends GenericCustomBlock {
 		}
 		
 		if (handlerL != null) {
-			Class<?> clazz = MainManager.getHandlerManager().getHandler(handlerL);
+			Class<?> clazz = this.smpPackage.getSmpManager().getPlugin().getHandlerManager().getHandler(handlerL);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: " + handlerL + "!");
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Invalid handler name: " + handlerL + "!");
 			} else {
 				try {
 					this.handlerL = (GenericHandler) clazz.newInstance();
@@ -127,9 +126,9 @@ public class SMCustomBlock extends GenericCustomBlock {
 		}
 		
 		if (stepHandler != null) {
-			Class<?> clazz = MainManager.getHandlerManager().getHandler(stepHandler);
+			Class<?> clazz = this.smpPackage.getSmpManager().getPlugin().getHandlerManager().getHandler(stepHandler);
 			if (clazz == null) {
-				MainManager.getUtils().log("Invalid handler name: " + stepHandler + "!");
+				this.smpPackage.getSmpManager().getPlugin().getUtilsManager().log("Invalid handler name: " + stepHandler + "!");
 			} else {
 				try {
 					this.stepHandler = (GenericHandler) clazz.newInstance();
