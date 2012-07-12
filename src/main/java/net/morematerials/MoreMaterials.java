@@ -35,6 +35,7 @@ import net.morematerials.manager.UtilsManager;
 import net.morematerials.manager.WebManager;
 import net.morematerials.metrics.MetricsLite;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -63,14 +64,19 @@ public class MoreMaterials extends JavaPlugin {
 		this.smpManager = new SmpManager(this);
 		this.handlerManager = new HandlerManager(this);
 		this.smpManager.init();
+		
+		// Read plugin configuration
+		FileConfiguration config = this.getConfig();
 
 		// Metrics.
-		try {
-			MetricsLite metrics = new MetricsLite(this);
-			metrics.start();
-			this.utilsManager.log("Stat tracking activated!");
-		} catch (Exception exception) {
-			this.utilsManager.log("Stat tracking error!", Level.SEVERE);
+		if (config.getBoolean("Metrics", true) ) {
+			try {
+				MetricsLite metrics = new MetricsLite(this);
+				metrics.start();
+				this.utilsManager.log("Stat tracking activated!");
+			} catch (Exception exception) {
+				this.utilsManager.log("Stat tracking error!", Level.SEVERE);
+			}
 		}
 
 		// Registered events.
@@ -79,6 +85,7 @@ public class MoreMaterials extends JavaPlugin {
 
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
+		//TODO rewrite give command
 	}
 
 	public HandlerManager getHandlerManager() {

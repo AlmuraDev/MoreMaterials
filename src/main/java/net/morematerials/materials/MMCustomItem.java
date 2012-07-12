@@ -38,6 +38,7 @@ public class MMCustomItem extends GenericCustomTool {
 		String name = yaml.getString("Title", matName);
 		String texture = yaml.getString("Texture");
 		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
+		//TODO parse Coords
 		return new MMCustomItem(plugin, name, texture, smpName, matName);
 	}
 

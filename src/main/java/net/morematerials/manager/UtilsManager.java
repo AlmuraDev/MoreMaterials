@@ -25,6 +25,7 @@
 package net.morematerials.manager;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.morematerials.MoreMaterials;
 
@@ -35,6 +36,7 @@ import org.bukkit.entity.Player;
 public class UtilsManager {
 
 	private String pluginName;
+	private Logger logger = Logger.getLogger("MoreMaterials");
 
 	public UtilsManager(MoreMaterials plugin) {
 		this.pluginName = "[" + plugin.getDescription().getName() + "] ";
@@ -83,11 +85,11 @@ public class UtilsManager {
 
 	public void log(String msg, Level level) {
 		if (level == Level.WARNING) {
-			System.out.println(this.pluginName + "Warning: " + msg);
+			this.logger.warning(this.pluginName + "Warning: " + msg);
 		} else if (level == Level.SEVERE) {
-			System.out.println(this.pluginName + "ERROR: " + msg);
+			this.logger.severe(this.pluginName + "ERROR: " + msg);
 		} else {
-			System.out.println(this.pluginName + msg);
+			this.logger.info(this.pluginName + msg);
 		}
 	}
 

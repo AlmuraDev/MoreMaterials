@@ -24,11 +24,12 @@
 
 package net.morematerials.materials;
 
+import java.util.List;
+
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
-import org.getspout.spoutapi.block.design.GenericCuboidBlockDesign;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 
 public class MMCustomBlock extends GenericCustomBlock {
@@ -36,6 +37,7 @@ public class MMCustomBlock extends GenericCustomBlock {
 	private String materialName;
 	private String smpName;
 
+	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String name = yaml.getString("Title", matName);
 		Boolean rotate = yaml.getBoolean("Rotation", false);
@@ -43,17 +45,19 @@ public class MMCustomBlock extends GenericCustomBlock {
 		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
 		Integer baseId = yaml.getInt("BaseId", 1);
 
+		// Getting the correct model for this block.
 		GenericBlockDesign design;
 		String shapeFile = yaml.getString("Shape");
+		Integer index = shapeFile.lastIndexOf(".");
+		shapeFile = shapeFile.substring(0, index);
+		CustomShape customDesign;
 		if (shapeFile != null && plugin.getSmpManager().getShape(smpName, shapeFile) != null) {
-			CustomShape customDesign = plugin.getSmpManager().getShape(smpName, matName);
-			customDesign.build(texture);
-			design = customDesign;
+			customDesign = plugin.getSmpManager().getShape(smpName, shapeFile);
 		} else {
-			// TODO check this numbers
-			// TODO allow multiple textures per side
-			design = new GenericCuboidBlockDesign(plugin, texture, baseId, 0, 0, 0, 1, 1, 1);
+			customDesign = new CustomShape(plugin);
 		}
+		customDesign.build(texture, (List<String>) yaml.getList("Coords"));
+		design = customDesign;
 		
 		return new MMCustomBlock(plugin, name, texture, smpName, matName, design, rotate, baseId);
 	}

@@ -24,6 +24,7 @@
 
 package net.morematerials.manager;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -53,7 +54,7 @@ public class SmpManager {
 	
 	public void init() {
 		// Load all .smp files.
-		File dir = new File(plugin.getDataFolder().getPath(), "materials");
+		File dir = new File(this.plugin.getDataFolder().getPath(), "materials");
 		for (File file : dir.listFiles()) {
 			if (file.getName().endsWith(".smp")) {
 				try {
@@ -92,7 +93,7 @@ public class SmpManager {
 				this.plugin.getWebManager().addAsset(smpFile, entry);
 			}
 		}
-
+		
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
 			YamlConfiguration material = materials.get(matName);
@@ -102,6 +103,7 @@ public class SmpManager {
 
 	private void createMaterial(String smpName, String matName, YamlConfiguration yaml, ZipFile smpFile) {
 		// Allow reading of old .smp files.
+		@Deprecated
 		Boolean oldPackage = !yaml.contains("Texture");
 		if (oldPackage) {
 			yaml = this.updateConfiguration(yaml, smpName, matName);
@@ -119,12 +121,25 @@ public class SmpManager {
 		}
 	}
 
+	@Deprecated
 	private YamlConfiguration updateConfiguration(YamlConfiguration yaml, String smpName, String matName) {
 		// Update old .yml configurations to newer format.
 		yaml.set("Texture", matName + ".png");
 		if (((String) yaml.get("Type")).equals("Block")) {
-			yaml.set("Shape", matName);
+			yaml.set("Shape", matName + ".shape");
 			yaml.set("BaseId", yaml.get("BlockID"));
+			// Creating the texture map list.
+			ArrayList<String> coordList = new ArrayList<String>();
+			String textureUrl = this.plugin.getWebManager().getAssetsUrl(smpName + "_" +  matName + ".png");
+			BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(textureUrl);
+			if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
+				for (Integer i = 0; i < bufferedImage.getWidth() / bufferedImage.getHeight(); i++) {
+					coordList.add(bufferedImage.getHeight() * i + " 0 " + bufferedImage.getHeight() + " " + bufferedImage.getHeight());
+				}
+			} else {
+				coordList.add("0 0 " + bufferedImage.getWidth() + " " + bufferedImage.getHeight());
+			}
+			yaml.set("Coords", coordList);
 		}
 		return yaml;
 	}

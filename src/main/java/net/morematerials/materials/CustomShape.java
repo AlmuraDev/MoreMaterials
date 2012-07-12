@@ -25,9 +25,9 @@
 package net.morematerials.materials;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,6 +36,7 @@ import net.morematerials.MoreMaterials;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.block.design.Quad;
+import org.getspout.spoutapi.block.design.SubTexture;
 import org.getspout.spoutapi.block.design.Texture;
 
 public class CustomShape extends GenericBlockDesign {
@@ -59,10 +60,12 @@ public class CustomShape extends GenericBlockDesign {
 		} catch (Exception exception) {
 		}
 		
-		// If set, surrounded blocks will be drawn.
-		if (this.config.contains("Transparent") && this.config.getBoolean("Transparent")) {
-			this.setRenderPass(1);
-		}
+		// Surrounded blocks will always be drawn.
+		this.setRenderPass(1);
+		
+		// Default settings.
+		this.setMinBrightness(0.0F);
+		this.setMaxBrightness(1.0F);
 		
 		String[] boundingBox = this.config.getString("BoundingBox").split(" ");
 
@@ -76,47 +79,54 @@ public class CustomShape extends GenericBlockDesign {
 		setBoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 	
-	public void build(String textureUrl) {
-		@SuppressWarnings("unchecked")
-		Object check = ((Map<String, Object>) this.config.getList("Shapes").get(0)).get("Texture");
-		Boolean oldShape = !(check instanceof String);
+	public CustomShape(MoreMaterials plugin) {
+		this.plugin = plugin;
+		// Create a default cube
+		this.config = new YamlConfiguration();
+		try {
+			this.config.load(this.plugin.getResource("cube.shape"));
+		} catch (Exception exception) {
+		}
+	}
+
+	public void build(String textureUrl, List<String> list) {
+		// Get texture.
+		BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(textureUrl);
+		Texture texture = new Texture(this.plugin, textureUrl, bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getHeight());
+		this.setTexture(this.plugin, texture);
 		
-		if (oldShape) {
-			this.plugin.getUtilsManager().log("Please update " + this.matName + ".shape", Level.WARNING);
-			BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(textureUrl);
-			int textureCount = bufferedImage.getWidth() / bufferedImage.getHeight();
-			Texture texture = new Texture(this.plugin, textureUrl, bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getHeight());
-			this.setTexture(this.plugin, texture);
-			int[] textureId = new int[textureCount];
-			for (int i = 0; i < textureCount; i++) {
-				textureId[i] = i;
+		// Building subtextures.
+		ArrayList<SubTexture> subTextures = new ArrayList<SubTexture>();
+		for (Integer i = 0; i < list.size(); i++) {
+			String[] coords = list.get(i).split("[\\s]+");
+			subTextures.add(new SubTexture(texture, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]), Integer.parseInt(coords[3])));
+		}
+		
+		// Building the shape together
+		List<?> shapes = this.config.getList("Shapes");
+		setQuadNumber(shapes.toArray().length);
+		int i = 0;
+		for (Object oshape : shapes) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> shape = (Map<String, Object>) oshape;
+			String coords = (String) shape.get("Coords");
+			//Quad quad = new Quad(i, texture.getSubTexture((Integer) shape.get("Texture")));
+			Integer subId = (Integer) shape.get("Texture");
+			Quad quad = new Quad(i, subTextures.get((subTextures.size() > subId ? subId : 0)));
+			int j = 0;
+			for (String line : coords.split("\\r?\\n")) {
+				String[] coordLine = line.split(" ");
+				quad.addVertex(j,
+					Float.parseFloat(coordLine[0]),
+					Float.parseFloat(coordLine[1]),
+					Float.parseFloat(coordLine[2])
+				);
+				j++;
 			}
-			
-			// Building the shape together
-			List<?> shapes = this.config.getList("Shapes");
-			setQuadNumber(shapes.toArray().length);
-			int i = 0;
-			for (Object oshape : shapes) {
-				@SuppressWarnings("unchecked")
-				Map<String, Object> shape = (Map<String, Object>) oshape;
-				String coords = (String) shape.get("Coords");
-				Quad quad = new Quad(i, texture.getSubTexture(textureId[(Integer) shape.get("Texture")]));
-				int j = 0;
-				for (String line : coords.split("\\r?\\n")) {
-					String[] coordLine = line.split(" ");
-					quad.addVertex(j,
-						Float.parseFloat(coordLine[0]),
-						Float.parseFloat(coordLine[1]),
-						Float.parseFloat(coordLine[2])
-					);
-					j++;
-				}
-				setLightSource(i, 0, 1, 0);
-				setQuad(quad);
-				i++;
-			}
-		} else {
-			//TODO parse new shape format
+			//TODO calculate correct light source!
+			setLightSource(i, 0, 1, 0);
+			setQuad(quad);
+			i++;
 		}
 	}
 
