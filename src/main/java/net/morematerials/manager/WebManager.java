@@ -22,19 +22,30 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.manager;
+package net.morematerials.manager;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.http.MMHttpHandler;
+import javax.imageio.ImageIO;
+
+import org.getspout.spoutapi.SpoutManager;
+
+import net.morematerials.MoreMaterials;
+import net.morematerials.http.MMHttpHandler;
 
 import com.sun.net.httpserver.HttpServer;
 
@@ -42,14 +53,19 @@ import com.sun.net.httpserver.HttpServer;
 public class WebManager {
 
 	private String assetsUrl;
+	private MoreMaterials plugin;
+	private HashMap<String, BufferedImage> imageCache = new HashMap<String, BufferedImage>();
 
-	public WebManager(Main plugin) {
+	public WebManager(MoreMaterials plugin) {
+		this.plugin = plugin;
+		
 		// Get an unused port.
 		Integer port = 8080;
 		for (Integer i = port; i < port + 100; i++) {
 			try {
 				new ServerSocket(i).close();
 				port = i;
+				break;
 			} catch (IOException exception) {
 			}
 		}
@@ -86,6 +102,49 @@ public class WebManager {
 
 	public String getAssetsUrl(String asset) {
 		return "http://" + this.assetsUrl + "/" + asset;
+	}
+
+	public BufferedImage getCachedImage(String cacheFileName) {
+		if (this.imageCache.containsKey(cacheFileName)) {
+			return this.imageCache.get(cacheFileName);
+		}
+		return null;
+	}
+
+	public void addAsset(ZipFile smpFile, ZipEntry entry) {
+		String smpName = this.plugin.getUtilsManager().getName(smpFile.getName());
+		String zipName = entry.getName();
+		String cacheFileName = smpName + "_" + zipName;
+		
+		// Extract files to cache dir.
+		File cdir = new File(this.plugin.getDataFolder().getPath(), "cache");
+		File cacheFile = new File(cdir, cacheFileName);
+		if (!cacheFile.exists()) {
+			try {
+				InputStream inputStream = smpFile.getInputStream(entry);
+				OutputStream out = new FileOutputStream(cacheFile);
+				int read;
+				byte[] bytes = new byte[1024];
+				while ((read = inputStream.read(bytes)) != -1) {
+					out.write(bytes, 0, read);
+				}
+				out.flush();
+				out.close();
+				inputStream.close();
+			} catch (Exception exception) {
+			}
+		}
+		// Cache all image buffers for performance.
+		if (entry.getName().endsWith(".png")) {
+			BufferedImage bufferedImage = null;
+			try {
+				 bufferedImage = ImageIO.read(cacheFile);
+			} catch (Exception exception) {
+			}
+			this.imageCache.put(this.getAssetsUrl(cacheFileName), bufferedImage);
+		}
+		// Add file to spout cache.
+		SpoutManager.getFileManager().addToCache(this.plugin, this.getAssetsUrl(cacheFileName));
 	}
 
 }

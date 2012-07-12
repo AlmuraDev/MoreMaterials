@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.http;
+package net.morematerials.http;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -30,7 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.morematerials.morematerials.Main;
+import net.morematerials.MoreMaterials;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -41,7 +41,7 @@ public class MMHttpHandler implements HttpHandler {
 
 	private File dataFolder;
 
-	public MMHttpHandler(Main plugin) {
+	public MMHttpHandler(MoreMaterials plugin) {
 		this.dataFolder = new File(plugin.getDataFolder().getPath(), "cache");
 	}
 

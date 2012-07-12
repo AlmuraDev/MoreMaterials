@@ -1,4 +1,4 @@
-package net.morematerials.morematerials.metrics;
+package net.morematerials.metrics;
 
 /*
  * Copyright 2011 Tyler Blair. All rights reserved.

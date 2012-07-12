@@ -22,12 +22,12 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.commands;
+package net.morematerials.commands;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import net.morematerials.morematerials.Main;
+import net.morematerials.MoreMaterials;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -38,9 +38,9 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 public class GeneralExecutor implements CommandExecutor {
 
-	private Main plugin;
+	private MoreMaterials plugin;
 
-	public GeneralExecutor(Main plugin) {
+	public GeneralExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
 

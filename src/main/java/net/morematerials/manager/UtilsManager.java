@@ -22,11 +22,11 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.manager;
+package net.morematerials.manager;
 
 import java.util.logging.Level;
 
-import net.morematerials.morematerials.Main;
+import net.morematerials.MoreMaterials;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +36,7 @@ public class UtilsManager {
 
 	private String pluginName;
 
-	public UtilsManager(Main plugin) {
+	public UtilsManager(MoreMaterials plugin) {
 		this.pluginName = "[" + plugin.getDescription().getName() + "] ";
 	}
 
@@ -89,6 +89,12 @@ public class UtilsManager {
 		} else {
 			System.out.println(this.pluginName + msg);
 		}
+	}
+
+	public String getName(String name) {
+		String[] parts = name.split("(\\\\|/)");
+		Integer index = parts[parts.length - 1].lastIndexOf(".");
+		return parts[parts.length - 1].substring(0, index);
 	}
 
 }

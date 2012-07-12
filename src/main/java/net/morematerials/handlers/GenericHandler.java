@@ -22,24 +22,33 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.handlers;
+package net.morematerials.handlers;
 
-import net.morematerials.morematerials.Main;
+import net.morematerials.MoreMaterials;
 
 import org.bukkit.Location;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public class TheBasicHandler extends GenericHandler {
+public abstract class GenericHandler {
 
-	@Override
-	public void onActivation(Location location, SpoutPlayer player) {
+	public enum MaterialType {
+		BLOCK, ITEM
 	}
 
-	@Override
-	public void init(Main instance) {
+	private MaterialType handlerType;
+
+	public abstract void onActivation(Location location, SpoutPlayer player);
+
+	public abstract void init(MoreMaterials instance);
+
+	public abstract void shutdown();
+
+	public MaterialType getMaterialType() {
+		return this.handlerType;
 	}
 
-	@Override
-	public void shutdown() {
+	public final void createAndInit(MaterialType theType, MoreMaterials instance) {
+		this.handlerType = theType;
+		init(instance);
 	}
 }

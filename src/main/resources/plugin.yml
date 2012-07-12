@@ -5,7 +5,7 @@ authors: [ZNickq, IceReaper]
 website: http://www.morematerials.net
 
 depend: [Spout, Furnace Api]
-main: net.morematerials.morematerials.Main
+main: net.morematerials.MoreMaterials
 
 commands:
   mm:

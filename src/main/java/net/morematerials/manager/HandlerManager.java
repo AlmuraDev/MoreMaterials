@@ -22,7 +22,7 @@
  THE SOFTWARE.
  */
 
-package net.morematerials.morematerials.manager;
+package net.morematerials.manager;
 
 import java.io.File;
 import java.net.URL;
@@ -31,15 +31,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.morematerials.morematerials.Main;
-import net.morematerials.morematerials.handlers.GenericHandler;
+import net.morematerials.MoreMaterials;
+import net.morematerials.handlers.GenericHandler;
 
 public class HandlerManager {
 
 	private Map<String, Class<?>> handlers = new HashMap<String, Class<?>>();
 	private UtilsManager um;
 
-	public HandlerManager(Main plugin) {
+	public HandlerManager(MoreMaterials plugin) {
 		this.um = plugin.getUtilsManager();
 		File folder = new File(plugin.getDataFolder(), "handlers");
 		for (File file : folder.listFiles()) {
