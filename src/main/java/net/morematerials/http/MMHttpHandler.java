@@ -64,8 +64,7 @@ public class MMHttpHandler implements HttpHandler {
 		if (file.exists()) {
 			// Read asset.
 			byte[] bytearray = new byte[(int) file.length()];
-			FileInputStream inputStream = new FileInputStream(file);
-			BufferedInputStream buffer = new BufferedInputStream(inputStream);
+			BufferedInputStream buffer = new BufferedInputStream(new FileInputStream(file));
 			buffer.read(bytearray, 0, bytearray.length);
 			// Return asset.
 			exchange.sendResponseHeaders(200, file.length());

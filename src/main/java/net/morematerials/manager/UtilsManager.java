@@ -95,8 +95,7 @@ public class UtilsManager {
 
 	public String getName(String name) {
 		String[] parts = name.split("(\\\\|/)");
-		Integer index = parts[parts.length - 1].lastIndexOf(".");
-		return parts[parts.length - 1].substring(0, index);
+		return parts[parts.length - 1].substring(0, parts[parts.length - 1].lastIndexOf("."));
 	}
 
 }

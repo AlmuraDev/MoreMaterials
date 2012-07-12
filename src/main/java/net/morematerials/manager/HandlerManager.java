@@ -37,13 +37,14 @@ import net.morematerials.handlers.GenericHandler;
 public class HandlerManager {
 
 	private Map<String, Class<?>> handlers = new HashMap<String, Class<?>>();
-	private UtilsManager um;
+	private UtilsManager utilsManager;
 
 	public HandlerManager(MoreMaterials plugin) {
-		this.um = plugin.getUtilsManager();
+		this.utilsManager = plugin.getUtilsManager();
 		File folder = new File(plugin.getDataFolder(), "handlers");
 		for (File file : folder.listFiles()) {
-			// TODO compile .java files here
+			// TODO Dynamicaly compile .java handlers files here.
+			// So people can see what they do, to avoid risky code!
 			if (file.getName().endsWith(".class")) {
 				this.load(file);
 			}
@@ -51,22 +52,19 @@ public class HandlerManager {
 	}
 
 	public void load(File handlerClass) {
-		Integer index = handlerClass.getName().lastIndexOf(".");
-		String className = handlerClass.getName().substring(0, index);
+		String className = handlerClass.getName().substring(0, handlerClass.getName().lastIndexOf("."));
 		try {
-			URL[] url = new URL[] { handlerClass.toURI().toURL() };
-			ClassLoader genericLoader = GenericHandler.class.getClassLoader();
-			ClassLoader loader = new URLClassLoader(url, genericLoader);
+			ClassLoader loader = new URLClassLoader(new URL[] { handlerClass.toURI().toURL() }, GenericHandler.class.getClassLoader());
 			Class<?> clazz = loader.loadClass(className);
 			Object object = clazz.newInstance();
 			if (!(object instanceof GenericHandler)) {
-				this.um.log("Not a handler: " + className, Level.WARNING);
+				this.utilsManager.log("Not a handler: " + className, Level.WARNING);
 			} else {
 				this.handlers.put(className, clazz);
-				this.um.log("Loaded handler: " + className);
+				this.utilsManager.log("Loaded handler: " + className);
 			}
 		} catch (Exception exception) {
-			this.um.log("Error loading handler: " + className, Level.SEVERE);
+			this.utilsManager.log("Error loading handler: " + className, Level.SEVERE);
 		}
 	}
 

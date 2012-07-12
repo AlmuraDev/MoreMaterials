@@ -35,11 +35,10 @@ public class MMCustomItem extends GenericCustomTool {
 	private String smpName;
 
 	public static MMCustomItem create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
-		String name = yaml.getString("Title", matName);
 		String texture = yaml.getString("Texture");
 		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
-		//TODO parse Coords
-		return new MMCustomItem(plugin, name, texture, smpName, matName);
+		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
+		return new MMCustomItem(plugin, yaml.getString("Title", matName), texture, smpName, matName);
 	}
 
 	public MMCustomItem(MoreMaterials plugin, String name, String texture, String smpName, String matName) {

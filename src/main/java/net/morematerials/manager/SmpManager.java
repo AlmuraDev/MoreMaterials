@@ -44,14 +44,14 @@ public class SmpManager {
 
 	private MoreMaterials plugin;
 
-	private ArrayList<MMCustomBlock> customBlocksList = new ArrayList<MMCustomBlock>();
-	private ArrayList<MMCustomItem> customItemsList = new ArrayList<MMCustomItem>();
-	private ArrayList<CustomShape> customShapesList = new ArrayList<CustomShape>();
+	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
+	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
+	private ArrayList<CustomShape> shapesList = new ArrayList<CustomShape>();
 
 	public SmpManager(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	public void init() {
 		// Load all .smp files.
 		File dir = new File(this.plugin.getDataFolder().getPath(), "materials");
@@ -60,8 +60,7 @@ public class SmpManager {
 				try {
 					this.loadPackage(file);
 				} catch (Exception exception) {
-					String msg = "Cannot load " + file.getName();
-					this.plugin.getUtilsManager().log(msg, Level.SEVERE);
+					this.plugin.getUtilsManager().log("Cannot load " + file.getName(), Level.SEVERE);
 				}
 			}
 		}
@@ -70,54 +69,45 @@ public class SmpManager {
 	private void loadPackage(File file) throws Exception {
 		HashMap<String, YamlConfiguration> materials = new HashMap<String, YamlConfiguration>();
 		ZipFile smpFile = new ZipFile(file);
-		String smpName = this.plugin.getUtilsManager().getName(smpFile.getName());
 
 		// Get all material configurations
 		Enumeration<? extends ZipEntry> entries = smpFile.entries();
 		ZipEntry entry;
 		YamlConfiguration yml;
-		Integer index;
 		while (entries.hasMoreElements()) {
 			entry = entries.nextElement();
 			// Parse all .yml files in this .smp file.
 			if (entry.getName().endsWith(".yml")) {
 				yml = new YamlConfiguration();
 				yml.load(smpFile.getInputStream(entry));
-				index = entry.getName().lastIndexOf(".");
-				materials.put(entry.getName().substring(0, index), yml);
+				materials.put(entry.getName().substring(0, entry.getName().lastIndexOf(".")), yml);
 			} else if (entry.getName().endsWith(".shape")) {
 				// Register .shape files.
-				this.customShapesList.add(new CustomShape(this.plugin, smpFile, entry));
+				this.shapesList.add(new CustomShape(this.plugin, smpFile, entry));
 			} else {
 				// Add all other files as asset.
 				this.plugin.getWebManager().addAsset(smpFile, entry);
 			}
 		}
-		
+
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
-			YamlConfiguration material = materials.get(matName);
-			this.createMaterial(smpName, matName, material, smpFile);
+			this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
 		}
 	}
 
 	private void createMaterial(String smpName, String matName, YamlConfiguration yaml, ZipFile smpFile) {
 		// Allow reading of old .smp files.
-		@Deprecated
-		Boolean oldPackage = !yaml.contains("Texture");
-		if (oldPackage) {
+		if (!yaml.contains("Texture")) {
 			yaml = this.updateConfiguration(yaml, smpName, matName);
-			String message = "Please update " + matName + ".yml";
-			this.plugin.getUtilsManager().log(message, Level.WARNING);
+			this.plugin.getUtilsManager().log("Please update " + matName + ".yml", Level.WARNING);
 		}
-		
+
 		// Create the actual materials.
 		if (yaml.getString("Type", "").equals("Block")) {
-			MMCustomBlock block = MMCustomBlock.create(this.plugin, yaml, smpName, matName);
-			this.customBlocksList.add(block);
+			this.blocksList.add(MMCustomBlock.create(this.plugin, yaml, smpName, matName));
 		} else {
-			MMCustomItem item = MMCustomItem.create(this.plugin, yaml, smpName, matName);
-			this.customItemsList.add(item);
+			this.itemsList.add(MMCustomItem.create(this.plugin, yaml, smpName, matName));
 		}
 	}
 
@@ -128,10 +118,10 @@ public class SmpManager {
 		if (((String) yaml.get("Type")).equals("Block")) {
 			yaml.set("Shape", matName + ".shape");
 			yaml.set("BaseId", yaml.get("BlockID"));
+
 			// Creating the texture map list.
 			ArrayList<String> coordList = new ArrayList<String>();
-			String textureUrl = this.plugin.getWebManager().getAssetsUrl(smpName + "_" +  matName + ".png");
-			BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(textureUrl);
+			BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(this.plugin.getWebManager().getAssetsUrl(smpName + "_" + matName + ".png"));
 			if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
 				for (Integer i = 0; i < bufferedImage.getWidth() / bufferedImage.getHeight(); i++) {
 					coordList.add(bufferedImage.getHeight() * i + " 0 " + bufferedImage.getHeight() + " " + bufferedImage.getHeight());
@@ -147,10 +137,12 @@ public class SmpManager {
 	public CustomShape getShape(String smpName, String matName) {
 		CustomShape shape;
 		// Search for the correct shape
-		for (Integer i = 0; i < this.customShapesList.size(); i++) {
-			shape = this.customShapesList.get(i);
-			if (shape.getSmpName().equals(smpName) && shape.getMatName().equals(matName)) {
-				return shape;
+		for (Integer i = 0; i < this.shapesList.size(); i++) {
+			shape = this.shapesList.get(i);
+			if (shape.getSmpName().equals(smpName)) {
+				if (shape.getMatName().equals(matName)) {
+					return shape;
+				}
 			}
 		}
 		return null;

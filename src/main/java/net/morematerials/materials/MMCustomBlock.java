@@ -39,17 +39,12 @@ public class MMCustomBlock extends GenericCustomBlock {
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
-		String name = yaml.getString("Title", matName);
-		Boolean rotate = yaml.getBoolean("Rotation", false);
 		String texture = yaml.getString("Texture");
 		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
-		Integer baseId = yaml.getInt("BaseId", 1);
 
 		// Getting the correct model for this block.
-		GenericBlockDesign design;
 		String shapeFile = yaml.getString("Shape");
-		Integer index = shapeFile.lastIndexOf(".");
-		shapeFile = shapeFile.substring(0, index);
+		shapeFile = shapeFile.substring(0, shapeFile.lastIndexOf("."));
 		CustomShape customDesign;
 		if (shapeFile != null && plugin.getSmpManager().getShape(smpName, shapeFile) != null) {
 			customDesign = plugin.getSmpManager().getShape(smpName, shapeFile);
@@ -57,9 +52,8 @@ public class MMCustomBlock extends GenericCustomBlock {
 			customDesign = new CustomShape(plugin);
 		}
 		customDesign.build(texture, (List<String>) yaml.getList("Coords"));
-		design = customDesign;
-		
-		return new MMCustomBlock(plugin, name, texture, smpName, matName, design, rotate, baseId);
+
+		return new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1));
 	}
 
 	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId) {
@@ -67,11 +61,11 @@ public class MMCustomBlock extends GenericCustomBlock {
 		this.smpName = smpName;
 		this.materialName = matName;
 	}
-	
+
 	public String getSmpName() {
 		return this.smpName;
 	}
-	
+
 	public String getMaterialName() {
 		return this.materialName;
 	}

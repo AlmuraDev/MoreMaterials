@@ -48,42 +48,33 @@ public class GeneralExecutor implements CommandExecutor {
 		if (args.length == 0) {
 			return this.showInfo(sender);
 		}
-
+		
 		return this.showHelp(sender, args);
 	}
 
 	private boolean showInfo(CommandSender sender) {
 		PluginDescriptionFile description = this.plugin.getDescription();
-		String line;
 
 		// Show plugin line.
-		line = ChatColor.RED + description.getName();
-		line = line.concat(ChatColor.GREEN + " v" + description.getVersion());
-		sender.sendMessage(line);
+		sender.sendMessage(ChatColor.RED + description.getName() + ChatColor.GREEN + " v" + description.getVersion());
 
 		// Show authors line.
-		String authors = StringUtils.join(description.getAuthors(), ", ");
-		line = ChatColor.WHITE + "Credits to: ";
-		line = line.concat(ChatColor.BLUE + authors);
-		sender.sendMessage(line);
+		sender.sendMessage(ChatColor.WHITE + "Credits to: " + ChatColor.BLUE + StringUtils.join(description.getAuthors(), ", "));
 
 		return true;
 	}
 
 	private boolean showHelp(CommandSender sender, String[] args) {
-		PluginDescriptionFile description = this.plugin.getDescription();
-		Map<String, Map<String, Object>> commands = description.getCommands();
+		Map<String, Map<String, Object>> commands = this.plugin.getDescription().getCommands();
 		ArrayList<String> messages = new ArrayList<String>();
 
 		if (args.length > 1 && commands.containsKey(args[1])) {
 			// Show specified command.
 			messages.add(ChatColor.RED + "Help page for /" + args[1]);
 			messages.add(ChatColor.RED + "---------------------------------");
-			String commandInfo = (String) commands.get(args[1]).get("usage");
-			for (String use : StringUtils.split(commandInfo, "\n")) {
+			for (String use : StringUtils.split((String) commands.get(args[1]).get("usage"), "\n")) {
 				use = use.replaceAll("<command>", args[1] + ChatColor.GOLD);
 				messages.add(ChatColor.GREEN + use);
-
 			}
 		} else {
 			// Show all commands.
@@ -91,12 +82,12 @@ public class GeneralExecutor implements CommandExecutor {
 			messages.add(ChatColor.RED + "---------------------------------");
 			// Getting commands from plugin.yml
 			for (String commandsEntry : commands.keySet()) {
-				Map<String, Object> info = commands.get(commandsEntry);
 				messages.add(ChatColor.RED + "/" + commandsEntry);
-				messages.add("-> " + ChatColor.GOLD + info.get("description"));
+				messages.add("-> " + ChatColor.GOLD + commands.get(commandsEntry).get("description"));
 			}
 		}
 
+		// Send all messages.
 		for (Integer i = 0; i < messages.size(); i++) {
 			sender.sendMessage(messages.get(i));
 		}

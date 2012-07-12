@@ -48,25 +48,25 @@ public class CustomShape extends GenericBlockDesign {
 
 	public CustomShape(MoreMaterials plugin, ZipFile smpFile, ZipEntry entry) {
 		this.plugin = plugin;
-		
+
 		this.smpName = plugin.getUtilsManager().getName(smpFile.getName());
-		Integer index = entry.getName().lastIndexOf(".");
-		this.matName = entry.getName().substring(0, index);
-		
+		this.matName = entry.getName().substring(0, entry.getName().lastIndexOf("."));
+
 		// Read the .shape file
 		this.config = new YamlConfiguration();
 		try {
 			this.config.load(smpFile.getInputStream(entry));
 		} catch (Exception exception) {
 		}
-		
+
 		// Surrounded blocks will always be drawn.
 		this.setRenderPass(1);
-		
+
 		// Default settings.
 		this.setMinBrightness(0.0F);
+		this.setBrightness(0.5F);
 		this.setMaxBrightness(1.0F);
-		
+
 		String[] boundingBox = this.config.getString("BoundingBox").split(" ");
 
 		// Bounding box
@@ -78,7 +78,7 @@ public class CustomShape extends GenericBlockDesign {
 		int zMax = Integer.parseInt(boundingBox[5]);
 		setBoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
-	
+
 	public CustomShape(MoreMaterials plugin) {
 		this.plugin = plugin;
 		// Create a default cube
@@ -94,14 +94,16 @@ public class CustomShape extends GenericBlockDesign {
 		BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(textureUrl);
 		Texture texture = new Texture(this.plugin, textureUrl, bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getHeight());
 		this.setTexture(this.plugin, texture);
-		
+
 		// Building subtextures.
 		ArrayList<SubTexture> subTextures = new ArrayList<SubTexture>();
+		String[] coords;
 		for (Integer i = 0; i < list.size(); i++) {
-			String[] coords = list.get(i).split("[\\s]+");
-			subTextures.add(new SubTexture(texture, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]), Integer.parseInt(coords[3])));
+			coords = list.get(i).split("[\\s]+");
+			SubTexture subtex = new SubTexture(texture, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
+			subTextures.add(subtex);
 		}
-		
+
 		// Building the shape together
 		List<?> shapes = this.config.getList("Shapes");
 		setQuadNumber(shapes.toArray().length);
@@ -109,21 +111,15 @@ public class CustomShape extends GenericBlockDesign {
 		for (Object oshape : shapes) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> shape = (Map<String, Object>) oshape;
-			String coords = (String) shape.get("Coords");
-			//Quad quad = new Quad(i, texture.getSubTexture((Integer) shape.get("Texture")));
 			Integer subId = (Integer) shape.get("Texture");
 			Quad quad = new Quad(i, subTextures.get((subTextures.size() > subId ? subId : 0)));
 			int j = 0;
-			for (String line : coords.split("\\r?\\n")) {
+			for (String line : ((String) shape.get("Coords")).split("\\r?\\n")) {
 				String[] coordLine = line.split(" ");
-				quad.addVertex(j,
-					Float.parseFloat(coordLine[0]),
-					Float.parseFloat(coordLine[1]),
-					Float.parseFloat(coordLine[2])
-				);
+				quad.addVertex(j, Float.parseFloat(coordLine[0]), Float.parseFloat(coordLine[1]), Float.parseFloat(coordLine[2]));
 				j++;
 			}
-			//TODO calculate correct light source!
+			// TODO calculate correct light source!
 			setLightSource(i, 0, 1, 0);
 			setQuad(quad);
 			i++;

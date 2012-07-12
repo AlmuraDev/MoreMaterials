@@ -58,7 +58,7 @@ public class WebManager {
 
 	public WebManager(MoreMaterials plugin) {
 		this.plugin = plugin;
-		
+
 		// Get an unused port.
 		Integer port = 8080;
 		for (Integer i = port; i < port + 100; i++) {
@@ -76,10 +76,7 @@ public class WebManager {
 			hostname = plugin.getServer().getIp();
 		} else {
 			try {
-				String url = "http://automation.whatismyip.com/n09230945.asp";
-				InputStream in = new URL(url).openStream();
-				InputStreamReader stream = new InputStreamReader(in);
-				BufferedReader reader = new BufferedReader(stream);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://automation.whatismyip.com/n09230945.asp").openStream()));
 				hostname = reader.readLine();
 			} catch (IOException exception) {
 			}
@@ -90,10 +87,10 @@ public class WebManager {
 
 		// Create assets-server.
 		try {
-			HttpServer srv = HttpServer.create(new InetSocketAddress(port), 0);
-			srv.createContext("/", new MMHttpHandler(plugin));
-			srv.setExecutor(null);
-			srv.start();
+			HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+			server.createContext("/", new MMHttpHandler(plugin));
+			server.setExecutor(null);
+			server.start();
 			plugin.getUtilsManager().log("Listening: " + this.assetsUrl);
 		} catch (IOException exception) {
 			plugin.getUtilsManager().log("Assets server error!", Level.SEVERE);
@@ -112,13 +109,11 @@ public class WebManager {
 	}
 
 	public void addAsset(ZipFile smpFile, ZipEntry entry) {
-		String smpName = this.plugin.getUtilsManager().getName(smpFile.getName());
-		String zipName = entry.getName();
-		String cacheFileName = smpName + "_" + zipName;
-		
+		String cacheFileName = this.plugin.getUtilsManager().getName(smpFile.getName()) + "_" + entry.getName();
+		String path = this.getAssetsUrl(cacheFileName);
+
 		// Extract files to cache dir.
-		File cdir = new File(this.plugin.getDataFolder().getPath(), "cache");
-		File cacheFile = new File(cdir, cacheFileName);
+		File cacheFile = new File(new File(this.plugin.getDataFolder().getPath(), "cache"), cacheFileName);
 		if (!cacheFile.exists()) {
 			try {
 				InputStream inputStream = smpFile.getInputStream(entry);
@@ -134,17 +129,18 @@ public class WebManager {
 			} catch (Exception exception) {
 			}
 		}
+
 		// Cache all image buffers for performance.
 		if (entry.getName().endsWith(".png")) {
 			BufferedImage bufferedImage = null;
 			try {
-				 bufferedImage = ImageIO.read(cacheFile);
+				bufferedImage = ImageIO.read(cacheFile);
 			} catch (Exception exception) {
 			}
-			this.imageCache.put(this.getAssetsUrl(cacheFileName), bufferedImage);
+			this.imageCache.put(path, bufferedImage);
 		}
 		// Add file to spout cache.
-		SpoutManager.getFileManager().addToCache(this.plugin, this.getAssetsUrl(cacheFileName));
+		SpoutManager.getFileManager().addToCache(this.plugin, path);
 	}
 
 }
