@@ -187,4 +187,26 @@ public class SmpManager {
 		return found;
 	}
 
+	public Material getMaterial(Integer materialId) {
+		// First check for matching blocks.
+		MMCustomBlock currentBlock;
+		for (Integer i = 0; i < this.blocksList.size(); i++) {
+			currentBlock = this.blocksList.get(i);
+			if (currentBlock.getCustomId() == materialId) {
+				return currentBlock;
+			}
+		}
+		
+		// Then also check for matching items.
+		MMCustomItem currentItem;
+		for (Integer i = 0; i < this.itemsList.size(); i++) {
+			currentItem = this.itemsList.get(i);
+			if (currentItem.getCustomId() == materialId) {
+				return currentItem;
+			}
+		}
+		
+		return null;
+	}
+
 }

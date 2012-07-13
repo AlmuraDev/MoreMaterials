@@ -41,6 +41,7 @@ public class MMCustomBlock extends GenericCustomBlock {
 	private String smpName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
+	private ArrayList<String> requiredTools = new ArrayList<String>();
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
@@ -87,6 +88,14 @@ public class MMCustomBlock extends GenericCustomBlock {
 		if (this.config.contains("LightLevel")) {
 			this.setLightLevel(this.config.getInt("LightLevel"));
 		}
+		
+		// Set the required tools to make this block drop
+		if (this.config.contains("RequiredTools")) {
+			String[] tools = this.config.getString("RequiredTools").split("[\\s]+");
+			for (Integer i = 0; i < tools.length; i++) {
+				this.requiredTools.add(tools[i]);
+			}
+		}
 	}
 
 	public void configureDrops() {
@@ -103,6 +112,10 @@ public class MMCustomBlock extends GenericCustomBlock {
 
 	public String getMaterialName() {
 		return this.materialName;
+	}
+
+	public ArrayList<String> getRequiredTools() {
+		return this.requiredTools;
 	}
 
 }
