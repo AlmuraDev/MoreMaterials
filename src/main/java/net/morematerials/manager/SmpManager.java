@@ -34,6 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.getspout.spoutapi.material.Material;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomShape;
@@ -146,6 +147,35 @@ public class SmpManager {
 			}
 		}
 		return null;
+	}
+
+	public ArrayList<Material> getMaterial(String fullName) {
+		String[] nameParts = fullName.split("\\.");
+		ArrayList<Material> found = new ArrayList<Material>();
+		
+		// First check for matching blocks.
+		MMCustomBlock currentBlock;
+		for (Integer i = 0; i < this.blocksList.size(); i++) {
+			currentBlock = this.blocksList.get(i);
+			if (nameParts.length == 1 && currentBlock.getMaterialName().equals(nameParts[0])) {
+				found.add(currentBlock);
+			} else if (currentBlock.getSmpName().equals(nameParts[0]) && currentBlock.getMaterialName().equals(nameParts[1])) {
+				found.add(currentBlock);
+			}
+		}
+		
+		// Then also check for matching items.
+		MMCustomItem currentItem;
+		for (Integer i = 0; i < this.itemsList.size(); i++) {
+			currentItem = this.itemsList.get(i);
+			if (nameParts.length == 1 && currentItem.getMaterialName().equals(nameParts[0])) {
+				found.add(currentItem);
+			} else if (currentItem.getSmpName().equals(nameParts[0]) && currentItem.getMaterialName().equals(nameParts[1])) {
+				found.add(currentItem);
+			}
+		}
+		
+		return found;
 	}
 
 }

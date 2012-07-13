@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 import net.morematerials.commands.GeneralExecutor;
+import net.morematerials.commands.GiveExecutor;
 import net.morematerials.listeners.MMListener;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
@@ -83,7 +84,7 @@ public class MoreMaterials extends JavaPlugin {
 
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
-		// TODO rewrite give command
+		this.getCommand("mmgive").setExecutor(new GiveExecutor(this));
 	}
 
 	public HandlerManager getHandlerManager() {
