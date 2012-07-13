@@ -38,13 +38,31 @@ public class MMCustomItem extends GenericCustomTool {
 		String texture = yaml.getString("Texture");
 		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
-		return new MMCustomItem(plugin, yaml.getString("Title", matName), texture, smpName, matName);
+		
+		// Build the item.
+		MMCustomItem item = new MMCustomItem(plugin, yaml.getString("Title", matName), texture, smpName, matName);
+		item.configureBase(yaml);
+		return item;
 	}
 
 	public MMCustomItem(MoreMaterials plugin, String name, String texture, String smpName, String matName) {
 		super(plugin, name, texture);
 		this.smpName = smpName;
 		this.materialName = matName;
+	}
+
+	private void configureBase(YamlConfiguration config) {
+		// Set the items durability
+		if (config.contains("Durability")) {
+			this.setMaxDurability((short) config.getInt("Durability"));
+		}
+		
+		// Set the items stackability
+		if (config.contains("ToolGroups")) {
+			this.setStackable(false);
+		} else if (config.contains("Stackable")) {
+			this.setStackable(config.getBoolean("Stackable"));
+		}
 	}
 
 	public String getSmpName() {

@@ -53,13 +53,33 @@ public class MMCustomBlock extends GenericCustomBlock {
 		}
 		customDesign.build(texture, (List<String>) yaml.getList("Coords"));
 
-		return new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1));
+		// Build the block.
+		MMCustomBlock block = new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1));
+		block.configureBase(yaml);
+		return block;
 	}
 
 	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId) {
 		super(plugin, name, baseId, design, rotate);
 		this.smpName = smpName;
 		this.materialName = matName;
+	}
+
+	private void configureBase(YamlConfiguration config) {
+		// Set the blocks base hardness
+		if (config.contains("Hardness")) {
+			this.setHardness((float) config.getDouble("Hardness"));
+		}
+		
+		// Set the blocks friction
+		if (config.contains("Friction")) {
+			this.setFriction((float) config.getDouble("Friction"));
+		}
+		
+		// Set the blocks lightlevel
+		if (config.contains("LightLevel")) {
+			this.setLightLevel(config.getInt("LightLevel"));
+		}
 	}
 
 	public String getSmpName() {
