@@ -95,6 +95,11 @@ public class SmpManager {
 		for (String matName : materials.keySet()) {
 			this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
 		}
+		
+		// Second loop - Now we can reference all drops
+		for (Integer i = 0; i < this.blocksList.size(); i++) {
+			this.blocksList.get(i).configureDrops();
+		}
 	}
 
 	private void createMaterial(String smpName, String matName, YamlConfiguration yaml, ZipFile smpFile) {
@@ -147,6 +152,10 @@ public class SmpManager {
 			}
 		}
 		return null;
+	}
+
+	public ArrayList<Material> getMaterial(String smpName, String matName) {
+		return this.getMaterial(smpName + "." + matName);
 	}
 
 	public ArrayList<Material> getMaterial(String fullName) {

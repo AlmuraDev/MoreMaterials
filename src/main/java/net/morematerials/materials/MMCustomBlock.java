@@ -24,18 +24,23 @@
 
 package net.morematerials.materials;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 
 public class MMCustomBlock extends GenericCustomBlock {
 
 	private String materialName;
 	private String smpName;
+	private YamlConfiguration config;
+	private MoreMaterials plugin;
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
@@ -54,32 +59,42 @@ public class MMCustomBlock extends GenericCustomBlock {
 		customDesign.build(texture, (List<String>) yaml.getList("Coords"));
 
 		// Build the block.
-		MMCustomBlock block = new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1));
-		block.configureBase(yaml);
+		MMCustomBlock block = new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1), yaml);
+		block.configureBase();
 		return block;
 	}
 
-	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId) {
+	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId, YamlConfiguration config) {
 		super(plugin, name, baseId, design, rotate);
+		this.plugin = plugin;
 		this.smpName = smpName;
 		this.materialName = matName;
+		this.config = config;
 	}
 
-	private void configureBase(YamlConfiguration config) {
+	private void configureBase() {
 		// Set the blocks base hardness
-		if (config.contains("Hardness")) {
-			this.setHardness((float) config.getDouble("Hardness"));
+		if (this.config.contains("Hardness")) {
+			this.setHardness((float) this.config.getDouble("Hardness"));
 		}
 		
 		// Set the blocks friction
-		if (config.contains("Friction")) {
-			this.setFriction((float) config.getDouble("Friction"));
+		if (this.config.contains("Friction")) {
+			this.setFriction((float) this.config.getDouble("Friction"));
 		}
 		
 		// Set the blocks lightlevel
-		if (config.contains("LightLevel")) {
-			this.setLightLevel(config.getInt("LightLevel"));
+		if (this.config.contains("LightLevel")) {
+			this.setLightLevel(this.config.getInt("LightLevel"));
 		}
+	}
+
+	public void configureDrops() {
+		// Configure itemdrop
+		String drop = this.config.contains("ItemDrop") ? this.config.getString("ItemDrop") : this.materialName;
+		Integer dropCount = this.config.contains("ItemDropAmount") ? this.config.getInt("ItemDropAmount") : 1;
+		ArrayList<Material> materials = this.plugin.getSmpManager().getMaterial(this.smpName, drop);
+		this.setItemDrop(new SpoutItemStack(materials.get(0), dropCount));
 	}
 
 	public String getSmpName() {
