@@ -53,9 +53,7 @@ public class MMCustomItem extends GenericCustomTool {
 
 	private void configureBase(YamlConfiguration config) {
 		// Set the items durability
-		if (config.contains("Durability")) {
-			this.setMaxDurability((short) config.getInt("Durability"));
-		}
+		this.setMaxDurability((short) config.getInt("Durability", 0));
 		
 		// Set the items stackability
 		if (config.contains("ToolGroups")) {

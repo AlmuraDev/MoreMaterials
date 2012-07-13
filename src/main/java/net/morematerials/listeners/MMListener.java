@@ -21,15 +21,60 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
 
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.material.item.GenericCustomTool;
+import org.getspout.spoutapi.player.SpoutPlayer;
+import org.getspout.spoutapi.sound.SoundEffect;
 
 public class MMListener implements Listener {
 
 	public MMListener(MoreMaterials plugin) {
+		// TODO this listeres should trigger all handlers
+		// TODO implement tool-groups
+		// TODO implement stackable
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		// Make sure we have a valid event.
+		if (event.getPlayer() == null) {
+			return;
+		}
+		
+		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+
+		// Make sure we have a valid event.
+		if (player.getItemInHand() == null) {
+			return;
+		}
+
+		// Check for durability.
+		SpoutItemStack stack = new SpoutItemStack(player.getItemInHand());
+		if (stack.isCustomItem() && stack.getMaterial() instanceof GenericCustomTool) {
+			GenericCustomTool tool = (GenericCustomTool) stack.getMaterial();
+			// Only for materials with durability.
+			if (tool.getMaxDurability() == 0) {
+				return;
+			} else if (GenericCustomTool.getDurability(stack) + 1 < tool.getMaxDurability()) {
+				GenericCustomTool.setDurability(stack, (short) (GenericCustomTool.getDurability(stack) + 1));
+				player.setItemInHand(stack);
+			} else {
+				player.setItemInHand(new ItemStack(Material.AIR));
+				// TODO implement correct break sound
+				SpoutManager.getSoundManager().playSoundEffect(player, SoundEffect.CLICK);
+			}
+		}
 	}
 
 }
