@@ -56,9 +56,7 @@ public class MMCustomItem extends GenericCustomTool {
 		this.setMaxDurability((short) config.getInt("Durability", 0));
 		
 		// Set the items stackability
-		if (config.contains("ToolGroups")) {
-			this.setStackable(false);
-		} else if (config.contains("Stackable")) {
+		if (config.contains("Stackable")) {
 			this.setStackable(config.getBoolean("Stackable"));
 		}
 	}

@@ -34,6 +34,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
@@ -49,10 +50,14 @@ public class MMListener implements Listener {
 	public MMListener(MoreMaterials plugin) {
 		this.plugin = plugin;
 		// TODO this listeres should trigger all handlers
-		// TODO implement tools break-speed multiplicator
 		// TODO implement stackable
 	}
 	
+	@EventHandler
+	public void onBlockDamage(BlockDamageEvent event) {
+		// TODO implement tools break-speed multiplicator
+	}
+
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		// Make sure we have a valid event.
