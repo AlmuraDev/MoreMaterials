@@ -70,12 +70,12 @@ public class CustomShape extends GenericBlockDesign {
 		String[] boundingBox = this.config.getString("BoundingBox").split(" ");
 
 		// Bounding box
-		int xMin = Integer.parseInt(boundingBox[0]);
-		int yMin = Integer.parseInt(boundingBox[1]);
-		int zMin = Integer.parseInt(boundingBox[2]);
-		int xMax = Integer.parseInt(boundingBox[3]);
-		int yMax = Integer.parseInt(boundingBox[4]);
-		int zMax = Integer.parseInt(boundingBox[5]);
+		Float xMin = Float.parseFloat("0" + boundingBox[0]);
+		Float yMin = Float.parseFloat("0" + boundingBox[1]);
+		Float zMin = Float.parseFloat("0" + boundingBox[2]);
+		Float xMax = Float.parseFloat("0" + boundingBox[3]);
+		Float yMax = Float.parseFloat("0" + boundingBox[4]);
+		Float zMax = Float.parseFloat("0" + boundingBox[5]);
 		setBoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
@@ -116,7 +116,11 @@ public class CustomShape extends GenericBlockDesign {
 			int j = 0;
 			for (String line : ((String) shape.get("Coords")).split("\\r?\\n")) {
 				String[] coordLine = line.split(" ");
-				quad.addVertex(j, Float.parseFloat(coordLine[0]), Float.parseFloat(coordLine[1]), Float.parseFloat(coordLine[2]));
+				quad.addVertex(j,
+					Float.parseFloat("0" + coordLine[0]),
+					Float.parseFloat("0" + coordLine[1]),
+					Float.parseFloat("0" + coordLine[2])
+				);
 				j++;
 			}
 			// FIXME this is a rotation from which the light shines on the face.
