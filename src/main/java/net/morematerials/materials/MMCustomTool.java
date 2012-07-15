@@ -27,31 +27,34 @@ package net.morematerials.materials;
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.getspout.spoutapi.material.item.GenericCustomItem;
+import org.getspout.spoutapi.material.item.GenericCustomTool;
 
-public class MMCustomItem extends GenericCustomItem {
+public class MMCustomTool extends GenericCustomTool {
 
 	private String materialName;
 	private String smpName;
 
-	public static MMCustomItem create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
+	public static MMCustomTool create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String texture = yaml.getString("Texture");
 		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
 		
 		// Build the item.
-		MMCustomItem item = new MMCustomItem(plugin, yaml.getString("Title", matName), texture, smpName, matName);
+		MMCustomTool item = new MMCustomTool(plugin, yaml.getString("Title", matName), texture, smpName, matName);
 		item.configureBase(yaml);
 		return item;
 	}
 
-	public MMCustomItem(MoreMaterials plugin, String name, String texture, String smpName, String matName) {
+	public MMCustomTool(MoreMaterials plugin, String name, String texture, String smpName, String matName) {
 		super(plugin, name, texture);
 		this.smpName = smpName;
 		this.materialName = matName;
 	}
 
 	private void configureBase(YamlConfiguration config) {
+		// Set the items durability
+		this.setMaxDurability((short) config.getInt("Durability", 0));
+		
 		// Set the items stackability
 		if (config.contains("Stackable")) {
 			this.setStackable(config.getBoolean("Stackable"));

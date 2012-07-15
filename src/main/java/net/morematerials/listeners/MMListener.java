@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.MMCustomBlock;
-import net.morematerials.materials.MMCustomItem;
+import net.morematerials.materials.MMCustomTool;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -115,7 +115,7 @@ public class MMListener implements Listener {
 							SpoutItemStack stack = new SpoutItemStack(player.getItemInHand());
 							if (stack.isCustomItem() && stack.getMaterial() instanceof GenericCustomTool) {
 								org.getspout.spoutapi.material.Material item = this.plugin.getSmpManager().getMaterial(((GenericCustomTool) stack.getMaterial()).getCustomId());
-								if (item != null && ((MMCustomItem) item).getSmpName().equals(mmBlock.getSmpName()) && ((MMCustomItem) item).getMaterialName().equals(mmBlock.getMaterialName())) {
+								if (item != null && ((MMCustomTool) item).getSmpName().equals(mmBlock.getSmpName()) && ((MMCustomTool) item).getMaterialName().equals(mmBlock.getMaterialName())) {
 									canBreak = true;
 								}
 							}

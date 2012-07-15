@@ -40,6 +40,7 @@ import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomShape;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;
+import net.morematerials.materials.MMCustomTool;
 
 public class SmpManager {
 
@@ -47,6 +48,7 @@ public class SmpManager {
 
 	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
+	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
 	private ArrayList<CustomShape> shapesList = new ArrayList<CustomShape>();
 
 	public SmpManager(MoreMaterials plugin) {
@@ -112,6 +114,8 @@ public class SmpManager {
 		// Create the actual materials.
 		if (yaml.getString("Type", "").equals("Block")) {
 			this.blocksList.add(MMCustomBlock.create(this.plugin, yaml, smpName, matName));
+		} else if (yaml.getString("Type", "").equals("Tool")) {
+			this.toolsList.add(MMCustomTool.create(this.plugin, yaml, smpName, matName));
 		} else {
 			this.itemsList.add(MMCustomItem.create(this.plugin, yaml, smpName, matName));
 		}
@@ -184,6 +188,17 @@ public class SmpManager {
 			}
 		}
 		
+		// Then also check for matching tools.
+		MMCustomTool currentTool;
+		for (Integer i = 0; i < this.toolsList.size(); i++) {
+			currentTool = this.toolsList.get(i);
+			if (nameParts.length == 1 && currentTool.getMaterialName().equals(nameParts[0])) {
+				found.add(currentTool);
+			} else if (currentTool.getSmpName().equals(nameParts[0]) && currentTool.getMaterialName().equals(nameParts[1])) {
+				found.add(currentTool);
+			}
+		}
+		
 		return found;
 	}
 
@@ -203,6 +218,15 @@ public class SmpManager {
 			currentItem = this.itemsList.get(i);
 			if (currentItem.getCustomId() == materialId) {
 				return currentItem;
+			}
+		}
+		
+		// Then also check for matching tools.
+		MMCustomTool currentTool;
+		for (Integer i = 0; i < this.toolsList.size(); i++) {
+			currentTool = this.toolsList.get(i);
+			if (currentTool.getCustomId() == materialId) {
+				return currentTool;
 			}
 		}
 		
