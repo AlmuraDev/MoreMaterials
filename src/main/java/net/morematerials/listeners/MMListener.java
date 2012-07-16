@@ -52,7 +52,6 @@ public class MMListener implements Listener {
 		this.plugin = plugin;
 		// TODO this listener should trigger all handlers
 		// TODO implement stackable
-		// TODO allow drop for legacy materials with custom tools
 	}
 	
 	@EventHandler
