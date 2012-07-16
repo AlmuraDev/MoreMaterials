@@ -41,6 +41,7 @@ import net.morematerials.materials.CustomShape;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;
 import net.morematerials.materials.MMCustomTool;
+import net.morematerials.materials.MMLegacyMaterial;
 
 public class SmpManager {
 
@@ -49,6 +50,7 @@ public class SmpManager {
 	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
+	private ArrayList<MMLegacyMaterial> legacyList = new ArrayList<MMLegacyMaterial>();
 	private ArrayList<CustomShape> shapesList = new ArrayList<CustomShape>();
 
 	public SmpManager(MoreMaterials plugin) {
@@ -112,7 +114,14 @@ public class SmpManager {
 		}
 
 		// Create the actual materials.
-		if (yaml.getString("Type", "").equals("Block")) {
+		if (matName.matches("^[0-9]+$")) {
+			MMLegacyMaterial material = this.getLegacyMaterial(Integer.parseInt(matName));
+			if (material == null) {
+				this.legacyList.add(new MMLegacyMaterial(yaml, smpName, matName));
+			} else {
+				material.configureBase(smpName, yaml);
+			}
+		} else if (yaml.getString("Type", "").equals("Block")) {
 			this.blocksList.add(MMCustomBlock.create(this.plugin, yaml, smpName, matName));
 		} else if (yaml.getString("Type", "").equals("Tool")) {
 			this.toolsList.add(MMCustomTool.create(this.plugin, yaml, smpName, matName));
@@ -230,6 +239,18 @@ public class SmpManager {
 			}
 		}
 		
+		return null;
+	}
+
+	public MMLegacyMaterial getLegacyMaterial(Integer materialId) {
+		// Get correct legacy material.
+		MMLegacyMaterial currentMaterial;
+		for (Integer i = 0; i < this.legacyList.size(); i++) {
+			currentMaterial = this.legacyList.get(i);
+			if (currentMaterial.getMaterialId() == materialId) {
+				return currentMaterial;
+			}
+		}
 		return null;
 	}
 
