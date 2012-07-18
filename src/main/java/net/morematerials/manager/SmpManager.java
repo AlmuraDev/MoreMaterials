@@ -24,7 +24,6 @@
 
 package net.morematerials.manager;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -51,7 +50,6 @@ import net.morematerials.materials.CustomShape;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;
 import net.morematerials.materials.MMCustomTool;
-import net.morematerials.materials.MMLegacyMaterial;
 
 public class SmpManager {
 
@@ -60,7 +58,6 @@ public class SmpManager {
 	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
-	private ArrayList<MMLegacyMaterial> legacyList = new ArrayList<MMLegacyMaterial>();
 	private ArrayList<CustomShape> shapesList = new ArrayList<CustomShape>();
 
 	public SmpManager(MoreMaterials plugin) {
@@ -120,26 +117,15 @@ public class SmpManager {
 			this.registerRecipes(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName));
 		}
 		
-		// At last load legacyrecipes.yml for compatibility
-		this.loadLegacyRecipes();
+		// Fourth loops - Set all strength modifiers.
+		for (Integer i = 0; i < this.toolsList.size(); i++) {
+			this.toolsList.get(i).configureModifiers();
+		}
 	}
 
 	private void createMaterial(String smpName, String matName, YamlConfiguration yaml, ZipFile smpFile) {
-		// Allow reading of old .smp files.
-		if (!yaml.contains("Texture")) {
-			yaml = this.updateConfiguration(yaml, smpName, matName);
-			this.plugin.getUtilsManager().log("Please update " + matName + ".yml", Level.WARNING);
-		}
-
 		// Create the actual materials.
-		if (matName.matches("^[0-9]+$")) {
-			MMLegacyMaterial material = this.getLegacyMaterial(Integer.parseInt(matName));
-			if (material == null) {
-				this.legacyList.add(new MMLegacyMaterial(yaml, smpName, matName));
-			} else {
-				material.configureBase(smpName, yaml);
-			}
-		} else if (yaml.getString("Type", "").equals("Block")) {
+		if (yaml.getString("Type", "").equals("Block")) {
 			this.blocksList.add(MMCustomBlock.create(this.plugin, yaml, smpName, matName));
 		} else if (yaml.getString("Type", "").equals("Tool")) {
 			this.toolsList.add(MMCustomTool.create(this.plugin, yaml, smpName, matName));
@@ -148,28 +134,6 @@ public class SmpManager {
 		}
 	}
 
-	@Deprecated
-	private YamlConfiguration updateConfiguration(YamlConfiguration yaml, String smpName, String matName) {
-		// Update old .yml configurations to newer format.
-		yaml.set("Texture", matName + ".png");
-		if (((String) yaml.get("Type")).equals("Block")) {
-			yaml.set("Shape", matName + ".shape");
-			yaml.set("BaseId", yaml.get("BlockID"));
-
-			// Creating the texture map list.
-			ArrayList<String> coordList = new ArrayList<String>();
-			BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(this.plugin.getWebManager().getAssetsUrl(smpName + "_" + matName + ".png"));
-			if (bufferedImage.getWidth() > bufferedImage.getHeight()) {
-				for (Integer i = 0; i < bufferedImage.getWidth() / bufferedImage.getHeight(); i++) {
-					coordList.add(bufferedImage.getHeight() * i + " 0 " + bufferedImage.getHeight() + " " + bufferedImage.getHeight());
-				}
-			} else {
-				coordList.add("0 0 " + bufferedImage.getWidth() + " " + bufferedImage.getHeight());
-			}
-			yaml.set("Coords", coordList);
-		}
-		return yaml;
-	}
 
 	public CustomShape getShape(String smpName, String matName) {
 		CustomShape shape;
@@ -185,22 +149,13 @@ public class SmpManager {
 		return null;
 	}
 
-	public ArrayList<Material> getMaterial(String smpName, String matName) {
-		return this.getMaterial(smpName + "." + matName);
-	}
-
-	public ArrayList<Material> getMaterial(String fullName) {
-		String[] nameParts = fullName.split("\\.");
-		ArrayList<Material> found = new ArrayList<Material>();
-		
+	public Material getMaterial(String smpName, String matName) {
 		// First check for matching blocks.
 		MMCustomBlock currentBlock;
 		for (Integer i = 0; i < this.blocksList.size(); i++) {
 			currentBlock = this.blocksList.get(i);
-			if (nameParts.length == 1 && currentBlock.getMaterialName().equals(nameParts[0])) {
-				found.add(currentBlock);
-			} else if (currentBlock.getSmpName().equals(nameParts[0]) && currentBlock.getMaterialName().equals(nameParts[1])) {
-				found.add(currentBlock);
+			if (currentBlock.getSmpName().equals(smpName) && currentBlock.getMaterialName().equals(matName)) {
+				return currentBlock;
 			}
 		}
 		
@@ -208,10 +163,8 @@ public class SmpManager {
 		MMCustomItem currentItem;
 		for (Integer i = 0; i < this.itemsList.size(); i++) {
 			currentItem = this.itemsList.get(i);
-			if (nameParts.length == 1 && currentItem.getMaterialName().equals(nameParts[0])) {
-				found.add(currentItem);
-			} else if (currentItem.getSmpName().equals(nameParts[0]) && currentItem.getMaterialName().equals(nameParts[1])) {
-				found.add(currentItem);
+			if (currentItem.getSmpName().equals(smpName) && currentItem.getMaterialName().equals(matName)) {
+				return currentItem;
 			}
 		}
 		
@@ -219,14 +172,12 @@ public class SmpManager {
 		MMCustomTool currentTool;
 		for (Integer i = 0; i < this.toolsList.size(); i++) {
 			currentTool = this.toolsList.get(i);
-			if (nameParts.length == 1 && currentTool.getMaterialName().equals(nameParts[0])) {
-				found.add(currentTool);
-			} else if (currentTool.getSmpName().equals(nameParts[0]) && currentTool.getMaterialName().equals(nameParts[1])) {
-				found.add(currentTool);
+			if (currentTool.getSmpName().equals(smpName) && currentTool.getMaterialName().equals(matName)) {
+				return currentTool;
 			}
 		}
 		
-		return found;
+		return null;
 	}
 
 	public Material getMaterial(Integer materialId) {
@@ -260,21 +211,8 @@ public class SmpManager {
 		return null;
 	}
 
-	public MMLegacyMaterial getLegacyMaterial(Integer materialId) {
-		// Get correct legacy material.
-		MMLegacyMaterial currentMaterial;
-		for (Integer i = 0; i < this.legacyList.size(); i++) {
-			currentMaterial = this.legacyList.get(i);
-			if (currentMaterial.getMaterialId() == materialId) {
-				return currentMaterial;
-			}
-		}
-		return null;
-	}
-
 	private void registerRecipes(String smpName, String matName, YamlConfiguration config) {
-		//TODO Unchecked cast warning remove
-		List<YamlConfiguration> recipes = (List<YamlConfiguration>) config.getList("Recipes");
+		List<?> recipes = config.getList("Recipes");
 		// Make sure we have a valid list.
 		if (recipes == null) {
 			return;
@@ -285,26 +223,26 @@ public class SmpManager {
 		if (matName.matches("^[0-9]+$")) {
 			material = this.getMaterial(Integer.parseInt(matName));
 		} else {
-			material = this.getMaterial(smpName, matName).get(0);
+			material = this.getMaterial(smpName, matName);
 		}
-		
-		for (YamlConfiguration recipe : recipes) {
+		for (Object orecipe : recipes) {
+			//TODO Unchecked cast warning remove
+			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			// This is what we want to craft.
-			Integer amount = recipe.getInt("Amount", 1);
+			Integer amount = recipe.containsKey("Amount") ? (Integer) recipe.get("Amount") : 1;
 			SpoutItemStack stack = new SpoutItemStack(material, amount);
-			String ingredients = recipe.getString("Ingredients");
+			String ingredients = (String) recipe.get("Ingredients");
 
 			// Building recipe
-			String type = recipe.getString("Type");
+			String type = (String) recipe.get("Type");
 			if (type.equalsIgnoreCase("Furnace")) {
 				// Easy furnace stuff :D
 				Material ingredient;
 				if (ingredients.matches("^[0-9]+$")) {
 					ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
 				} else {
-					ingredient = this.getMaterial(smpName, matName).get(0);
+					ingredient = this.getMaterial(smpName, matName);
 				}
-				//TODO figure out why we need param2 and param3
 				FurnaceRecipes.CustomFurnaceRecipe(new SpoutItemStack(material, amount), ingredient.getRawId(), ingredient.getRawData());
 			} else {
 				Recipe sRecipe = null;
@@ -320,8 +258,8 @@ public class SmpManager {
 				
 				// Parse all lines
 				Integer currentLine = 0;
-				Integer currentColumn = 0;
 				for (String line : ingredients.split("\\r?\\n")) {
+					Integer currentColumn = 0;
 					for (String ingredientitem : line.split(" ")) {
 						// Skip "air"
 						if (ingredientitem.equals("0")) {
@@ -334,7 +272,7 @@ public class SmpManager {
 						if (ingredients.matches("^[0-9]+$")) {
 							ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
 						} else {
-							ingredient = this.getMaterial(smpName, matName).get(0);
+							ingredient = this.getMaterial(smpName, matName);
 						}
 						
 						// Add the ingredient
@@ -344,17 +282,14 @@ public class SmpManager {
 						} else {
 							((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
 						}
+						currentColumn++;
 					}
+					currentLine++;
 				}
 				// Finaly register recipe.
 				SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
 			}
 		}
-	}
-
-	@Deprecated
-	private void loadLegacyRecipes() {
-		//TODO just load it :D
 	}
 
 }

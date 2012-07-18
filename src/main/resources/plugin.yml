@@ -11,6 +11,9 @@ commands:
   mm:
     description: Some basic commands!
     usage: /<command> [?]
+  mmdebug:
+    description: Show information about current material.
+    usage: /<command>
   mmgive:
     description: Gives you a custom material.
     usage: /<command> [custom material] {amount}

@@ -24,15 +24,20 @@
 
 package net.morematerials.materials;
 
+import java.util.List;
+
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 
 public class MMCustomTool extends GenericCustomTool {
 
 	private String materialName;
 	private String smpName;
+	private YamlConfiguration config;
+	private MoreMaterials plugin;
 
 	public static MMCustomTool create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String texture = yaml.getString("Texture");
@@ -40,25 +45,21 @@ public class MMCustomTool extends GenericCustomTool {
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
 		
 		// Build the item.
-		MMCustomTool item = new MMCustomTool(plugin, yaml.getString("Title", matName), texture, smpName, matName);
-		item.configureBase(yaml);
-		return item;
+		return new MMCustomTool(plugin, yaml, texture, smpName, matName);
 	}
 
-	public MMCustomTool(MoreMaterials plugin, String name, String texture, String smpName, String matName) {
-		super(plugin, name, texture);
+	public MMCustomTool(MoreMaterials plugin, YamlConfiguration config, String texture, String smpName, String matName) {
+		super(plugin, config.getString("Title", matName), texture);
 		this.smpName = smpName;
 		this.materialName = matName;
-	}
-
-	private void configureBase(YamlConfiguration config) {
+		this.config = config;
+		this.plugin = plugin;
+		
 		// Set the items durability
-		this.setMaxDurability((short) config.getInt("Durability", 0));
+		this.setMaxDurability((short) this.config.getInt("Durability", 0));
 		
 		// Set the items stackability
-		if (config.contains("Stackable")) {
-			this.setStackable(config.getBoolean("Stackable"));
-		}
+		this.setStackable(this.config.getBoolean("Stackable", false));
 	}
 
 	public String getSmpName() {
@@ -67,6 +68,17 @@ public class MMCustomTool extends GenericCustomTool {
 
 	public String getMaterialName() {
 		return this.materialName;
+	}
+
+	public void configureModifiers() {
+		if (this.config.contains("ToolLevels")) {
+			List<?> blocks = this.config.getList("ToolLevels");
+			for (Integer i = 0; i < blocks.size(); i++) {
+				String[] blockInfo = ((String) blocks.get(i)).split("[\\s]+");
+				Block block = (Block) this.plugin.getSmpManager().getMaterial(this.smpName, blockInfo[0]);
+				this.setStrengthModifier(block, Float.parseFloat(blockInfo[1]));
+			}
+		}
 	}
 
 }

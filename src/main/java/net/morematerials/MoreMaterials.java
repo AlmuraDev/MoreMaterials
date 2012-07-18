@@ -27,6 +27,7 @@ package net.morematerials;
 import java.io.File;
 import java.util.logging.Level;
 
+import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
 import net.morematerials.listeners.MMListener;
@@ -50,9 +51,10 @@ public class MoreMaterials extends JavaPlugin {
 	public void onEnable() {
 		// Try to create the required folders.
 		File file;
+		this.getDataFolder().mkdirs();
 		String[] folders = { "materials", "handlers", "cache" };
 		for (String folder : folders) {
-			file = new File(this.getDataFolder().getPath(), folder);
+			file = new File(this.getDataFolder(), folder);
 			if (!file.exists()) {
 				file.mkdirs();
 			}
@@ -61,8 +63,8 @@ public class MoreMaterials extends JavaPlugin {
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
 		this.webManager = new WebManager(this);
-		this.smpManager = new SmpManager(this);
 		this.handlerManager = new HandlerManager(this);
+		this.smpManager = new SmpManager(this);
 		this.smpManager.init();
 
 		// Read plugin configuration
@@ -80,10 +82,11 @@ public class MoreMaterials extends JavaPlugin {
 		}
 
 		// Registered events.
-		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
+		this.getServer().getPluginManager().registerEvents(new MMListener(), this);
 
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
+		this.getCommand("mmdebug").setExecutor(new DebugExecutor(this));
 		this.getCommand("mmgive").setExecutor(new GiveExecutor(this));
 	}
 

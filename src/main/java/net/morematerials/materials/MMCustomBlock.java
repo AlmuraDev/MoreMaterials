@@ -24,7 +24,6 @@
 
 package net.morematerials.materials;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.morematerials.MoreMaterials;
@@ -41,7 +40,6 @@ public class MMCustomBlock extends GenericCustomBlock {
 	private String smpName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
-	private ArrayList<String> requiredTools = new ArrayList<String>();
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
@@ -60,50 +58,33 @@ public class MMCustomBlock extends GenericCustomBlock {
 		customDesign.build(texture, (List<String>) yaml.getList("Coords"));
 
 		// Build the block.
-		MMCustomBlock block = new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1), yaml);
-		block.configureBase();
-		return block;
+		return new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1), yaml);
 	}
 
 	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId, YamlConfiguration config) {
-		super(plugin, name, baseId, design, rotate);
+		super(plugin, smpName + "." + matName, baseId, design, rotate);
 		this.plugin = plugin;
 		this.smpName = smpName;
 		this.materialName = matName;
 		this.config = config;
-	}
-
-	private void configureBase() {
+		this.setName(name);
+		
 		// Set the blocks base hardness
-		if (this.config.contains("Hardness")) {
-			this.setHardness((float) this.config.getDouble("Hardness"));
-		}
+		this.setHardness((float) this.config.getDouble("Hardness", this.getHardness()));
 		
 		// Set the blocks friction
-		if (this.config.contains("Friction")) {
-			this.setFriction((float) this.config.getDouble("Friction"));
-		}
+		this.setFriction((float) this.config.getDouble("Friction", this.getFriction()));
 		
 		// Set the blocks lightlevel
-		if (this.config.contains("LightLevel")) {
-			this.setLightLevel(this.config.getInt("LightLevel"));
-		}
-		
-		// Set the required tools to make this block drop
-		if (this.config.contains("RequiredTools")) {
-			String[] tools = this.config.getString("RequiredTools").split("[\\s]+");
-			for (Integer i = 0; i < tools.length; i++) {
-				this.requiredTools.add(tools[i]);
-			}
-		}
+		this.setLightLevel(this.config.getInt("LightLevel", 0));
 	}
 
 	public void configureDrops() {
 		// Configure itemdrop
-		String drop = this.config.contains("ItemDrop") ? this.config.getString("ItemDrop") : this.materialName;
-		Integer dropCount = this.config.contains("ItemDropAmount") ? this.config.getInt("ItemDropAmount") : 1;
-		ArrayList<Material> materials = this.plugin.getSmpManager().getMaterial(this.smpName, drop);
-		this.setItemDrop(new SpoutItemStack(materials.get(0), dropCount));
+		String drop = this.config.getString("ItemDrop", this.materialName);
+		Integer dropCount = this.config.getInt("ItemDropAmount", 1);
+		Material materials = this.plugin.getSmpManager().getMaterial(this.smpName, drop);
+		this.setItemDrop(new SpoutItemStack(materials, dropCount));
 	}
 
 	public String getSmpName() {
@@ -112,10 +93,6 @@ public class MMCustomBlock extends GenericCustomBlock {
 
 	public String getMaterialName() {
 		return this.materialName;
-	}
-
-	public ArrayList<String> getRequiredTools() {
-		return this.requiredTools;
 	}
 
 }

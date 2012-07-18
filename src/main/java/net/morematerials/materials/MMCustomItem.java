@@ -40,22 +40,16 @@ public class MMCustomItem extends GenericCustomItem {
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
 		
 		// Build the item.
-		MMCustomItem item = new MMCustomItem(plugin, yaml.getString("Title", matName), texture, smpName, matName);
-		item.configureBase(yaml);
-		return item;
+		return new MMCustomItem(plugin, yaml, texture, smpName, matName);
 	}
 
-	public MMCustomItem(MoreMaterials plugin, String name, String texture, String smpName, String matName) {
-		super(plugin, name, texture);
+	public MMCustomItem(MoreMaterials plugin, YamlConfiguration config, String texture, String smpName, String matName) {
+		super(plugin, config.getString("Title", matName), texture);
 		this.smpName = smpName;
 		this.materialName = matName;
-	}
-
-	private void configureBase(YamlConfiguration config) {
+		
 		// Set the items stackability
-		if (config.contains("Stackable")) {
-			this.setStackable(config.getBoolean("Stackable"));
-		}
+		this.setStackable(config.getBoolean("Stackable", true));
 	}
 
 	public String getSmpName() {
