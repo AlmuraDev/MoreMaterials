@@ -50,14 +50,12 @@ public class DebugExecutor implements CommandExecutor {
 		if (sender instanceof Player) {
 			// This command is only useable by players with permission
 			if (!this.plugin.getUtilsManager().hasPermission(sender, "morematerials.admin")) {
-System.out.print("1");
 				return false;
 			}
 			
 			// Make sure its a custom material
 			SpoutItemStack handStack = new SpoutItemStack(((Player) sender).getItemInHand());
 			if (!handStack.isCustomItem()) {
-System.out.print("2");
 				return true;
 			}
 			
@@ -72,7 +70,6 @@ System.out.print("2");
 			// Only check MoreMaterials materials.
 			Material material = this.plugin.getSmpManager().getMaterial(materialId);
 			if (material == null) {
-System.out.print("3");
 				return true;
 			}
 			

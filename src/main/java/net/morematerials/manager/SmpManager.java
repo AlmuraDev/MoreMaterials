@@ -226,7 +226,7 @@ public class SmpManager {
 			material = this.getMaterial(smpName, matName);
 		}
 		for (Object orecipe : recipes) {
-			//TODO Unchecked cast warning remove
+			@SuppressWarnings("unchecked")
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
 			// This is what we want to craft.
 			Integer amount = recipe.containsKey("Amount") ? (Integer) recipe.get("Amount") : 1;

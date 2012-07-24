@@ -18,7 +18,6 @@ public class GiveExecutor implements CommandExecutor {
 		this.plugin = plugin;
 	}
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// This command is only for players
 		if (!(sender instanceof Player)) {

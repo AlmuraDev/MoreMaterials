@@ -123,13 +123,6 @@ public class CustomShape extends GenericBlockDesign {
 				);
 				j++;
 			}
-			// FIXME this is a rotation from which the light shines on the face.
-			//       this means that basicaly all lightning problems should be gone
-			//       when we somehow get the correct alignment for every quad.
-			//       To be honest i've got other things in my mind, will put it on
-			//       the end of my ToDo or someone else does this.
-			// TODO calculate correct light source!
-			setLightSource(i, 0, 1, 0);
 			setQuad(quad);
 			i++;
 		}
