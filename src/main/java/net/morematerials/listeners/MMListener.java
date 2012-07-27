@@ -24,20 +24,29 @@
 
 package net.morematerials.listeners;
 
+import net.morematerials.MoreMaterials;
+import net.morematerials.materials.MMCustomBlock;
+
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.material.Block;
+import org.getspout.spoutapi.material.block.GenericCustomBlock;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 import org.getspout.spoutapi.player.SpoutPlayer;
-import org.getspout.spoutapi.sound.SoundEffect;
 
 public class MMListener implements Listener {
-	//TODO some materials may only drop if correct tool was used.
+	
+	private MoreMaterials plugin;
+
+	public MMListener(MoreMaterials plugin) {
+		this.plugin = plugin;
+	}
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
@@ -48,14 +57,37 @@ public class MMListener implements Listener {
 		
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
-		// Check for durability.
+		// Check for durability and ItemDropRequired.
 		if (player.getItemInHand() != null) {
 			SpoutItemStack stack = new SpoutItemStack(player.getItemInHand());
+			
+			// Check for ItemDropRequired
+			Block block = ((SpoutCraftBlock) event.getBlock()).getBlockType();
+			if (block instanceof GenericCustomBlock) {
+				GenericCustomBlock customBlock = (GenericCustomBlock) block;
+				Object material = this.plugin.getSmpManager().getMaterial(customBlock.getCustomId());
+				
+				// Make sure this is an MoreMaterials block.
+				if (material != null && material instanceof MMCustomBlock) {
+					if (((MMCustomBlock) material).getItemDropRequired()) {
+						// Forbid tools without modifier
+						Boolean prevent = !(stack.getMaterial() instanceof GenericCustomTool);
+						if (!prevent) {
+							prevent = ((GenericCustomTool) stack.getMaterial()).getStrengthModifier(customBlock) <= 1.0;
+						}
+						
+						if (prevent) {
+							event.setCancelled(true);
+							event.getBlock().setType(Material.AIR);
+						}
+					}
+				}
+			}
 			
 			if (stack.isCustomItem() && stack.getMaterial() instanceof GenericCustomTool) {
 				GenericCustomTool tool = (GenericCustomTool) stack.getMaterial();
 				
-				// Only for materials with durability.
+				// Do durability stuff durability.
 				if (tool.getMaxDurability() == 0) {
 					return;
 				} else if (GenericCustomTool.getDurability(stack) + 1 < tool.getMaxDurability()) {
@@ -63,8 +95,8 @@ public class MMListener implements Listener {
 					player.setItemInHand(stack);
 				} else {
 					player.setItemInHand(new ItemStack(Material.AIR));
-					// TODO implement correct break sound
-					SpoutManager.getSoundManager().playSoundEffect(player, SoundEffect.CLICK);
+					//FIXME must be added to spoutPlugin
+					//SpoutManager.getSoundManager().playSoundEffect(player, SoundEffect.BREAK);
 				}
 			}
 		}

@@ -82,7 +82,7 @@ public class MoreMaterials extends JavaPlugin {
 		}
 
 		// Registered events.
-		this.getServer().getPluginManager().registerEvents(new MMListener(), this);
+		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
 
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
