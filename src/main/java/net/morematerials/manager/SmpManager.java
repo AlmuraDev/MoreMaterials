@@ -42,9 +42,9 @@ import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 
-import com.github.Zarklord1.FurnaceApi.FurnaceRecipes;
 
 import net.morematerials.MoreMaterials;
+import net.morematerials.furnace.FurnaceRecipes;
 import net.morematerials.materials.CustomShape;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;

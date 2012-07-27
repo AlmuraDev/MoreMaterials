@@ -40,4 +40,27 @@
     </dependency>
   </dependencies>
 
+	<build>
+		<defaultGoal>clean install</defaultGoal>
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>*.yml</include>
+					<include>*.shape</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>false</filtering>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

@@ -31,24 +31,13 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public abstract class GenericHandler {
 
-	public enum MaterialType {
-		BLOCK, ITEM
-	}
-
-	private MaterialType handlerType;
-
 	public abstract void onActivation(Location location, SpoutPlayer player);
 
 	public abstract void init(MoreMaterials instance);
 
 	public abstract void shutdown();
 
-	public MaterialType getMaterialType() {
-		return this.handlerType;
-	}
-
-	public final void createAndInit(MaterialType theType, MoreMaterials instance) {
-		this.handlerType = theType;
+	public final void createAndInit(MoreMaterials instance) {
 		init(instance);
 	}
 }

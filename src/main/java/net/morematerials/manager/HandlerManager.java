@@ -36,15 +36,14 @@ import net.morematerials.handlers.GenericHandler;
 
 public class HandlerManager {
 
-	private Map<String, Class<?>> handlers = new HashMap<String, Class<?>>();
-	private UtilsManager utilsManager;
+	private Map<String, GenericHandler> handlers = new HashMap<String, GenericHandler>();
+	private MoreMaterials plugin;
 
 	public HandlerManager(MoreMaterials plugin) {
-		this.utilsManager = plugin.getUtilsManager();
+		this.plugin = plugin;
 		File folder = new File(plugin.getDataFolder(), "handlers");
+		
 		for (File file : folder.listFiles()) {
-			// TODO Dynamicaly compile .java handlers files here.
-			// So people can see what they do, to avoid risky code!
 			if (file.getName().endsWith(".class")) {
 				this.load(file);
 			}
@@ -53,24 +52,27 @@ public class HandlerManager {
 
 	public void load(File handlerClass) {
 		String className = handlerClass.getName().substring(0, handlerClass.getName().lastIndexOf("."));
+		String useName = className.replaceAll("Handler$", "");
 		try {
 			ClassLoader loader = new URLClassLoader(new URL[] { handlerClass.toURI().toURL() }, GenericHandler.class.getClassLoader());
 			Class<?> clazz = loader.loadClass(className);
 			Object object = clazz.newInstance();
 			if (!(object instanceof GenericHandler)) {
-				this.utilsManager.log("Not a handler: " + className, Level.WARNING);
+				this.plugin.getUtilsManager().log("Not a handler: " + useName, Level.WARNING);
 			} else {
-				this.handlers.put(className, clazz);
-				this.utilsManager.log("Loaded handler: " + className);
+				GenericHandler handler = (GenericHandler) object;
+				handler.createAndInit(this.plugin);
+				this.handlers.put(useName, handler);
+				this.plugin.getUtilsManager().log("Loaded handler: " + useName);
 			}
 		} catch (Exception exception) {
-			this.utilsManager.log("Error loading handler: " + className, Level.SEVERE);
+			this.plugin.getUtilsManager().log("Error loading handler: " + useName, Level.SEVERE);
 		}
 	}
 
-	public Class<?> getHandler(String handler) {
-		if (handlers.containsKey(handler)) {
-			return handlers.get(handler);
+	public GenericHandler getHandler(String handler) {
+		if (this.handlers.containsKey(handler)) {
+			return this.handlers.get(handler);
 		}
 		return null;
 	}

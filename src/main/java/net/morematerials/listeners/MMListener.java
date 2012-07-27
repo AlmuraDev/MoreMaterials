@@ -25,6 +25,7 @@
 package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
+import net.morematerials.handlers.GenericHandler;
 import net.morematerials.materials.MMCustomBlock;
 
 import org.bukkit.GameMode;
@@ -50,6 +51,16 @@ public class MMListener implements Listener {
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
+		
+		GenericHandler handler = this.plugin.getHandlerManager().getHandler("PlaySound");
+		if (handler != null) {
+			try {
+				handler.onActivation(event.getBlock().getLocation(), (SpoutPlayer) event.getPlayer());
+			} catch (Exception exception) {
+				System.out.println(exception.getMessage());
+			}
+		}
+		
 		// Make sure we have a valid event.
 		if (event.getPlayer() == null || event.getPlayer().getGameMode() == GameMode.CREATIVE) {
 			return;
