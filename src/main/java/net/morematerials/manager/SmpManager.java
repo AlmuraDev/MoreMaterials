@@ -35,7 +35,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Recipe;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
@@ -225,6 +224,7 @@ public class SmpManager {
 		} else {
 			material = this.getMaterial(smpName, matName);
 		}
+
 		for (Object orecipe : recipes) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> recipe = (Map<String, Object>) orecipe;
@@ -236,58 +236,64 @@ public class SmpManager {
 			// Building recipe
 			String type = (String) recipe.get("Type");
 			if (type.equalsIgnoreCase("Furnace")) {
-				// Easy furnace stuff :D
+				// Get correct ingredient material
 				Material ingredient;
 				if (ingredients.matches("^[0-9]+$")) {
 					ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
 				} else {
-					ingredient = this.getMaterial(smpName, matName);
+					ingredient = this.getMaterial(smpName, ingredients);
 				}
 				FurnaceRecipes.CustomFurnaceRecipe(new SpoutItemStack(material, amount), ingredient.getRawId(), ingredient.getRawData());
 			} else {
-				Recipe sRecipe = null;
 				// Get recipe type.
 				if (type.equalsIgnoreCase("Shapeless")) {
-					sRecipe = new SpoutShapelessRecipe(stack);
-				} else if (type.equalsIgnoreCase("Shaped")) {
-					sRecipe = new SpoutShapedRecipe(stack).shape("abc","def", "ghi");
-				}
-				
-				// Split ingredients.
-				ingredients = ingredients.replaceAll("\\s{2,}", " ");
-				
-				// Parse all lines
-				Integer currentLine = 0;
-				for (String line : ingredients.split("\\r?\\n")) {
-					Integer currentColumn = 0;
-					for (String ingredientitem : line.split(" ")) {
-						// Skip "air"
-						if (ingredientitem.equals("0")) {
-							currentColumn++;
-							continue;
-						}
-						
-						// Get correct ingredient material
-						Material ingredient;
-						if (ingredients.matches("^[0-9]+$")) {
-							ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
-						} else {
-							ingredient = this.getMaterial(smpName, matName);
-						}
-						
-						// Add the ingredient
-						if (sRecipe instanceof SpoutShapedRecipe) {
-							char a = (char) ('a' + currentColumn + currentLine * 3);
-							((SpoutShapedRecipe) sRecipe).setIngredient(a, ingredient);
-						} else {
-							((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
-						}
-						currentColumn++;
+					SpoutShapelessRecipe sRecipe = new SpoutShapelessRecipe(stack);
+					
+					// Get correct ingredient material
+					Material ingredient;
+					if (ingredients.matches("^[0-9]+$")) {
+						ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
+					} else {
+						ingredient = this.getMaterial(smpName, ingredients);
 					}
-					currentLine++;
+					((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
+					// Finaly register recipe.
+					SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
+				} else if (type.equalsIgnoreCase("Shaped")) {
+					SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(stack).shape("abc","def", "ghi");
+					
+					// Split ingredients.
+					ingredients = ingredients.replaceAll("\\s{2,}", " ");
+					
+					// Parse all lines
+					Integer currentLine = 0;
+					for (String line : ingredients.split("\\r?\\n")) {
+						Integer currentColumn = 0;
+						
+						for (String ingredientitem : line.split(" ")) {
+							// Get correct ingredient material
+							Material ingredient;
+							if (ingredientitem.matches("^[0-9]+$")) {
+								ingredient = MaterialData.getMaterial(Integer.parseInt(ingredientitem));
+							} else {
+								ingredient = this.getMaterial(smpName, ingredientitem);
+							}
+
+							// Skip "air"
+							if (ingredient == null || ingredientitem.equals("0")) {
+								currentColumn++;
+								continue;
+							}
+							
+							// Add the ingredient
+							sRecipe.setIngredient((char) ('a' + currentColumn + currentLine * 3), ingredient);
+							currentColumn++;
+						}
+						currentLine++;
+					}
+					// Finaly register recipe.
+					SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
 				}
-				// Finaly register recipe.
-				SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
 			}
 		}
 	}
