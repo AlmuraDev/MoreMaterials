@@ -25,14 +25,15 @@
 package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
-import net.morematerials.handlers.GenericHandler;
 import net.morematerials.materials.MMCustomBlock;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
@@ -48,19 +49,20 @@ public class MMListener implements Listener {
 	public MMListener(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
+	
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Location location = event.getPlayer().getLocation();
+		Block block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location)).getBlockType();
+		
+		if (block instanceof GenericCustomBlock) {
+			this.plugin.getHandlerManager().triggerHandlers("Touch", ((GenericCustomBlock) block).getCustomId(), event);
+		}
+	}
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
-		
-		GenericHandler handler = this.plugin.getHandlerManager().getHandler("PlaySound");
-		if (handler != null) {
-			try {
-				handler.onActivation(event.getBlock().getLocation(), (SpoutPlayer) event.getPlayer());
-			} catch (Exception exception) {
-				System.out.println(exception.getMessage());
-			}
-		}
-		
 		// Make sure we have a valid event.
 		if (event.getPlayer() == null || event.getPlayer().getGameMode() == GameMode.CREATIVE) {
 			return;

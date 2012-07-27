@@ -24,14 +24,15 @@
 
 package net.morematerials.handlers;
 
+import java.util.Map;
+
 import net.morematerials.MoreMaterials;
 
-import org.bukkit.Location;
-import org.getspout.spoutapi.player.SpoutPlayer;
+import org.bukkit.event.Event;
 
 public abstract class GenericHandler {
 
-	public abstract void onActivation(Location location, SpoutPlayer player);
+	public abstract void onActivation(Event event, Map<String, Object> config);
 
 	public abstract void init(MoreMaterials instance);
 

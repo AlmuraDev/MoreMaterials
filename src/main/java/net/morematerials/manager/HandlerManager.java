@@ -27,9 +27,13 @@ package net.morematerials.manager;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import org.bukkit.event.Event;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
@@ -38,6 +42,7 @@ public class HandlerManager {
 
 	private Map<String, GenericHandler> handlers = new HashMap<String, GenericHandler>();
 	private MoreMaterials plugin;
+	private List<Map<String, Object>> handlerRegister = new ArrayList<Map<String, Object>>();
 
 	public HandlerManager(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -75,5 +80,20 @@ public class HandlerManager {
 			return this.handlers.get(handler);
 		}
 		return null;
+	}
+
+	public void registerHandler(String eventType, Integer materialId, Map<String, Object> config) {
+		//TODO this is ugly but works, refactor this!
+		config.put("__materialID__", materialId);
+		config.put("__eventTYPE__", eventType);
+		this.handlerRegister.add(config);
+	}
+	
+	public void triggerHandlers(String eventType, Integer materialId, Event event) {
+		for (Map<String, Object> config : this.handlerRegister) {
+			if (((Integer) config.get("__materialID__")).equals(materialId) && ((String) config.get("__eventTYPE__")).equals(eventType)) {
+				this.getHandler((String) config.get("Name")).onActivation(event, config);
+			}
+		}
 	}
 }

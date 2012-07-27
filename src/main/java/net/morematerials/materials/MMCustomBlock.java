@@ -25,6 +25,8 @@
 package net.morematerials.materials;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.morematerials.MoreMaterials;
 
@@ -81,6 +83,27 @@ public class MMCustomBlock extends GenericCustomBlock {
 		
 		// Does this object require an tool to be dropped.
 		this.itemDropRequired = this.config.getBoolean("ItemDropRequired", false);
+		
+		// Register handlers.
+		if (this.config.contains("Handlers")) {
+			this.registerHandlers();
+		}
+	}
+	
+	private void registerHandlers() {
+		Set<String> eventTypes = this.config.getConfigurationSection("Handlers").getKeys(false);
+		for (String eventType : eventTypes) {
+			if (this.config.contains("Handlers." + eventType)) {
+				List<?> handlerList = this.config.getList("Handlers." + eventType);
+				for (Object handlerEntry : handlerList) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> handlerConfig = (Map<String, Object>) handlerEntry;
+					if (this.plugin.getHandlerManager().getHandler((String) handlerConfig.get("Name")) != null) {
+						this.plugin.getHandlerManager().registerHandler(eventType, this.getCustomId(), handlerConfig);
+					}
+				}
+			}
+		}
 	}
 
 	public void configureDrops() {
