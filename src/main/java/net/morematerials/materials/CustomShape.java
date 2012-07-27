@@ -100,7 +100,8 @@ public class CustomShape extends GenericBlockDesign {
 		String[] coords;
 		for (Integer i = 0; i < list.size(); i++) {
 			coords = list.get(i).split("[\\s]+");
-			SubTexture subtex = new SubTexture(texture, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
+			//FIXME spout reads Y from the lower left - this needs to be fixed!
+			SubTexture subtex = new SubTexture(texture, Integer.parseInt(coords[0]), bufferedImage.getHeight() - (Integer.parseInt(coords[1]) + Integer.parseInt(coords[3])), Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
 			subTextures.add(subtex);
 		}
 

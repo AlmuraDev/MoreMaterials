@@ -100,6 +100,7 @@ public class SmpManager {
 				this.plugin.getWebManager().addAsset(smpFile, entry);
 			}
 		}
+		smpFile.close();
 
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
