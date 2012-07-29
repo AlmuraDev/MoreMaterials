@@ -36,6 +36,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spout.block.SpoutCraftBlock;
+import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
@@ -91,7 +92,9 @@ public class MMListener implements Listener {
 						
 						if (prevent) {
 							event.setCancelled(true);
-							event.getBlock().setType(Material.AIR);
+							SpoutBlock spoutBlock = (SpoutBlock) event.getBlock();
+							spoutBlock.setType(org.bukkit.Material.AIR);
+							spoutBlock.setCustomBlock(null);
 						}
 					}
 				}
