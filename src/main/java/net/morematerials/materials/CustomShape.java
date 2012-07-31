@@ -115,14 +115,23 @@ public class CustomShape extends GenericBlockDesign {
 			Integer subId = (Integer) shape.get("Texture");
 			Quad quad = new Quad(i, subTextures.get((subTextures.size() > subId ? subId : 0)));
 			int j = 0;
+			String[] coordLine = null;
 			for (String line : ((String) shape.get("Coords")).split("\\r?\\n")) {
-				String[] coordLine = line.split(" ");
+				coordLine = line.split(" ");
 				quad.addVertex(j,
 					Float.parseFloat("0" + coordLine[0]),
 					Float.parseFloat("0" + coordLine[1]),
 					Float.parseFloat("0" + coordLine[2])
 				);
 				j++;
+			}
+			// Allow triangles.
+			if (j == 3) {
+				quad.addVertex(j,
+					Float.parseFloat("0" + coordLine[0]),
+					Float.parseFloat("0" + coordLine[1]),
+					Float.parseFloat("0" + coordLine[2])
+				);
 			}
 			setQuad(quad);
 			i++;
