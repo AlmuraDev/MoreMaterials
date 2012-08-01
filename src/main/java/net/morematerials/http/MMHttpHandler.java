@@ -71,6 +71,7 @@ public class MMHttpHandler implements HttpHandler {
 			OutputStream outputStream = exchange.getResponseBody();
 			outputStream.write(bytearray, 0, bytearray.length);
 			outputStream.close();
+			buffer.close();
 		} else {
 			// No asset found.
 			exchange.sendResponseHeaders(404, 0);

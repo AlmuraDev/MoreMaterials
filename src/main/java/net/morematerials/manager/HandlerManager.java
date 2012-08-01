@@ -25,14 +25,23 @@
 package net.morematerials.manager;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.tools.JavaCompiler;
+import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.event.Event;
 
 import net.morematerials.MoreMaterials;
@@ -48,11 +57,46 @@ public class HandlerManager {
 		this.plugin = plugin;
 		File folder = new File(plugin.getDataFolder(), "handlers");
 		
-		for (File file : folder.listFiles()) {
-			if (file.getName().endsWith(".class")) {
-				this.load(file);
+		if (ToolProvider.getSystemJavaCompiler() != null) {
+			for (File file : folder.listFiles()) {
+				if (file.getName().endsWith(".java")) {
+					try {
+						if (this.compile(file)) {
+							this.load(new File(folder, file.getName().replaceAll("java$", "class")));
+						}
+					} catch (Exception exception) {
+						System.out.println(exception.getMessage());
+					}
+				}
+			}
+		} else {
+			this.plugin.getUtilsManager().log("JDK not found - Handlers may not work.", Level.WARNING);
+			for (File file : folder.listFiles()) {
+				if (file.getName().endsWith(".class")) {
+					this.load(file);
+				}
 			}
 		}
+	}
+
+	private Boolean compile(File file) throws IOException {
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(file);
+		
+		List<String> libs = new ArrayList<String>();
+		// Add craftbukkit (whatever the .jar is named)
+		libs.add(System.getProperty("java.class.path"));
+		// Add spoutplugin
+		libs.add("plugins/SpoutPlugin.jar");
+		// Add MoreMaterials
+		libs.add("plugins/MoreMaterials.jar");
+		
+		List<String> options = new ArrayList<String>();
+		options.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator)));
+
+		CompilationTask task = compiler.getTask(null, fileManager, null, options, null, compilationUnits);
+		return task.call();
 	}
 
 	public void load(File handlerClass) {
