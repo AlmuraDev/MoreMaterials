@@ -54,7 +54,7 @@ public class MMCustomBlock extends GenericCustomBlock {
 		shapeFile = shapeFile.substring(0, shapeFile.lastIndexOf("."));
 		CustomShape customDesign;
 		if (shapeFile != null && plugin.getSmpManager().getShape(smpName, shapeFile) != null) {
-			customDesign = plugin.getSmpManager().getShape(smpName, shapeFile);
+			customDesign = plugin.getSmpManager().getShape(smpName, shapeFile).createInstance();
 		} else {
 			customDesign = new CustomShape(plugin);
 		}

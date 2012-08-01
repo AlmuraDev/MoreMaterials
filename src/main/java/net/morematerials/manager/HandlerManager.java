@@ -71,9 +71,11 @@ public class HandlerManager {
 			}
 		} else {
 			this.plugin.getUtilsManager().log("JDK not found - Handlers may not work.", Level.WARNING);
-			for (File file : folder.listFiles()) {
-				if (file.getName().endsWith(".class")) {
-					this.load(file);
+			if (this.plugin.getConfig().getBoolean("BinaryHandlers", false)) {
+				for (File file : folder.listFiles()) {
+					if (file.getName().endsWith(".class")) {
+						this.load(file);
+					}
 				}
 			}
 		}
@@ -87,10 +89,12 @@ public class HandlerManager {
 		List<String> libs = new ArrayList<String>();
 		// Add craftbukkit (whatever the .jar is named)
 		libs.add(System.getProperty("java.class.path"));
-		// Add spoutplugin
-		libs.add("plugins/SpoutPlugin.jar");
-		// Add MoreMaterials
-		libs.add("plugins/MoreMaterials.jar");
+		// Add all plugins to allow using other plugins.
+		for (File lib : (new File("plugins")).listFiles()) {
+			if (lib.getName().endsWith(".jar")) {
+				libs.add("plugins/" + lib.getName());
+			}
+		}
 		
 		List<String> options = new ArrayList<String>();
 		options.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator)));

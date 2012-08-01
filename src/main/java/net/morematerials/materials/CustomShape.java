@@ -58,7 +58,26 @@ public class CustomShape extends GenericBlockDesign {
 			this.config.load(smpFile.getInputStream(entry));
 		} catch (Exception exception) {
 		}
+	}
+	
+	public CustomShape(MoreMaterials plugin, String smpName, String matName, YamlConfiguration config) {
+		this.plugin = plugin;
+		this.smpName = smpName;
+		this.matName = matName;
+		this.config = config;
+	}
 
+	public CustomShape(MoreMaterials plugin) {
+		this.plugin = plugin;
+		// Create a default cube
+		this.config = new YamlConfiguration();
+		try {
+			this.config.load(this.plugin.getResource("cube.shape"));
+		} catch (Exception exception) {
+		}
+	}
+
+	public void build(String textureUrl, List<String> list) {
 		// Surrounded blocks will always be drawn.
 		this.setRenderPass(1);
 
@@ -77,19 +96,7 @@ public class CustomShape extends GenericBlockDesign {
 		Float yMax = Float.parseFloat("0" + boundingBox[4]);
 		Float zMax = Float.parseFloat("0" + boundingBox[5]);
 		setBoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
-	}
-
-	public CustomShape(MoreMaterials plugin) {
-		this.plugin = plugin;
-		// Create a default cube
-		this.config = new YamlConfiguration();
-		try {
-			this.config.load(this.plugin.getResource("cube.shape"));
-		} catch (Exception exception) {
-		}
-	}
-
-	public void build(String textureUrl, List<String> list) {
+		
 		// Get texture.
 		BufferedImage bufferedImage = this.plugin.getWebManager().getCachedImage(textureUrl);
 		Texture texture = new Texture(this.plugin, textureUrl, bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getHeight());
@@ -144,6 +151,10 @@ public class CustomShape extends GenericBlockDesign {
 
 	public String getSmpName() {
 		return this.smpName;
+	}
+
+	public CustomShape createInstance() {
+		return new CustomShape(this.plugin, this.smpName, this.matName, this.config);
 	}
 
 }
