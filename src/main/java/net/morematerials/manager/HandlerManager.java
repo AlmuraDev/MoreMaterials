@@ -47,14 +47,21 @@ import org.bukkit.event.Event;
 import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
+@SuppressWarnings("restriction")
 public class HandlerManager {
 
 	private Map<String, GenericHandler> handlers = new HashMap<String, GenericHandler>();
 	private MoreMaterials plugin;
 	private List<Map<String, Object>> handlerRegister = new ArrayList<Map<String, Object>>();
+	
+	private List<String> compilerOptions = new ArrayList<String>();
+	private File outputFolder;
 
 	public HandlerManager(MoreMaterials plugin) {
 		this.plugin = plugin;
+		
+		this.startCompiler();
+		
 		File folder = new File(plugin.getDataFolder(), "handlers");
 		
 		if (ToolProvider.getSystemJavaCompiler() != null) {
@@ -62,7 +69,7 @@ public class HandlerManager {
 				if (file.getName().endsWith(".java")) {
 					try {
 						if (this.compile(file)) {
-							this.load(new File(folder, file.getName().replaceAll("java$", "class")));
+							this.load(new File(outputFolder, file.getName().replaceAll("java$", "class")));
 						}
 					} catch (Exception exception) {
 						System.out.println(exception.getMessage());
@@ -71,11 +78,12 @@ public class HandlerManager {
 			}
 		} else {
 			this.plugin.getUtilsManager().log("JDK not found - Handlers may not work.", Level.WARNING);
-			if (this.plugin.getConfig().getBoolean("BinaryHandlers", false)) {
-				for (File file : folder.listFiles()) {
-					if (file.getName().endsWith(".class")) {
-						this.load(file);
-					}
+		}
+		
+		if (this.plugin.getConfig().getBoolean("BinaryHandlers", false)) {
+			for (File file : folder.listFiles()) {
+				if (file.getName().endsWith(".class")) {
+					this.load(file);
 				}
 			}
 		}
@@ -85,21 +93,7 @@ public class HandlerManager {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(file);
-		
-		List<String> libs = new ArrayList<String>();
-		// Add craftbukkit (whatever the .jar is named)
-		libs.add(System.getProperty("java.class.path"));
-		// Add all plugins to allow using other plugins.
-		for (File lib : (new File("plugins")).listFiles()) {
-			if (lib.getName().endsWith(".jar")) {
-				libs.add("plugins/" + lib.getName());
-			}
-		}
-		
-		List<String> options = new ArrayList<String>();
-		options.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator)));
-
-		CompilationTask task = compiler.getTask(null, fileManager, null, options, null, compilationUnits);
+		CompilationTask task = compiler.getTask(null, fileManager, null, compilerOptions, null, compilationUnits);
 		return task.call();
 	}
 
@@ -107,7 +101,7 @@ public class HandlerManager {
 		String className = handlerClass.getName().substring(0, handlerClass.getName().lastIndexOf("."));
 		String useName = className.replaceAll("Handler$", "");
 		try {
-			ClassLoader loader = new URLClassLoader(new URL[] { handlerClass.toURI().toURL() }, GenericHandler.class.getClassLoader());
+			ClassLoader loader = new URLClassLoader(new URL[] { handlerClass.getParentFile().toURI().toURL() }, GenericHandler.class.getClassLoader());
 			Class<?> clazz = loader.loadClass(className);
 			Object object = clazz.newInstance();
 			if (!(object instanceof GenericHandler)) {
@@ -143,5 +137,32 @@ public class HandlerManager {
 				this.getHandler((String) config.get("Name")).onActivation(event, config);
 			}
 		}
+	}
+	
+	private void startCompiler() {
+		//Search & add dependencies
+		List<String> libs = new ArrayList<String>();
+		libs.add(System.getProperty("java.class.path"));
+		
+		// Add all plugins to allow using other plugins.
+		for (File lib : (new File("plugins")).listFiles()) {
+			if (lib.getName().endsWith(".jar")) {
+				libs.add("plugins/" + lib.getName());
+			}
+		}
+		
+		//Output Folder
+		outputFolder = new File(plugin.getDataFolder(), "handlers/out");
+		
+		if (!outputFolder.exists()) {
+			outputFolder.mkdir();
+		}
+		else {
+			//Clean for older handlers compilation
+			final File[] files = outputFolder.listFiles();
+			for (File f: files) f.delete();
+		}
+		
+		compilerOptions.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator), "-d", outputFolder.getAbsolutePath()));
 	}
 }
