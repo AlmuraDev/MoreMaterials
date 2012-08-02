@@ -60,7 +60,7 @@ public class HandlerManager {
 	public HandlerManager(MoreMaterials plugin) {
 		this.plugin = plugin;
 		
-		startCompiler();
+		this.startCompiler();
 		
 		File folder = new File(plugin.getDataFolder(), "handlers");
 		
