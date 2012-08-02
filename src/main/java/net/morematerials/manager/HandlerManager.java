@@ -80,12 +80,10 @@ public class HandlerManager {
 			this.plugin.getUtilsManager().log("JDK not found - Handlers may not work.", Level.WARNING);
 		}
 		
-		if (plugin.getConfig().getBoolean("load-binary-handlers", false)) {
-			if (this.plugin.getConfig().getBoolean("BinaryHandlers", false)) {
-				for (File file : folder.listFiles()) {
-					if (file.getName().endsWith(".class")) {
-						this.load(file);
-					}
+		if (this.plugin.getConfig().getBoolean("BinaryHandlers", false)) {
+			for (File file : folder.listFiles()) {
+				if (file.getName().endsWith(".class")) {
+					this.load(file);
 				}
 			}
 		}
