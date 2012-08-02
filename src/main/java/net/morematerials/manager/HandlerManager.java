@@ -77,7 +77,7 @@ public class HandlerManager {
 		}
 		
 		for (File file : (new File(folder, "bin")).listFiles()) {
-			if (file.getName().endsWith(".class")) {
+			if (file.getName().endsWith(".class") && file.getName().indexOf("$") == -1) {
 				this.load(file);
 			}
 		}
