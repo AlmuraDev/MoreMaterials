@@ -32,7 +32,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spout.block.SpoutCraftBlock;
@@ -40,6 +42,7 @@ import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
+import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -49,6 +52,29 @@ public class MMListener implements Listener {
 
 	public MMListener(MoreMaterials plugin) {
 		this.plugin = plugin;
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
+			if (stack.getMaterial() instanceof GenericCustomTool) {
+				this.plugin.getHandlerManager().triggerHandlers("HoldLeftClick", ((GenericCustomTool) stack.getMaterial()).getCustomId(), event);
+			} else if (stack.getMaterial() instanceof GenericCustomItem) {
+				this.plugin.getHandlerManager().triggerHandlers("HoldLeftClick", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
+			} else if (stack.getMaterial() instanceof GenericCustomBlock) {
+				this.plugin.getHandlerManager().triggerHandlers("HoldLeftClick", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
+			}
+		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
+			if (stack.getMaterial() instanceof GenericCustomTool) {
+				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomTool) stack.getMaterial()).getCustomId(), event);
+			} else if (stack.getMaterial() instanceof GenericCustomItem) {
+				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
+			} else if (stack.getMaterial() instanceof GenericCustomBlock) {
+				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
+			}
+		}
 	}
 	
 	

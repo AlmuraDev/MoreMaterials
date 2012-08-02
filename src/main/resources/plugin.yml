@@ -1,7 +1,7 @@
 name: MoreMaterials
 version: 1.8
 description: Custom blocks and items!
-authors: [ZNickq, IceReaper]
+authors: [IceReaper]
 website: http://www.morematerials.net
 
 depend: [Spout]

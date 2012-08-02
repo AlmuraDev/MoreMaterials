@@ -8,6 +8,7 @@ import net.morematerials.materials.MMCustomTool;
 
 import org.bukkit.Location;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.Material;
@@ -39,7 +40,9 @@ public class PlaySoundHandler extends GenericHandler {
 
 		// Default location is the world spawn.
 		Location location = this.plugin.getServer().getWorlds().get(0).getSpawnLocation();
-		if (event instanceof PlayerMoveEvent) {
+		if (event instanceof PlayerInteractEvent) {
+			location = ((PlayerInteractEvent) event).getPlayer().getLocation();
+		} else if (event instanceof PlayerMoveEvent) {
 			location = ((PlayerMoveEvent) event).getPlayer().getLocation();
 		}
 

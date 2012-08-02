@@ -24,6 +24,10 @@
 
 package net.morematerials.materials;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,6 +37,8 @@ public class MMCustomItem extends GenericCustomItem {
 
 	private String materialName;
 	private String smpName;
+	private YamlConfiguration config;
+	private MoreMaterials plugin;
 
 	public static MMCustomItem create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String texture = yaml.getString("Texture");
@@ -55,9 +61,32 @@ public class MMCustomItem extends GenericCustomItem {
 		super(plugin, config.getString("Title", matName), texture);
 		this.smpName = smpName;
 		this.materialName = matName;
+		this.config = config;
+		this.plugin = plugin;
 		
 		// Set the items stackability
 		this.setStackable(config.getBoolean("Stackable", true));
+		
+		// Register handlers.
+		if (this.config.contains("Handlers")) {
+			this.registerHandlers();
+		}
+	}
+	
+	private void registerHandlers() {
+		Set<String> eventTypes = this.config.getConfigurationSection("Handlers").getKeys(false);
+		for (String eventType : eventTypes) {
+			if (this.config.contains("Handlers." + eventType)) {
+				List<?> handlerList = this.config.getList("Handlers." + eventType);
+				for (Object handlerEntry : handlerList) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> handlerConfig = (Map<String, Object>) handlerEntry;
+					if (this.plugin.getHandlerManager().getHandler((String) handlerConfig.get("Name")) != null) {
+						this.plugin.getHandlerManager().registerHandler(eventType, this.getCustomId(), handlerConfig);
+					}
+				}
+			}
+		}
 	}
 
 	public String getSmpName() {
