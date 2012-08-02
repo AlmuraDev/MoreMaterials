@@ -107,7 +107,7 @@ public class HandlerManager {
 		String className = handlerClass.getName().substring(0, handlerClass.getName().lastIndexOf("."));
 		String useName = className.replaceAll("Handler$", "");
 		try {
-			ClassLoader loader = new URLClassLoader(new URL[] { handlerClass.toURI().toURL() }, GenericHandler.class.getClassLoader());
+			ClassLoader loader = new URLClassLoader(new URL[] { handlerClass.getParentFile().toURI().toURL() }, GenericHandler.class.getClassLoader());
 			Class<?> clazz = loader.loadClass(className);
 			Object object = clazz.newInstance();
 			if (!(object instanceof GenericHandler)) {
