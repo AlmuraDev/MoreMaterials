@@ -52,7 +52,7 @@ public class MoreMaterials extends JavaPlugin {
 		// Try to create the required folders.
 		File file;
 		this.getDataFolder().mkdirs();
-		String[] folders = { "materials", "handlers", "cache" };
+		String[] folders = { "materials", "handlers", "handlers/src", "handlers/bin", "cache" };
 		for (String folder : folders) {
 			file = new File(this.getDataFolder(), folder);
 			if (!file.exists()) {

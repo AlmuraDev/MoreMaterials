@@ -62,36 +62,33 @@ public class HandlerManager {
 		
 		// We can only compile if the JDK is found.
 		if (ToolProvider.getSystemJavaCompiler() != null) {
-			this.prepareCompiler();
-			for (File file : folder.listFiles()) {
+			this.prepareCompiler(new File(folder, "bin"));
+			for (File file : (new File(folder, "src")).listFiles()) {
 				if (file.getName().endsWith(".java")) {
 					try {
-						if (this.compile(file)) {
-							this.load(new File(file.getName().replaceAll("java$", "class")));
-						}
+						this.compile(file);
 					} catch (Exception exception) {
 						this.plugin.getUtilsManager().log("Error compiling handler: " + file.getName(), Level.WARNING);
 					}
 				}
 			}
 		} else {
-			this.plugin.getUtilsManager().log("JDK not found - Handlers may not work.", Level.WARNING);
-			if (this.plugin.getConfig().getBoolean("BinaryHandlers", false)) {
-				for (File file : folder.listFiles()) {
-					if (file.getName().endsWith(".class")) {
-						this.load(file);
-					}
-				}
+			this.plugin.getUtilsManager().log("JDK not found - cannot compile Handlers!", Level.WARNING);
+		}
+		
+		for (File file : (new File(folder, "bin")).listFiles()) {
+			if (file.getName().endsWith(".class")) {
+				this.load(file);
 			}
 		}
 	}
 
-	private Boolean compile(File file) throws IOException {
+	private void compile(File file) throws IOException {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(file);
 		CompilationTask task = compiler.getTask(null, fileManager, null, this.compilerOptions, null, compilationUnits);
-		return task.call();
+		task.call();
 	}
 
 	public void load(File handlerClass) {
@@ -136,7 +133,7 @@ public class HandlerManager {
 		}
 	}
 	
-	private void prepareCompiler() {
+	private void prepareCompiler(File binFolder) {
 		//Search & add dependencies
 		List<String> libs = new ArrayList<String>();
 		libs.add(System.getProperty("java.class.path"));
@@ -149,6 +146,6 @@ public class HandlerManager {
 		}
 		
 		// Set the classpath.
-		this.compilerOptions.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator)));
+		this.compilerOptions.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator), "-d", binFolder.getAbsolutePath()));
 	}
 }
