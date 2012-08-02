@@ -36,7 +36,15 @@ public class MMCustomItem extends GenericCustomItem {
 
 	public static MMCustomItem create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String texture = yaml.getString("Texture");
-		texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
+		
+		// Allow to reference textures from other .smp files.
+		String[] fileNameParts = texture.split("/");
+		if (fileNameParts.length == 2) {
+			texture = plugin.getWebManager().getAssetsUrl(fileNameParts[0] + "_" + fileNameParts[1]);
+		} else {
+			texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
+		}
+		
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
 		
 		// Build the item.

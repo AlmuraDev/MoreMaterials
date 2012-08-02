@@ -58,6 +58,8 @@ public class SmpManager {
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
 	private ArrayList<CustomShape> shapesList = new ArrayList<CustomShape>();
+	
+	HashMap<String, HashMap<String, YamlConfiguration>> storedConfigs = new HashMap<String, HashMap<String, YamlConfiguration>>();
 
 	public SmpManager(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -66,6 +68,7 @@ public class SmpManager {
 	public void init() {
 		// Load all .smp files.
 		File dir = new File(this.plugin.getDataFolder().getPath(), "materials");
+		// First we simply register all materials.
 		for (File file : dir.listFiles()) {
 			if (file.getName().endsWith(".smp")) {
 				try {
@@ -75,6 +78,19 @@ public class SmpManager {
 				}
 			}
 		}
+		// Now when they are known, we can simply configure them completely.
+		for (File file : dir.listFiles()) {
+			if (file.getName().endsWith(".smp")) {
+				try {
+					this.configurePackage(file);
+				} catch (Exception exception) {
+					this.plugin.getUtilsManager().log("Cannot load " + file.getName(), Level.SEVERE);
+				}
+			}
+		}
+		
+		// Free up the memory.
+		this.storedConfigs.clear();
 	}
 
 	private void loadPackage(File file) throws Exception {
@@ -101,22 +117,29 @@ public class SmpManager {
 			}
 		}
 		smpFile.close();
-
+		
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
 			this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
 		}
 		
+		// Needs to be stored till later.
+		this.storedConfigs.put(smpFile.getName(), materials);
+	}
+
+	private void configurePackage(File file) {
 		// Second loop - Now we can reference all drops
 		for (Integer i = 0; i < this.blocksList.size(); i++) {
 			this.blocksList.get(i).configureDrops();
 		}
 		
-		// Third loop - Now we can reference all crafting recipes
-		for (String matName : materials.keySet()) {
-			this.registerRecipes(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName));
+		// Third loops - Now we can reference all crafting recipes
+		for (String smpName : this.storedConfigs.keySet()) {
+			for (String matName : this.storedConfigs.get(smpName).keySet()) {
+				this.registerRecipes(this.plugin.getUtilsManager().getName(smpName), matName, this.storedConfigs.get(smpName).get(matName));
+			}
 		}
-		
+				
 		// Fourth loops - Set all strength modifiers.
 		for (Integer i = 0; i < this.toolsList.size(); i++) {
 			this.toolsList.get(i).configureModifiers();
@@ -135,13 +158,20 @@ public class SmpManager {
 	}
 
 
-	public CustomShape getShape(String smpName, String matName) {
+	public CustomShape getShape(String smpName, String shapeName) {
+		// Allow to reference shapes from other .smp files.
+		String[] fileNameParts = shapeName.split("/");
+		if (fileNameParts.length == 2) {
+			smpName = fileNameParts[0];
+			shapeName = fileNameParts[1];
+		}
+		
 		CustomShape shape;
 		// Search for the correct shape
 		for (Integer i = 0; i < this.shapesList.size(); i++) {
 			shape = this.shapesList.get(i);
 			if (shape.getSmpName().equals(smpName)) {
-				if (shape.getMatName().equals(matName)) {
+				if (shape.getMatName().equals(shapeName)) {
 					return shape;
 				}
 			}
@@ -150,6 +180,13 @@ public class SmpManager {
 	}
 
 	public Material getMaterial(String smpName, String matName) {
+		// Allow to reference materials from other .smp files.
+		String[] matNameParts = matName.split("/");
+		if (matNameParts.length == 2) {
+			smpName = matNameParts[0];
+			matName = matNameParts[1];
+		}
+		
 		// First check for matching blocks.
 		MMCustomBlock currentBlock;
 		for (Integer i = 0; i < this.blocksList.size(); i++) {

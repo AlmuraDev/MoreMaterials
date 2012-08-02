@@ -70,7 +70,7 @@ public class HandlerManager {
 							this.load(new File(file.getName().replaceAll("java$", "class")));
 						}
 					} catch (Exception exception) {
-						System.out.println(exception.getMessage());
+						this.plugin.getUtilsManager().log("Error compiling handler: " + file.getName(), Level.WARNING);
 					}
 				}
 			}
