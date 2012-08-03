@@ -120,7 +120,7 @@ public class SmpManager {
 		
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
-			if (!matName.matches("^[0-9]+$")) {
+			if (!matName.matches("^[0-9@]+$")) {
 				this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
 			}
 		}
@@ -259,8 +259,13 @@ public class SmpManager {
 		
 		// Get the material object which we want to craft.
 		Material material;
-		if (matName.matches("^[0-9]+$")) {
-			material = MaterialData.getMaterial(Integer.parseInt(matName));
+		if (matName.matches("^[0-9@]+$")) {
+			String[] matInfo = matName.split("@");
+			if (matInfo.length == 1) {
+				material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+			} else {
+				material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+			}
 		} else {
 			material = this.getMaterial(smpName, matName);
 		}
@@ -278,8 +283,13 @@ public class SmpManager {
 			if (type.equalsIgnoreCase("Furnace")) {
 				// Get correct ingredient material
 				Material ingredient;
-				if (ingredients.matches("^[0-9]+$")) {
-					ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
+				if (ingredients.matches("^[0-9@]+$")) {
+					String[] matInfo = matName.split("@");
+					if (matInfo.length == 1) {
+						ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+					} else {
+						ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+					}
 				} else {
 					ingredient = this.getMaterial(smpName, ingredients);
 				}
@@ -291,8 +301,13 @@ public class SmpManager {
 					
 					// Get correct ingredient material
 					Material ingredient;
-					if (ingredients.matches("^[0-9]+$")) {
-						ingredient = MaterialData.getMaterial(Integer.parseInt(ingredients));
+					if (ingredients.matches("^[0-9@]+$")) {
+						String[] matInfo = matName.split("@");
+						if (matInfo.length == 1) {
+							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+						} else {
+							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+						}
 					} else {
 						ingredient = this.getMaterial(smpName, ingredients);
 					}
@@ -313,8 +328,13 @@ public class SmpManager {
 						for (String ingredientitem : line.split(" ")) {
 							// Get correct ingredient material
 							Material ingredient;
-							if (ingredientitem.matches("^[0-9]+$")) {
-								ingredient = MaterialData.getMaterial(Integer.parseInt(ingredientitem));
+							if (ingredients.matches("^[0-9@]+$")) {
+								String[] matInfo = matName.split("@");
+								if (matInfo.length == 1) {
+									ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+								} else {
+									ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+								}
 							} else {
 								ingredient = this.getMaterial(smpName, ingredientitem);
 							}
