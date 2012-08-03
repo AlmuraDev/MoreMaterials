@@ -45,12 +45,14 @@ public class CustomShape extends GenericBlockDesign {
 	private String matName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
+	private String format;
 
 	public CustomShape(MoreMaterials plugin, ZipFile smpFile, ZipEntry entry) {
 		this.plugin = plugin;
 
 		this.smpName = plugin.getUtilsManager().getName(smpFile.getName());
 		this.matName = entry.getName().substring(0, entry.getName().lastIndexOf("."));
+		this.format = entry.getName().substring(entry.getName().lastIndexOf(".") + 1);
 
 		// Read the .shape file
 		this.config = new YamlConfiguration();
@@ -76,8 +78,18 @@ public class CustomShape extends GenericBlockDesign {
 		} catch (Exception exception) {
 		}
 	}
+	
+	public void build(String textureUrl, List<String> coordList) {
+		if (format.equals("shape")) {
+			this.buildFromShape(textureUrl, coordList);
+		} else if (format.equals("obj")) {
+			//TODO implement this :D
+		} else if (format.equals("ply")) {
+			//TODO implement this :D
+		}
+	}
 
-	public void build(String textureUrl, List<String> list) {
+	public void buildFromShape(String textureUrl, List<String> coordList) {
 		// Surrounded blocks will always be drawn.
 		this.setRenderPass(1);
 
@@ -105,8 +117,8 @@ public class CustomShape extends GenericBlockDesign {
 		// Building subtextures.
 		ArrayList<SubTexture> subTextures = new ArrayList<SubTexture>();
 		String[] coords;
-		for (Integer i = 0; i < list.size(); i++) {
-			coords = list.get(i).split("[\\s]+");
+		for (Integer i = 0; i < coordList.size(); i++) {
+			coords = coordList.get(i).split("[\\s]+");
 			//FIXME spout reads Y from the lower left - this needs to be fixed!
 			SubTexture subtex = new SubTexture(texture, Integer.parseInt(coords[0]), bufferedImage.getHeight() - (Integer.parseInt(coords[1]) + Integer.parseInt(coords[3])), Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
 			subTextures.add(subtex);

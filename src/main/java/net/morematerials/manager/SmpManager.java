@@ -108,7 +108,7 @@ public class SmpManager {
 				yml = new YamlConfiguration();
 				yml.load(smpFile.getInputStream(entry));
 				materials.put(entry.getName().substring(0, entry.getName().lastIndexOf(".")), yml);
-			} else if (entry.getName().endsWith(".shape")) {
+			} else if (entry.getName().endsWith(".shape") || entry.getName().endsWith(".obj") || entry.getName().endsWith(".ply")) {
 				// Register .shape files.
 				this.shapesList.add(new CustomShape(this.plugin, smpFile, entry));
 			} else {
