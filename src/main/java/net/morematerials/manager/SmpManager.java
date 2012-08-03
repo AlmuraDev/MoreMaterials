@@ -120,7 +120,9 @@ public class SmpManager {
 		
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
-			this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
+			if (!matName.matches("^[0-9]+$")) {
+				this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
+			}
 		}
 		
 		// Needs to be stored till later.
@@ -258,7 +260,7 @@ public class SmpManager {
 		// Get the material object which we want to craft.
 		Material material;
 		if (matName.matches("^[0-9]+$")) {
-			material = this.getMaterial(Integer.parseInt(matName));
+			material = MaterialData.getMaterial(Integer.parseInt(matName));
 		} else {
 			material = this.getMaterial(smpName, matName);
 		}
