@@ -34,6 +34,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
+import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 
 public class MMCustomBlock extends GenericCustomBlock {
@@ -117,8 +118,18 @@ public class MMCustomBlock extends GenericCustomBlock {
 		// Configure itemdrop
 		String drop = this.config.getString("ItemDrop", this.materialName);
 		Integer dropCount = this.config.getInt("ItemDropAmount", 1);
-		Material materials = this.plugin.getSmpManager().getMaterial(this.smpName, drop);
-		this.setItemDrop(new SpoutItemStack(materials, dropCount));
+		Material material;
+		if (drop.matches("^[0-9@]+$")) {
+			String[] matInfo = drop.split("@");
+			if (matInfo.length == 1) {
+				material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+			} else {
+				material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+			}
+		} else {
+			material = this.plugin.getSmpManager().getMaterial(this.smpName, drop);
+		}
+		this.setItemDrop(new SpoutItemStack(material, dropCount));
 	}
 
 	public String getSmpName() {
