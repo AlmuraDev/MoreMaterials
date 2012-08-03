@@ -114,21 +114,20 @@ public class WebManager {
 
 		// Extract files to cache dir.
 		File cacheFile = new File(new File(this.plugin.getDataFolder().getPath(), "cache"), cacheFileName);
-		if (!cacheFile.exists()) {
-			try {
-				InputStream inputStream = smpFile.getInputStream(entry);
-				OutputStream out = new FileOutputStream(cacheFile);
-				int read;
-				byte[] bytes = new byte[1024];
-				while ((read = inputStream.read(bytes)) != -1) {
-					out.write(bytes, 0, read);
-				}
-				out.flush();
-				out.close();
-				inputStream.close();
-			} catch (Exception exception) {
+		try {
+			InputStream inputStream = smpFile.getInputStream(entry);
+			OutputStream out = new FileOutputStream(cacheFile);
+			int read;
+			byte[] bytes = new byte[1024];
+			while ((read = inputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
 			}
+			out.flush();
+			out.close();
+			inputStream.close();
+		} catch (Exception exception) {
 		}
+		cacheFile.deleteOnExit();
 
 		// Cache all image buffers for performance.
 		if (entry.getName().endsWith(".png")) {
