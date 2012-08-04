@@ -47,7 +47,7 @@ import org.getspout.spoutapi.material.MaterialData;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.furnace.FurnaceRecipes;
-import net.morematerials.materials.CustomShape;
+import net.morematerials.materials.CustomShapeTemplate;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;
 import net.morematerials.materials.MMCustomTool;
@@ -59,7 +59,7 @@ public class SmpManager {
 	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
-	private ArrayList<CustomShape> shapesList = new ArrayList<CustomShape>();
+	private HashMap<String, CustomShapeTemplate> shapesMap = new HashMap<String, CustomShapeTemplate>();
 	
 	HashMap<String, HashMap<String, YamlConfiguration>> storedConfigs = new HashMap<String, HashMap<String, YamlConfiguration>>();
 
@@ -103,6 +103,7 @@ public class SmpManager {
 		Enumeration<? extends ZipEntry> entries = smpFile.entries();
 		ZipEntry entry;
 		YamlConfiguration yml;
+		String smpName = this.plugin.getUtilsManager().getName(file.getName());
 		while (entries.hasMoreElements()) {
 			entry = entries.nextElement();
 			// Parse all .yml files in this .smp file.
@@ -112,7 +113,8 @@ public class SmpManager {
 				materials.put(entry.getName().substring(0, entry.getName().lastIndexOf(".")), yml);
 			} else if (entry.getName().endsWith(".shape") || entry.getName().endsWith(".obj") || entry.getName().endsWith(".ply")) {
 				// Register .shape files.
-				this.shapesList.add(new CustomShape(this.plugin, smpFile, entry));
+				String matName = this.plugin.getUtilsManager().getName(entry.getName());
+				this.shapesMap.put(smpName + "_" + matName, new CustomShapeTemplate(this.plugin, smpFile, entry));
 			} else {
 				// Add all other files as asset.
 				this.plugin.getWebManager().addAsset(smpFile, entry);
@@ -162,7 +164,7 @@ public class SmpManager {
 	}
 
 
-	public CustomShape getShape(String smpName, String shapeName) {
+	public CustomShapeTemplate getShape(String smpName, String shapeName) {
 		// Allow to reference shapes from other .smp files.
 		String[] fileNameParts = shapeName.split("/");
 		if (fileNameParts.length == 2) {
@@ -170,15 +172,9 @@ public class SmpManager {
 			shapeName = fileNameParts[1];
 		}
 		
-		CustomShape shape;
-		// Search for the correct shape
-		for (Integer i = 0; i < this.shapesList.size(); i++) {
-			shape = this.shapesList.get(i);
-			if (shape.getSmpName().equals(smpName)) {
-				if (shape.getMatName().equals(shapeName)) {
-					return shape;
-				}
-			}
+		// Get the correct shape
+		if (this.shapesMap.containsKey(smpName + "_" + shapeName)) {
+			return this.shapesMap.get(smpName + "_" + shapeName);
 		}
 		return null;
 	}

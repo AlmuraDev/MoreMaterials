@@ -62,16 +62,16 @@ public class MMCustomBlock extends GenericCustomBlock {
 		// Getting the correct model for this block.
 		String shapeFile = yaml.getString("Shape");
 		shapeFile = shapeFile.substring(0, shapeFile.lastIndexOf("."));
-		CustomShape customDesign;
+		CustomShapeTemplate designTemplate;
 		if (shapeFile != null && plugin.getSmpManager().getShape(smpName, shapeFile) != null) {
-			customDesign = plugin.getSmpManager().getShape(smpName, shapeFile).createInstance();
+			designTemplate = plugin.getSmpManager().getShape(smpName, shapeFile);
 		} else {
-			customDesign = new CustomShape(plugin);
+			designTemplate = new CustomShapeTemplate(plugin);
 		}
-		customDesign.build(texture, (List<String>) yaml.getList("Coords"));
+		GenericBlockDesign design = designTemplate.createInstance(texture, (List<String>) yaml.getList("Coords"));
 
 		// Build the block.
-		return new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, customDesign, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1), yaml);
+		return new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, design, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1), yaml);
 	}
 
 	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId, YamlConfiguration config) {
