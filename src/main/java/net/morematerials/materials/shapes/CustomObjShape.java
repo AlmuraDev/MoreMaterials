@@ -70,9 +70,9 @@ public class CustomObjShape extends GenericBlockDesign {
 		for (String face : faces) {
 			for (String index : face.split(" ")) {
 				if (polygon == null) {
-					polygon = "      " + vertices.get(Integer.parseInt(index.split("/")[0])) + "\r\n";
+					polygon = vertices.get(Integer.parseInt(index.split("/")[0])) + ",";
 				} else {
-					polygon += "      " + vertices.get(Integer.parseInt(index.split("/")[0])) + "\r\n";
+					polygon += vertices.get(Integer.parseInt(index.split("/")[0])) + ",";
 				}
 			}
 			polygons.add(polygon);
@@ -83,21 +83,16 @@ public class CustomObjShape extends GenericBlockDesign {
 		setQuadNumber(polygons.size());
 		
 		int i = 0;
-		for (Object oshape : polygons) {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> shape = (Map<String, Object>) oshape;
+		for (String oshape : polygons) {
 			Quad quad = new Quad(i, subTextures.get(0));
 			int j = 0;
-			String[] coordLine = null;
-			for (String pline : ((String) shape.get("Coords")).split("\\r?\\n")) {
-				coordLine = pline.split(" ");
-				quad.addVertex(j,
+			String[] coordLine = oshape.split(",");
+			quad.addVertex(j,
 					Float.parseFloat("0" + coordLine[0]),
 					Float.parseFloat("0" + coordLine[1]),
 					Float.parseFloat("0" + coordLine[2])
 				);
 				j++;
-			}
 			// Allow triangles.
 			if (j == 3) {
 				quad.addVertex(j,
