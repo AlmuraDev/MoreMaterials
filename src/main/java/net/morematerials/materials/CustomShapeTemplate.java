@@ -30,10 +30,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.morematerials.MoreMaterials;
+import net.morematerials.materials.shapes.CustomObjShape;
 import net.morematerials.materials.shapes.CustomShapeShape;
 
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
@@ -94,7 +96,11 @@ public class CustomShapeTemplate {
 		if (this.format.equals("shape")) {
 			return new CustomShapeShape(this.plugin, shapeData, textureUrl, coordList);
 		} else if (this.format.equals("obj")) {
-			//TODO return new CustomObjShape(this.plugin, shapeData, String textureUrl, List<String> coordList);
+			try {
+				return new CustomObjShape(this.plugin, shapeData, textureUrl, coordList);
+			} catch (Exception exception) {
+				this.plugin.getUtilsManager().log("Cannot load the shape file: " + shapeData ,  Level.WARNING);
+			}
 		}
 		return null;
 	}
