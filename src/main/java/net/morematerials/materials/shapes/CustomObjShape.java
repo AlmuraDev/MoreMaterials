@@ -1,25 +1,19 @@
 package net.morematerials.materials.shapes;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import net.morematerials.MoreMaterials;
 
 import org.getspout.spoutapi.block.design.GenericBlockDesign;
-import org.getspout.spoutapi.block.design.Quad;
-import org.getspout.spoutapi.block.design.SubTexture;
 import org.getspout.spoutapi.block.design.Texture;
 
 public class CustomObjShape extends GenericBlockDesign {
+
 	public CustomObjShape(MoreMaterials plugin, String shapeData, String textureUrl, List<String> coordList) throws IOException {
-		File file = new File(shapeData);
-		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String[] lines = shapeData.split("\n");
 		
 		// Surrounded blocks will always be drawn.
 		this.setRenderPass(1);
@@ -28,79 +22,51 @@ public class CustomObjShape extends GenericBlockDesign {
 		this.setMinBrightness(0.0F);
 		this.setBrightness(0.5F);
 		this.setMaxBrightness(1.0F);
-		
+
 		// Set Bounding Box
 		setBoundingBox(0, 0, 0, 1, 1, 1);
-		
+
 		// Get texture.
 		BufferedImage bufferedImage = plugin.getWebManager().getCachedImage(textureUrl);
 		Texture texture = new Texture(plugin, textureUrl, bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getHeight());
 		this.setTexture(plugin, texture);
 		
-		// Load the obj faces and vertices
+		// First parse the file in all its data
+		ArrayList<String> vertices = new ArrayList<String>();
+		ArrayList<String> textureCoords = new ArrayList<String>();
 		ArrayList<String> faces = new ArrayList<String>();
-		HashMap<Integer, String> vertices = new HashMap<Integer, String>();
-		String line;
-		while ((line = reader.readLine()) != null)   {
+
+		// Load the obj information
+		for (String line : lines) {
 			if (line.startsWith("v ")) {
-				String vertexLine = line.substring(2);
-				vertexLine = vertexLine.replaceAll("\\.([0-9]{3})[0-9]+", ".$1");
-				vertices.put(vertices.size() + 1, vertexLine);
-			}
-			if (line.startsWith("f ")) {
+				vertices.add(line.substring(2));
+			} else if (line.startsWith("vt ")) {
+				textureCoords.add(line.substring(3));
+			} else if (line.startsWith("f ")) {
 				faces.add(line.substring(2));
 			}
 		}
-		reader.close();
-		
-		// Building subtextures.
-		ArrayList<SubTexture> subTextures = new ArrayList<SubTexture>();
-		String[] coords;
-		for (Integer i = 0; i < coordList.size(); i++) {
-			coords = coordList.get(i).split("[\\s]+");
-			//FIXME spout reads Y from the lower left - this needs to be fixed!
-			SubTexture subtex = new SubTexture(texture, Integer.parseInt(coords[0]), bufferedImage.getHeight() - (Integer.parseInt(coords[1]) + Integer.parseInt(coords[3])), Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
-			subTextures.add(subtex);
-		}
-		
-		// Build the polygons list
-		ArrayList<String> polygons = new ArrayList<String>();
-		String polygon = null;
-		for (String face : faces) {
-			for (String index : face.split(" ")) {
-				if (polygon == null) {
-					polygon = vertices.get(Integer.parseInt(index.split("/")[0])) + ",";
-				} else {
-					polygon += vertices.get(Integer.parseInt(index.split("/")[0])) + ",";
-				}
-			}
-			polygons.add(polygon);
-			polygon = null;
-		}
-		
+
 		// Create the shape
-		setQuadNumber(polygons.size());
-		
+		this.setQuadNumber(faces.size());
 		int i = 0;
-		for (String oshape : polygons) {
-			Quad quad = new Quad(i, subTextures.get(0));
-			int j = 0;
-			String[] coordLine = oshape.split(",");
-			quad.addVertex(j,
-					Float.parseFloat("0" + coordLine[0]),
-					Float.parseFloat("0" + coordLine[1]),
-					Float.parseFloat("0" + coordLine[2])
-				);
-				j++;
-			// Allow triangles.
-			if (j == 3) {
-				quad.addVertex(j,
-					Float.parseFloat("0" + coordLine[0]),
-					Float.parseFloat("0" + coordLine[1]),
-					Float.parseFloat("0" + coordLine[2])
+		for (String face : faces) {
+			String[] faceVertex = face.split(" ");
+			for (Integer j = 0; j < faceVertex.length; j++) {
+				String[] faceInfo = faceVertex[j].split("/");
+				
+				// Get the correct lines.
+				String[] vertexInfo = vertices.get(Integer.parseInt(faceInfo[0]) - 1).split(" ");
+				String[] coordInfo = textureCoords.get(Integer.parseInt(faceInfo[1]) - 1).split(" ");
+				this.setVertex(
+					// Vertex index
+					i, j,
+					// Vertex coord
+					Float.parseFloat(vertexInfo[0]), Float.parseFloat(vertexInfo[1]), Float.parseFloat(vertexInfo[2]),
+					// Vertex texture mapping
+					Float.parseFloat(coordInfo[0]), Float.parseFloat(coordInfo[1])
 				);
 			}
-			setQuad(quad);
 			i++;
 		}
 	}

@@ -59,7 +59,7 @@ public class CustomShapeShape extends GenericBlockDesign {
 
 		// Building the shape together
 		List<?> shapes = config.getList("Shapes");
-		setQuadNumber(shapes.toArray().length);
+		this.setQuadNumber(shapes.toArray().length);
 		int i = 0;
 		for (Object oshape : shapes) {
 			@SuppressWarnings("unchecked")
