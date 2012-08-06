@@ -1,7 +1,6 @@
 package net.morematerials.materials.shapes;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import org.getspout.spoutapi.block.design.Texture;
 
 public class CustomObjShape extends GenericBlockDesign {
 
-	public CustomObjShape(MoreMaterials plugin, String shapeData, String textureUrl, List<String> coordList) throws IOException {
+	public CustomObjShape(MoreMaterials plugin, String shapeData, String textureUrl, List<String> coordList) {
 		String[] lines = shapeData.split("\n");
 		
 		// Surrounded blocks will always be drawn.
@@ -51,7 +50,11 @@ public class CustomObjShape extends GenericBlockDesign {
 		this.setQuadNumber(faces.size());
 		int i = 0;
 		for (String face : faces) {
-			String[] faceVertex = face.split(" ");
+			String[] faceVertex = face.trim().split(" ");
+			//FIXME implement non-quads into spout!
+			if (faceVertex.length == 3) {
+				faceVertex = (face.trim() + " " + faceVertex[2]).split(" ");
+			}
 			for (Integer j = 0; j < faceVertex.length; j++) {
 				String[] faceInfo = faceVertex[j].split("/");
 				

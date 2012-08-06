@@ -19,7 +19,7 @@ public class CustomShapeShape extends GenericBlockDesign {
 		// Load the .shape format string.
 		YamlConfiguration config = new YamlConfiguration();
 		try {
-			config.load(shapeData);
+			config.loadFromString(shapeData);
 		} catch (Exception exception) {
 		}
 		
@@ -77,7 +77,7 @@ public class CustomShapeShape extends GenericBlockDesign {
 				);
 				j++;
 			}
-			// Allow triangles.
+			//FIXME implement non-quads into spout!
 			if (j == 3) {
 				quad.addVertex(j,
 					Float.parseFloat("0" + coordLine[0]),
