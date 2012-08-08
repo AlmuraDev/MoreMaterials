@@ -77,6 +77,16 @@ public class MMListener implements Listener {
 				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
 			}
 		}
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Block block = ((SpoutCraftBlock) event.getClickedBlock()).getBlockType();
+			if (block instanceof GenericCustomBlock) {
+				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+					this.plugin.getHandlerManager().triggerHandlers("LeftClick", ((GenericCustomBlock) block).getCustomId(), event);
+				} else {
+					this.plugin.getHandlerManager().triggerHandlers("RightClick", ((GenericCustomBlock) block).getCustomId(), event);
+				}
+			}
+		}
 	}
 	
 	

@@ -35,6 +35,7 @@ import net.morematerials.commands.GiveExecutor;
 import net.morematerials.listeners.MMListener;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
+import net.morematerials.manager.UpdateManager;
 import net.morematerials.manager.UtilsManager;
 import net.morematerials.manager.WebManager;
 import net.morematerials.metrics.MetricsLite;
@@ -48,6 +49,7 @@ public class MoreMaterials extends JavaPlugin {
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;
 	private WebManager webManager;
+	private UpdateManager updateManager;
 
 	@Override
 	public void onEnable() {
@@ -67,6 +69,7 @@ public class MoreMaterials extends JavaPlugin {
 		this.webManager = new WebManager(this);
 		this.handlerManager = new HandlerManager(this);
 		this.smpManager = new SmpManager(this);
+		this.updateManager = new UpdateManager(this);
 		this.smpManager.init();
 
 		// Read plugin configuration
@@ -106,6 +109,10 @@ public class MoreMaterials extends JavaPlugin {
 
 	public WebManager getWebManager() {
 		return this.webManager;
+	}
+	
+	public UpdateManager getUpdateManager() {
+		return this.updateManager;
 	}
 
 }

@@ -65,7 +65,11 @@ public class GeneralExecutor implements CommandExecutor {
 
 		// Show thanks line.
 		//TODO bukkit should have a method to read custom values
-		sender.sendMessage(ChatColor.WHITE + "Special Thanks to: " + ChatColor.BLUE + "ZNickq");
+		sender.sendMessage(ChatColor.WHITE + "Special Thanks to: ");
+		sender.sendMessage(ChatColor.BLUE + " -> ZNickq" + ChatColor.WHITE + " - For all your support.");
+		sender.sendMessage(ChatColor.BLUE + " -> Flenix" + ChatColor.WHITE + " - For awesome packs!");
+		sender.sendMessage(ChatColor.BLUE + " -> Kaynide" + ChatColor.WHITE + " - Also for awesome packs!");
+		sender.sendMessage(ChatColor.BLUE + " -> Layane" + ChatColor.WHITE + " - For submitting patches.");
 
 		return true;
 	}
