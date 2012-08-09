@@ -36,7 +36,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 
-public class MMCustomTool extends GenericCustomTool {
+public class MMCustomTool extends GenericCustomTool implements IFuel {
 
 	private String materialName;
 	private String smpName;
@@ -114,5 +114,8 @@ public class MMCustomTool extends GenericCustomTool {
 			}
 		}
 	}
-
+	
+	public int getBurnTime() {
+		return config.getInt("BurnTime",0);
+	}
 }

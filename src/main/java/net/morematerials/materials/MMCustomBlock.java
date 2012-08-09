@@ -39,7 +39,7 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 
-public class MMCustomBlock extends GenericCustomBlock {
+public class MMCustomBlock extends GenericCustomBlock implements IFuel {
 
 	private String materialName;
 	private String smpName;
@@ -150,4 +150,7 @@ public class MMCustomBlock extends GenericCustomBlock {
 		return this.itemDropRequired;
 	}
 
+	public int getBurnTime() {
+		return config.getInt("BurnTime",0);
+	}
 }
