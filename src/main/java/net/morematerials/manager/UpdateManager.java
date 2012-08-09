@@ -1,14 +1,10 @@
 package net.morematerials.manager;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -21,6 +17,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.getspout.spoutapi.SpoutManager;
 
 import net.morematerials.MoreMaterials;
 
@@ -34,19 +31,6 @@ public class UpdateManager {
 		this.plugin = plugin;
 		this.tempDir = new File(this.plugin.getDataFolder().getPath(), "updater");
 		
-		// This file needs to be updated, or the wrong items will show up!
-		File itemMap = new File(this.plugin.getDataFolder().getParent(), "Spout/itemMap.txt");
-		try {
-			InputStream stream = new FileInputStream(itemMap);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-			String line = null;
-			while ((line = bufferedReader.readLine()) != null) {
-				this.itemMap.add(line.trim());
-			}
-			stream.close();
-		} catch (Exception exception) {
-		}
-		
 		// Get all .smp files.
 		File dir = new File(this.plugin.getDataFolder().getPath(), "materials");
 		for (File file : dir.listFiles()) {
@@ -56,18 +40,6 @@ public class UpdateManager {
 				} catch (Exception exception) {
 				}
 			}
-		}
-		
-		// At last store the new item-map file!
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(new File(this.plugin.getDataFolder().getParent(), "Spout/NEW_itemMap.txt")));
-			StringBuilder stringBuilder = new StringBuilder();
-			for (String line : this.itemMap) {
-				stringBuilder.append(line + "\n");
-			}
-			out.write(stringBuilder.toString());
-			out.close();
-		} catch (Exception exception) {
 		}
 	}
 	
@@ -156,6 +128,10 @@ public class UpdateManager {
 						break;
 					}
 				}
+				
+				// And we need to tell SpoutPlugin that this material must be renamed!
+				//FIXME implement this into spoutPlugin - very important for release!
+				//SpoutManager.getMaterialManager().renameMaterialKey(newYaml.getString("Title"), smpName + "." + materialName);
 			}
 			
 			// First remove old .smp file
@@ -179,12 +155,6 @@ public class UpdateManager {
 			
 			// At last remove the temp directory.
 			FileUtils.deleteDirectory(this.tempDir);
-			this.plugin.getUtilsManager().log("-----------------------------------");
-			this.plugin.getUtilsManager().log("Convert completed! You should now be able to use all old .smp packs.");
-			this.plugin.getUtilsManager().log("If this is not a new world, all placed blocks are broken.");
-			this.plugin.getUtilsManager().log("In this case, shutdown your server.");
-			this.plugin.getUtilsManager().log("Then rename NEW_itemMap.txt to itemMap.txt in your Spout folder.");
-			this.plugin.getUtilsManager().log("-----------------------------------");
 		} else {
 			// At last, close the file handle.
 			smpFile.close();

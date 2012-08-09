@@ -35,12 +35,13 @@ import net.morematerials.MoreMaterials;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 
-public class MMCustomItem extends GenericCustomItem implements IFuel {
+public class MMCustomItem extends GenericCustomItem implements CustomFuel, CustomMaterial {
 
 	private String materialName;
 	private String smpName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
+	private Integer burnTime;
 
 	public static MMCustomItem create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String texture = yaml.getString("Texture");
@@ -66,6 +67,9 @@ public class MMCustomItem extends GenericCustomItem implements IFuel {
 		this.config = config;
 		this.plugin = plugin;
 		this.setName(config.getString("Title", matName));
+		
+		// Fuel support
+		this.burnTime = this.config.getInt("BurnTime", 0);
 		
 		// Set the items stackability
 		this.setStackable(config.getBoolean("Stackable", true));
@@ -100,7 +104,7 @@ public class MMCustomItem extends GenericCustomItem implements IFuel {
 		return this.materialName;
 	}
 	
-	public int getBurnTime() {
-		return config.getInt("BurnTime",0);
+	public Integer getBurnTime() {
+		return this.burnTime;
 	}
 }

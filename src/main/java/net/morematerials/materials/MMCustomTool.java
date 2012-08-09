@@ -36,12 +36,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 
-public class MMCustomTool extends GenericCustomTool implements IFuel {
+public class MMCustomTool extends GenericCustomTool implements CustomFuel, CustomMaterial {
 
 	private String materialName;
 	private String smpName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
+	private Integer burnTime;
 
 	public static MMCustomTool create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
 		String texture = yaml.getString("Texture");
@@ -67,6 +68,9 @@ public class MMCustomTool extends GenericCustomTool implements IFuel {
 		this.config = config;
 		this.plugin = plugin;
 		this.setName(config.getString("Title", matName));
+		
+		// Fuel support
+		this.burnTime = this.config.getInt("BurnTime", 0);
 		
 		// Set the items durability
 		this.setMaxDurability((short) this.config.getInt("Durability", 0));
@@ -115,7 +119,7 @@ public class MMCustomTool extends GenericCustomTool implements IFuel {
 		}
 	}
 	
-	public int getBurnTime() {
-		return config.getInt("BurnTime",0);
+	public Integer getBurnTime() {
+		return this.burnTime;
 	}
 }

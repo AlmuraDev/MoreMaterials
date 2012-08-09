@@ -27,9 +27,7 @@
 package net.morematerials.commands;
 
 import net.morematerials.MoreMaterials;
-import net.morematerials.materials.MMCustomBlock;
-import net.morematerials.materials.MMCustomItem;
-import net.morematerials.materials.MMCustomTool;
+import net.morematerials.materials.CustomMaterial;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -76,18 +74,8 @@ public class DebugExecutor implements CommandExecutor {
 			}
 			
 			// Get material information.
-			String smpName;
-			String matName;
-			if (material instanceof MMCustomBlock) {
-				smpName = ((MMCustomBlock) material).getSmpName();
-				matName = ((MMCustomBlock) material).getMaterialName();
-			} else if (material instanceof MMCustomTool) {
-				smpName = ((MMCustomTool) material).getSmpName();
-				matName = ((MMCustomTool) material).getMaterialName();
-			} else {
-				smpName = ((MMCustomItem) material).getSmpName();
-				matName = ((MMCustomItem) material).getMaterialName();
-			}
+			String smpName = ((CustomMaterial) material).getSmpName();
+			String matName = ((CustomMaterial) material).getMaterialName();
 			
 			// Display debug stuff.
 			sender.sendMessage(this.plugin.getUtilsManager().getMessage("SMP Name: " + smpName));

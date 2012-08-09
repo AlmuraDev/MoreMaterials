@@ -39,13 +39,14 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 
-public class MMCustomBlock extends GenericCustomBlock implements IFuel {
+public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, CustomMaterial {
 
 	private String materialName;
 	private String smpName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
 	private Boolean itemDropRequired;
+	private Integer burnTime;
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
@@ -85,6 +86,9 @@ public class MMCustomBlock extends GenericCustomBlock implements IFuel {
 		this.materialName = matName;
 		this.config = config;
 		this.setName(name);
+		
+		// Fuel support
+		this.burnTime = this.config.getInt("BurnTime", 0);
 		
 		// Set the blocks base hardness
 		this.setHardness((float) this.config.getDouble("Hardness", this.getHardness()));
@@ -149,8 +153,8 @@ public class MMCustomBlock extends GenericCustomBlock implements IFuel {
 	public Boolean getItemDropRequired() {
 		return this.itemDropRequired;
 	}
-
-	public int getBurnTime() {
-		return config.getInt("BurnTime",0);
+	
+	public Integer getBurnTime() {
+		return this.burnTime;
 	}
 }

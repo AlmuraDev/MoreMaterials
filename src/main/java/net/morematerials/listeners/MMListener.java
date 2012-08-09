@@ -48,7 +48,7 @@ import org.getspout.spoutapi.material.block.GenericCustomBlock;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 import org.getspout.spoutapi.player.SpoutPlayer;
-import net.morematerials.materials.IFuel;
+import net.morematerials.materials.CustomFuel;
 
 public class MMListener implements Listener {
 	
@@ -162,9 +162,9 @@ public class MMListener implements Listener {
 	public void OnFurnaceBurn(FurnaceBurnEvent event) {
 		SpoutItemStack item = new SpoutItemStack(event.getFuel());
 		
-		if (item.getMaterial() instanceof IFuel && ((IFuel)item.getMaterial()).getBurnTime() > 0) {
+		if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
 			event.setBurning(true);
-			event.setBurnTime(((IFuel)item.getMaterial()).getBurnTime());
+			event.setBurnTime(((CustomFuel)item.getMaterial()).getBurnTime());
 		}
 	}
 }
