@@ -60,11 +60,12 @@ public class MMCustomItem extends GenericCustomItem {
 	}
 
 	public MMCustomItem(MoreMaterials plugin, YamlConfiguration config, String texture, String smpName, String matName) {
-		super(plugin, config.getString("Title", matName), texture);
+		super(plugin, smpName + "." + matName, texture);
 		this.smpName = smpName;
 		this.materialName = matName;
 		this.config = config;
 		this.plugin = plugin;
+		this.setName(config.getString("Title", matName));
 		
 		// Set the items stackability
 		this.setStackable(config.getBoolean("Stackable", true));
