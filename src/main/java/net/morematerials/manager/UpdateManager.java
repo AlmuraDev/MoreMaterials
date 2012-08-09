@@ -28,7 +28,7 @@ public class UpdateManager {
 	
 	private MoreMaterials plugin;
 	private File tempDir;
-	private String itemMap;
+	private ArrayList<String> itemMap = new ArrayList<String>();
 
 	public UpdateManager(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -39,14 +39,10 @@ public class UpdateManager {
 		try {
 			InputStream stream = new FileInputStream(itemMap);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-			StringBuilder stringBuilder = new StringBuilder();
-			
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line + "\n");
+				this.itemMap.add(line.trim());
 			}
-			
-			this.itemMap = stringBuilder.toString();
 			stream.close();
 		} catch (Exception exception) {
 		}
@@ -65,7 +61,11 @@ public class UpdateManager {
 		// At last store the new item-map file!
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(new File(this.plugin.getDataFolder().getParent(), "Spout/NEW_itemMap.txt")));
-			out.write(this.itemMap);
+			StringBuilder stringBuilder = new StringBuilder();
+			for (String line : this.itemMap) {
+				stringBuilder.append(line + "\n");
+			}
+			out.write(stringBuilder.toString());
 			out.close();
 		} catch (Exception exception) {
 		}
@@ -149,7 +149,13 @@ public class UpdateManager {
 				newYaml.save(new File(this.tempDir, materialName + ".yml"));
 				
 				// Also update itemmap entry!
-				this.itemMap = this.itemMap.replaceAll("([0-9]+:MoreMaterials.)" + newYaml.getString("Title") + "([\r\n])", "$1" + smpName + "." + materialName + "$2");
+				for (Integer i = 0; i < this.itemMap.size(); i++) {
+					String oldMaterial = this.itemMap.get(i).replaceAll("^[0-9]+:MoreMaterials.", "");
+					if (oldMaterial.equals(newYaml.getString("Title"))) {
+						this.itemMap.set(i, this.itemMap.get(i).replaceAll("^([0-9]+:MoreMaterials.).+$", "$1" + smpName + "." + materialName));
+						break;
+					}
+				}
 			}
 			
 			// First remove old .smp file
