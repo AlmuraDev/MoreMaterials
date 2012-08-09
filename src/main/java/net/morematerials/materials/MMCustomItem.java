@@ -35,7 +35,7 @@ import net.morematerials.MoreMaterials;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 
-public class MMCustomItem extends GenericCustomItem {
+public class MMCustomItem extends GenericCustomItem implements IFuel {
 
 	private String materialName;
 	private String smpName;
@@ -99,5 +99,8 @@ public class MMCustomItem extends GenericCustomItem {
 	public String getMaterialName() {
 		return this.materialName;
 	}
-
+	
+	public int getBurnTime() {
+		return config.getInt("BurnTime",0);
+	}
 }
