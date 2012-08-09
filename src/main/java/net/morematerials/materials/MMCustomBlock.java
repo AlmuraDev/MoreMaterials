@@ -61,12 +61,16 @@ public class MMCustomBlock extends GenericCustomBlock {
 
 		// Getting the correct model for this block.
 		String shapeFile = yaml.getString("Shape");
-		shapeFile = shapeFile.substring(0, shapeFile.lastIndexOf("."));
 		CustomShapeTemplate designTemplate;
-		if (shapeFile != null && plugin.getSmpManager().getShape(smpName, shapeFile) != null) {
-			designTemplate = plugin.getSmpManager().getShape(smpName, shapeFile);
-		} else {
+		if (shapeFile == null) {
 			designTemplate = new CustomShapeTemplate(plugin);
+		} else {
+			shapeFile = shapeFile.substring(0, shapeFile.lastIndexOf("."));
+			if (plugin.getSmpManager().getShape(smpName, shapeFile) != null) {
+				designTemplate = plugin.getSmpManager().getShape(smpName, shapeFile);
+			} else {
+				designTemplate = new CustomShapeTemplate(plugin);
+			}
 		}
 		GenericBlockDesign design = designTemplate.createInstance(texture, (List<String>) yaml.getList("Coords"));
 

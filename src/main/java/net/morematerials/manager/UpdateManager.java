@@ -143,6 +143,9 @@ public class UpdateManager {
 			// At last, close the file handle.
 			smpFile.close();
 		}
+		
+		//TODO convert legacyrecipes.yml if found
+		//TODO check the spout item map file!
 	}
 
 	private void convertBlock(YamlConfiguration oldYaml, YamlConfiguration newYaml, String materialName, ArrayList<String> containedFiles) throws Exception {

@@ -70,6 +70,7 @@ public class SmpManager {
 	public void init() {
 		// Load all .smp files.
 		File dir = new File(this.plugin.getDataFolder().getPath(), "materials");
+		
 		// First we simply register all materials.
 		for (File file : dir.listFiles()) {
 			if (file.getName().endsWith(".smp")) {
@@ -77,19 +78,13 @@ public class SmpManager {
 					this.loadPackage(file);
 				} catch (Exception exception) {
 					this.plugin.getUtilsManager().log("Cannot load " + file.getName(), Level.SEVERE);
+					exception.printStackTrace();
 				}
 			}
 		}
+		
 		// Now when they are known, we can simply configure them completely.
-		for (File file : dir.listFiles()) {
-			if (file.getName().endsWith(".smp")) {
-				try {
-					this.configurePackage(file);
-				} catch (Exception exception) {
-					this.plugin.getUtilsManager().log("Cannot load " + file.getName(), Level.SEVERE);
-				}
-			}
-		}
+		this.configurePackages();
 		
 		// Free up the memory.
 		this.storedConfigs.clear();
@@ -133,7 +128,7 @@ public class SmpManager {
 		this.storedConfigs.put(smpFile.getName(), materials);
 	}
 
-	private void configurePackage(File file) {
+	private void configurePackages() {
 		// Second loop - Now we can reference all drops
 		for (Integer i = 0; i < this.blocksList.size(); i++) {
 			this.blocksList.get(i).configureDrops();

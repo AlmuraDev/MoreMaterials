@@ -99,10 +99,14 @@ public class WebManager {
 	}
 
 	public String getAssetsUrl(String asset) {
+		// Fix for avoid using the anchor character.
+		asset = asset.replace("#", "_");
 		return "http://" + this.assetsUrl + "/" + asset;
 	}
 
 	public BufferedImage getCachedImage(String cacheFileName) {
+		// Fix for avoid using the anchor character.
+		cacheFileName = cacheFileName.replace("#", "_");
 		if (this.imageCache.containsKey(cacheFileName)) {
 			return this.imageCache.get(cacheFileName);
 		}
@@ -111,6 +115,8 @@ public class WebManager {
 
 	public void addAsset(ZipFile smpFile, ZipEntry entry) {
 		String cacheFileName = this.plugin.getUtilsManager().getName(smpFile.getName()) + "_" + entry.getName();
+		// Fix for avoid using the anchor character.
+		cacheFileName = cacheFileName.replace("#", "_");
 		String path = this.getAssetsUrl(cacheFileName);
 
 		// Extract files to cache dir.
