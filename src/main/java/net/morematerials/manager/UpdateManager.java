@@ -1,10 +1,14 @@
 package net.morematerials.manager;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -24,10 +28,28 @@ public class UpdateManager {
 	
 	private MoreMaterials plugin;
 	private File tempDir;
+	private String itemMap;
 
 	public UpdateManager(MoreMaterials plugin) {
 		this.plugin = plugin;
 		this.tempDir = new File(this.plugin.getDataFolder().getPath(), "updater");
+		
+		// This file needs to be updated, or the wrong items will show up!
+		File itemMap = new File(this.plugin.getDataFolder().getParent(), "Spout/itemMap.txt");
+		try {
+			InputStream stream = new FileInputStream(itemMap);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+			StringBuilder stringBuilder = new StringBuilder();
+			
+			String line = null;
+			while ((line = bufferedReader.readLine()) != null) {
+				stringBuilder.append(line + "\n");
+			}
+			
+			this.itemMap = stringBuilder.toString();
+			stream.close();
+		} catch (Exception exception) {
+		}
 		
 		// Get all .smp files.
 		File dir = new File(this.plugin.getDataFolder().getPath(), "materials");
@@ -39,11 +61,20 @@ public class UpdateManager {
 				}
 			}
 		}
+		
+		// At last store the new item-map file!
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(new File(this.plugin.getDataFolder().getParent(), "Spout/NEW_itemMap.txt")));
+			out.write(this.itemMap);
+			out.close();
+		} catch (Exception exception) {
+		}
 	}
 	
 	private void updateSmp(File file) throws Exception {
 		ZipFile smpFile = new ZipFile(file);
 		Enumeration<? extends ZipEntry> entries = smpFile.entries();
+		String smpName = file.getName().substring(0, file.getName().lastIndexOf("."));
 		
 		// First we need to know what files are in this .smp file, because the old format uses magic filename matching.
 		ArrayList<String> containedFiles = new ArrayList<String>();
@@ -116,6 +147,9 @@ public class UpdateManager {
 				
 				// Finally store the new .yml file.
 				newYaml.save(new File(this.tempDir, materialName + ".yml"));
+				
+				// Also update itemmap entry!
+				this.itemMap = this.itemMap.replaceAll("([0-9]+:MoreMaterials.)" + newYaml.getString("Title") + "([\r\n])", "$1" + smpName + "." + materialName + "$2");
 			}
 			
 			// First remove old .smp file
@@ -139,13 +173,18 @@ public class UpdateManager {
 			
 			// At last remove the temp directory.
 			FileUtils.deleteDirectory(this.tempDir);
+			this.plugin.getUtilsManager().log("-----------------------------------");
+			this.plugin.getUtilsManager().log("Convert completed! You should now be able to use all old .smp packs.");
+			this.plugin.getUtilsManager().log("If this is not a new world, all placed blocks are broken.");
+			this.plugin.getUtilsManager().log("In this case, shutdown your server.");
+			this.plugin.getUtilsManager().log("Then rename NEW_itemMap.txt to itemMap.txt in your Spout folder.");
+			this.plugin.getUtilsManager().log("-----------------------------------");
 		} else {
 			// At last, close the file handle.
 			smpFile.close();
 		}
 		
 		//TODO convert legacyrecipes.yml if found
-		//TODO check the spout item map file!
 	}
 
 	private void convertBlock(YamlConfiguration oldYaml, YamlConfiguration newYaml, String materialName, ArrayList<String> containedFiles) throws Exception {
