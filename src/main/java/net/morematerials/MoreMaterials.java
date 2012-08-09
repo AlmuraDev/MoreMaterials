@@ -40,7 +40,6 @@ import net.morematerials.manager.UtilsManager;
 import net.morematerials.manager.WebManager;
 import net.morematerials.metrics.MetricsLite;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -72,11 +71,8 @@ public class MoreMaterials extends JavaPlugin {
 		this.updateManager = new UpdateManager(this);
 		this.smpManager.init();
 
-		// Read plugin configuration
-		FileConfiguration config = this.getConfig();
-
 		// Metrics.
-		if (config.getBoolean("Metrics", true)) {
+		if (this.getConfig().getBoolean("Metrics", true)) {
 			try {
 				MetricsLite metrics = new MetricsLite(this);
 				metrics.start();

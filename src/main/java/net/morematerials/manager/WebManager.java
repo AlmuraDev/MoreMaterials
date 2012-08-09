@@ -61,7 +61,7 @@ public class WebManager {
 		this.plugin = plugin;
 
 		// Get an unused port.
-		Integer port = 8080;
+		Integer port = this.plugin.getConfig().getInt("Port", 8080);
 		for (Integer i = port; i < port + 100; i++) {
 			try {
 				new ServerSocket(i).close();
@@ -72,14 +72,17 @@ public class WebManager {
 		}
 
 		// Get the hostname of this machine.
-		String hostname = "127.0.0.1";
-		if (!plugin.getServer().getIp().equals("")) {
-			hostname = plugin.getServer().getIp();
-		} else {
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://automation.whatismyip.com/n09230945.asp").openStream()));
-				hostname = reader.readLine();
-			} catch (IOException exception) {
+		String hostname = this.plugin.getConfig().getString("Hostname");
+		if (hostname == null) {
+			hostname = "127.0.0.1";
+			if (!plugin.getServer().getIp().equals("127.0.0.1")) {
+				hostname = plugin.getServer().getIp();
+			} else {
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://automation.whatismyip.com/n09230945.asp").openStream()));
+					hostname = reader.readLine();
+				} catch (IOException exception) {
+				}
 			}
 		}
 
