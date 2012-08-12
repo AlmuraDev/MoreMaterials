@@ -41,12 +41,6 @@ import org.getspout.spoutapi.material.MaterialData;
 
 public class FurnaceListener implements Listener {
 
-	public static FurnaceApi plugin;
-
-	public FurnaceListener(FurnaceApi instance) {
-		plugin = instance;
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerSmelt(FurnaceSmeltEvent event) {
 		ItemStack source = event.getSource();

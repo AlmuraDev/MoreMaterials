@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
+import net.morematerials.furnace.FurnaceListener;
 import net.morematerials.listeners.MMListener;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
@@ -84,6 +85,7 @@ public class MoreMaterials extends JavaPlugin {
 
 		// Registered events.
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
+		this.getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
 
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
