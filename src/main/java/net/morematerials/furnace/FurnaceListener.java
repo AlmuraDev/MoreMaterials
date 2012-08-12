@@ -48,30 +48,35 @@ public class FurnaceListener implements Listener {
 		if (source.getTypeId() == 318) {
 			if (FurnaceRecipes.spoutreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.spoutreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 351) {
 			if (FurnaceRecipes.dyereciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.dyereciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 35) {
 			if (FurnaceRecipes.woolreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.woolreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 17) {
 			if (FurnaceRecipes.woodreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.woodreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 5) {
 			if (FurnaceRecipes.planksreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.planksreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
@@ -84,30 +89,35 @@ public class FurnaceListener implements Listener {
 		} else if (source.getTypeId() == 6) {
 			if (FurnaceRecipes.sapplingreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.sapplingreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 263) {
 			if (FurnaceRecipes.coalreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.coalreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 44) {
 			if (FurnaceRecipes.slabreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.spoutreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 98) {
 			if (FurnaceRecipes.stonebrickreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.stonebrickreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
 		} else if (source.getTypeId() == 383) {
 			if (FurnaceRecipes.spawneggreciperesult.containsKey(source.getDurability())) {
 				ItemStack r = FurnaceRecipes.spawneggreciperesult.get(source.getDurability());
+				Bukkit.getServer().addRecipe(new FurnaceRecipe(r, source.getType()));
 				event.setResult(r);
 				return;
 			}
