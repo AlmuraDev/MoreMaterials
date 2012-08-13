@@ -1,9 +1,11 @@
 package net.morematerials.manager;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -117,8 +119,16 @@ public class UpdateManager {
 					this.convertItemHandlers(oldYaml, newYaml);
 				}
 				
+				// Copy over recipes - nothing changed here!
+				if (oldYaml.contains("Recipes")) {
+					newYaml.set("Recipes", oldYaml.getList("Recipes"));
+				}
+				
 				// Finally store the new .yml file.
-				newYaml.save(new File(this.tempDir, materialName + ".yml"));
+				String yamlString = newYaml.saveToString();
+				BufferedWriter out = new BufferedWriter(new FileWriter(new File(this.tempDir, materialName + ".yml")));
+				out.write(this.fixYamlProblems(yamlString));
+				out.close();
 				
 				// Also update itemmap entry!
 				for (Integer i = 0; i < this.itemMap.size(); i++) {
@@ -130,7 +140,6 @@ public class UpdateManager {
 				}
 				
 				// And we need to tell SpoutPlugin that this material must be renamed!
-				//FIXME implement this into spoutPlugin - very important for release!
 				SpoutManager.getMaterialManager().renameMaterialKey(this.plugin, newYaml.getString("Title"), smpName + "." + materialName);
 			}
 			
@@ -159,8 +168,6 @@ public class UpdateManager {
 			// At last, close the file handle.
 			smpFile.close();
 		}
-		
-		//TODO convert legacyrecipes.yml if found
 	}
 
 	private void convertBlock(YamlConfiguration oldYaml, YamlConfiguration newYaml, String materialName, ArrayList<String> containedFiles) throws Exception {
@@ -199,6 +206,14 @@ public class UpdateManager {
 		// Also the friction...
 		if (oldYaml.contains("Friction")) {
 			newYaml.set("Friction", oldYaml.getDouble("Friction"));
+		}
+		
+		// Also the drop stuff...
+		if (oldYaml.contains("ItemDrop")) {
+			newYaml.set("ItemDrop", oldYaml.getString("ItemDrop"));
+		}
+		if (oldYaml.contains("ItemDropAmount")) {
+			newYaml.set("ItemDropAmount", oldYaml.getInt("ItemDropAmount"));
 		}
 		
 		// And at last the lightlevel!
@@ -246,6 +261,19 @@ public class UpdateManager {
 		// KeepEnchanting
 		// Rclick
 		// Lclick
+	}
+
+	private String fixYamlProblems(String yamlString) {
+		// Fixes for crafting recipes, which may be lower case, because we simply copied them above.
+		yamlString = yamlString.replaceAll("([\r\n][\\- ]+)ingredients:", "$1Ingredients:");
+		yamlString = yamlString.replaceAll("([\r\n][\\- ]+)type: shaped", "$1Type: Shaped");
+		yamlString = yamlString.replaceAll("([\r\n][\\- ]+)type: shapeless", "$1Type: Shapeless");
+		yamlString = yamlString.replaceAll("([\r\n][\\- ]+)type: furnace", "$1Type: Furnace");
+		yamlString = yamlString.replaceAll("([\r\n][\\- ]+)amount:", "$1Amount:");
+		
+		// This fixes the invalid recipes format.
+		yamlString = yamlString.replaceAll("(Ingredients: )'([0-9 ]+)\\s+([0-9 ]+)\\s+([0-9 ]+)\\s+'", "$1|\n    $2\n    $3\n    $4");
+		return yamlString;
 	}
 	
 }
