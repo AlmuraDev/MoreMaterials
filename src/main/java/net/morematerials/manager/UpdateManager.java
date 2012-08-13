@@ -131,7 +131,7 @@ public class UpdateManager {
 				
 				// And we need to tell SpoutPlugin that this material must be renamed!
 				//FIXME implement this into spoutPlugin - very important for release!
-				//SpoutManager.getMaterialManager().renameMaterialKey(newYaml.getString("Title"), smpName + "." + materialName);
+				SpoutManager.getMaterialManager().renameMaterialKey(this.plugin, newYaml.getString("Title"), smpName + "." + materialName);
 			}
 			
 			// First remove old .smp file
