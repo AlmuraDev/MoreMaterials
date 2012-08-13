@@ -350,4 +350,8 @@ public class SmpManager {
 		}
 	}
 
+	public int getTotalMaterials() {
+		return this.blocksList.size() + this.itemsList.size() + this.toolsList.size();
+	}
+
 }

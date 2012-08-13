@@ -39,7 +39,9 @@ import net.morematerials.manager.SmpManager;
 import net.morematerials.manager.UpdateManager;
 import net.morematerials.manager.UtilsManager;
 import net.morematerials.manager.WebManager;
-import net.morematerials.metrics.MetricsLite;
+import net.morematerials.metrics.Metrics;
+import net.morematerials.metrics.Metrics.Graph;
+import net.morematerials.metrics.Metrics.Plotter;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -77,7 +79,42 @@ public class MoreMaterials extends JavaPlugin {
 		// Metrics.
 		if (this.getConfig().getBoolean("Metrics", true)) {
 			try {
-				MetricsLite metrics = new MetricsLite(this);
+				Metrics metrics = new Metrics(this);
+
+				// It might be interesting to see how many custom materials we have at all!
+				Graph materialGraph = metrics.createGraph("Number of custom materials");
+				materialGraph.addPlotter(new Plotter("Materials") {
+					@Override
+					public int getValue() {
+						return getSmpManager().getTotalMaterials();
+					}
+				});
+				
+				int totalPackages = 0;
+				// At last - this is interesting for the SMP creators, we can show which SMP files are used how often!
+				Graph packagesGraph = metrics.createGraph("Most used SMP packages");
+				for (String fileName : (new File(this.getDataFolder().getPath(), "materials")).list()) {
+					if (fileName.endsWith(".smp")) {
+						totalPackages++;
+						packagesGraph.addPlotter(new Plotter(fileName.substring(0, fileName.lastIndexOf("."))) {
+							@Override
+							public int getValue() {
+								return 1;
+							}
+						});
+					}
+				}
+
+				// Also its nice to see how many packages people have installed at once.
+				Graph packageCountGraph = metrics.createGraph("Number of SMP packages");
+				final int showPackages = totalPackages;
+				packageCountGraph.addPlotter(new Plotter("Packages") {
+					@Override
+					public int getValue() {
+						return showPackages;
+					}
+				});
+				
 				metrics.start();
 				this.utilsManager.log("Stat tracking activated!");
 			} catch (Exception exception) {
