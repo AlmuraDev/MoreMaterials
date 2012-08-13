@@ -27,6 +27,7 @@
 package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
+import net.morematerials.materials.CustomFuel;
 import net.morematerials.materials.MMCustomBlock;
 
 import org.bukkit.GameMode;
@@ -37,6 +38,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -48,9 +50,6 @@ import org.getspout.spoutapi.material.block.GenericCustomBlock;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 import org.getspout.spoutapi.player.SpoutPlayer;
-import org.getspout.spoutapi.sound.SoundEffect;
-
-import net.morematerials.materials.CustomFuel;
 
 public class MMListener implements Listener {
 	
@@ -64,18 +63,14 @@ public class MMListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
-			if (stack.getMaterial() instanceof GenericCustomTool) {
-				this.plugin.getHandlerManager().triggerHandlers("HoldLeftClick", ((GenericCustomTool) stack.getMaterial()).getCustomId(), event);
-			} else if (stack.getMaterial() instanceof GenericCustomItem) {
+			if (stack.getMaterial() instanceof GenericCustomItem) {
 				this.plugin.getHandlerManager().triggerHandlers("HoldLeftClick", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
 			} else if (stack.getMaterial() instanceof GenericCustomBlock) {
 				this.plugin.getHandlerManager().triggerHandlers("HoldLeftClick", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
 			}
 		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
-			if (stack.getMaterial() instanceof GenericCustomTool) {
-				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomTool) stack.getMaterial()).getCustomId(), event);
-			} else if (stack.getMaterial() instanceof GenericCustomItem) {
+			if (stack.getMaterial() instanceof GenericCustomItem) {
 				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
 			} else if (stack.getMaterial() instanceof GenericCustomBlock) {
 				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
@@ -167,6 +162,14 @@ public class MMListener implements Listener {
 		if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
 			event.setBurning(true);
 			event.setBurnTime(((CustomFuel)item.getMaterial()).getBurnTime());
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerSmelt(FurnaceSmeltEvent event) {
+		SpoutItemStack itemStack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(event.getSource()));
+		if (itemStack != null) {
+			event.setResult(itemStack);
 		}
 	}
 }

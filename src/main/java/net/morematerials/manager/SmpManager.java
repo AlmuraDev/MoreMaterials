@@ -46,7 +46,6 @@ import org.getspout.spoutapi.material.MaterialData;
 
 
 import net.morematerials.MoreMaterials;
-import net.morematerials.furnace.FurnaceRecipes;
 import net.morematerials.materials.CustomShapeTemplate;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;
@@ -286,7 +285,7 @@ public class SmpManager {
 				} else {
 					ingredient = this.getMaterial(smpName, ingredients);
 				}
-				FurnaceRecipes.CustomFurnaceRecipe(new SpoutItemStack(material, amount), ingredient.getRawId(), ingredient.getRawData());
+				this.plugin.getFurnaceRecipeManager().registerRecipe(new SpoutItemStack(material, amount), ingredient);
 			} else {
 				// Get recipe type.
 				if (type.equalsIgnoreCase("Shapeless")) {

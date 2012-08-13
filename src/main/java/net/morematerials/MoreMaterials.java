@@ -32,8 +32,8 @@ import java.util.logging.Level;
 import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
-import net.morematerials.furnace.FurnaceListener;
 import net.morematerials.listeners.MMListener;
+import net.morematerials.manager.FurnaceRecipeManager;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
 import net.morematerials.manager.UpdateManager;
@@ -50,6 +50,7 @@ public class MoreMaterials extends JavaPlugin {
 	private UtilsManager utilsManager;
 	private WebManager webManager;
 	private UpdateManager updateManager;
+	private FurnaceRecipeManager furnaceRecipeManager;
 
 	@Override
 	public void onEnable() {
@@ -68,6 +69,7 @@ public class MoreMaterials extends JavaPlugin {
 		this.utilsManager = new UtilsManager(this);
 		this.webManager = new WebManager(this);
 		this.handlerManager = new HandlerManager(this);
+		this.furnaceRecipeManager = new FurnaceRecipeManager();
 		this.smpManager = new SmpManager(this);
 		this.updateManager = new UpdateManager(this);
 		this.smpManager.init();
@@ -85,7 +87,6 @@ public class MoreMaterials extends JavaPlugin {
 
 		// Registered events.
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
-		this.getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
 
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
@@ -111,6 +112,10 @@ public class MoreMaterials extends JavaPlugin {
 	
 	public UpdateManager getUpdateManager() {
 		return this.updateManager;
+	}
+
+	public FurnaceRecipeManager getFurnaceRecipeManager() {
+		return this.furnaceRecipeManager;
 	}
 
 }
