@@ -119,12 +119,12 @@ public class SmpManager {
 		// First loop - Create all materials.
 		for (String matName : materials.keySet()) {
 			if (!matName.matches("^[0-9@]+$")) {
-				this.createMaterial(this.plugin.getUtilsManager().getName(smpFile.getName()), matName, materials.get(matName), smpFile);
+				this.createMaterial(smpName, matName, materials.get(matName), smpFile);
 			}
 		}
 		
 		// Needs to be stored till later.
-		this.storedConfigs.put(smpFile.getName(), materials);
+		this.storedConfigs.put(smpName, materials);
 	}
 
 	private void configurePackages() {
@@ -136,7 +136,7 @@ public class SmpManager {
 		// Third loops - Now we can reference all crafting recipes
 		for (String smpName : this.storedConfigs.keySet()) {
 			for (String matName : this.storedConfigs.get(smpName).keySet()) {
-				this.registerRecipes(this.plugin.getUtilsManager().getName(smpName), matName, this.storedConfigs.get(smpName).get(matName));
+				this.registerRecipes(smpName, matName, this.storedConfigs.get(smpName).get(matName));
 			}
 		}
 				

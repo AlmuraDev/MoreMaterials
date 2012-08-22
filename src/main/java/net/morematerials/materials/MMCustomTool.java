@@ -50,9 +50,9 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 		// Allow to reference textures from other .smp files.
 		String[] fileNameParts = texture.split("/");
 		if (fileNameParts.length == 2) {
-			texture = plugin.getWebManager().getAssetsUrl(fileNameParts[0] + "_" + fileNameParts[1]);
+			texture = fileNameParts[0] + "_" + fileNameParts[1];
 		} else {
-			texture = plugin.getWebManager().getAssetsUrl(smpName + "_" + texture);
+			texture = smpName + "_" + texture;
 		}
 		
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)

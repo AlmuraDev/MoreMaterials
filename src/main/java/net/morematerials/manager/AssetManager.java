@@ -27,18 +27,11 @@
 package net.morematerials.manager;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -47,64 +40,14 @@ import javax.imageio.ImageIO;
 import org.getspout.spoutapi.SpoutManager;
 
 import net.morematerials.MoreMaterials;
-import net.morematerials.http.MMHttpHandler;
 
-import com.sun.net.httpserver.HttpServer;
+public class AssetManager {
 
-public class WebManager {
-
-	private String assetsUrl;
 	private MoreMaterials plugin;
 	private HashMap<String, BufferedImage> imageCache = new HashMap<String, BufferedImage>();
 
-	public WebManager(MoreMaterials plugin) {
+	public AssetManager(MoreMaterials plugin) {
 		this.plugin = plugin;
-
-		// Get an unused port.
-		Integer port = this.plugin.getConfig().getInt("Port", 8080);
-		for (Integer i = port; i < port + 100; i++) {
-			try {
-				new ServerSocket(i).close();
-				port = i;
-				break;
-			} catch (IOException exception) {
-			}
-		}
-
-		// Get the hostname of this machine.
-		String hostname = this.plugin.getConfig().getString("Hostname");
-		if (hostname == null) {
-			hostname = "127.0.0.1";
-			if (!plugin.getServer().getIp().equals("127.0.0.1")) {
-				hostname = plugin.getServer().getIp();
-			} else {
-				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://automation.whatismyip.com/n09230945.asp").openStream()));
-					hostname = reader.readLine();
-				} catch (IOException exception) {
-				}
-			}
-		}
-
-		// Store assetsUrl
-		this.assetsUrl = hostname + ":" + port;
-
-		// Create assets-server.
-		try {
-			HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-			server.createContext("/", new MMHttpHandler(plugin));
-			server.setExecutor(null);
-			server.start();
-			plugin.getUtilsManager().log("Listening: " + this.assetsUrl);
-		} catch (IOException exception) {
-			plugin.getUtilsManager().log("Assets server error!", Level.SEVERE);
-		}
-	}
-
-	public String getAssetsUrl(String asset) {
-		// Fix for avoid using the anchor character.
-		asset = asset.replace("#", "_");
-		return "http://" + this.assetsUrl + "/" + asset;
 	}
 
 	public BufferedImage getCachedImage(String cacheFileName) {
@@ -120,7 +63,6 @@ public class WebManager {
 		String cacheFileName = this.plugin.getUtilsManager().getName(smpFile.getName()) + "_" + entry.getName();
 		// Fix for avoid using the anchor character.
 		cacheFileName = cacheFileName.replace("#", "_");
-		String path = this.getAssetsUrl(cacheFileName);
 
 		// Extract files to cache dir.
 		File cacheFile = new File(new File(this.plugin.getDataFolder().getPath(), "cache"), cacheFileName);
@@ -146,10 +88,11 @@ public class WebManager {
 				bufferedImage = ImageIO.read(cacheFile);
 			} catch (Exception exception) {
 			}
-			this.imageCache.put(path, bufferedImage);
+			this.imageCache.put(cacheFileName, bufferedImage);
 		}
+		
 		// Add file to spout cache.
-		SpoutManager.getFileManager().addToCache(this.plugin, path);
+		SpoutManager.getFileManager().addToCache(this.plugin, cacheFile);
 	}
 
 }
