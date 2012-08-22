@@ -38,7 +38,7 @@ import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
 import net.morematerials.manager.UpdateManager;
 import net.morematerials.manager.UtilsManager;
-import net.morematerials.manager.WebManager;
+import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
@@ -50,7 +50,7 @@ public class MoreMaterials extends JavaPlugin {
 	private HandlerManager handlerManager;
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;
-	private WebManager webManager;
+	private AssetManager webManager;
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
 
@@ -69,7 +69,7 @@ public class MoreMaterials extends JavaPlugin {
 
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
-		this.webManager = new WebManager(this);
+		this.webManager = new AssetManager(this);
 		this.handlerManager = new HandlerManager(this);
 		this.furnaceRecipeManager = new FurnaceRecipeManager();
 		this.smpManager = new SmpManager(this);
@@ -143,7 +143,7 @@ public class MoreMaterials extends JavaPlugin {
 		return this.utilsManager;
 	}
 
-	public WebManager getWebManager() {
+	public AssetManager getWebManager() {
 		return this.webManager;
 	}
 	

@@ -64,7 +64,7 @@ public class PlaySoundHandler extends GenericHandler {
 		}
 
 		// Now play the sound!
-		String url = this.plugin.getWebManager().getAssetsUrl(smpName + "_" + (String) config.get("Sound"));
+		String url = smpName + "_" + (String) config.get("Sound");
 		SpoutManager.getSoundManager().playGlobalCustomSoundEffect(this.plugin, url, false, location, 32, 100);
 	}
 	
