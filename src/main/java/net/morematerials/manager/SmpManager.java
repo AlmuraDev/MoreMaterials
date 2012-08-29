@@ -130,19 +130,34 @@ public class SmpManager {
 	private void configurePackages() {
 		// Second loop - Now we can reference all drops
 		for (Integer i = 0; i < this.blocksList.size(); i++) {
-			this.blocksList.get(i).configureDrops();
+			try {
+				this.blocksList.get(i).configureDrops();
+			} catch(Exception ex) {
+				System.out.println("Error configuring drops for: "+this.blocksList.get(i).getFullName()+"!");
+				ex.printStackTrace();
+			}
 		}
 		
 		// Third loops - Now we can reference all crafting recipes
 		for (String smpName : this.storedConfigs.keySet()) {
 			for (String matName : this.storedConfigs.get(smpName).keySet()) {
-				this.registerRecipes(smpName, matName, this.storedConfigs.get(smpName).get(matName));
+				try { 
+					this.registerRecipes(smpName, matName, this.storedConfigs.get(smpName).get(matName));
+				} catch(Exception ex) {
+					System.out.println("Error registering recipes for: "+matName+" from package "+smpName+"!");
+					ex.printStackTrace();
+				}
 			}
 		}
 				
 		// Fourth loops - Set all strength modifiers.
 		for (Integer i = 0; i < this.toolsList.size(); i++) {
-			this.toolsList.get(i).configureModifiers();
+			try {
+				this.toolsList.get(i).configureModifiers();
+			} catch(Exception ex) {
+				System.out.println("Error configuring modifiers for: "+this.toolsList.get(i).getFullName()+"!");
+				ex.printStackTrace();
+			}
 		}
 	}
 
