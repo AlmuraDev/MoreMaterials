@@ -287,6 +287,9 @@ public class SmpManager {
 				} else {
 					ingredient = this.getMaterial(smpName, ingredients);
 				}
+				if (ingredient == null) {
+					continue;
+				}
 				this.plugin.getFurnaceRecipeManager().registerRecipe(new SpoutItemStack(material, amount), ingredient);
 			} else {
 				// Get recipe type.
@@ -305,6 +308,9 @@ public class SmpManager {
 					} else {
 						ingredient = this.getMaterial(smpName, ingredients);
 					}
+					if (ingredient == null) {
+						continue;
+					}
 					((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
 					// Finaly register recipe.
 					SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
@@ -315,6 +321,7 @@ public class SmpManager {
 					ingredients = ingredients.replaceAll("\\s{2,}", " ");
 					
 					// Parse all lines
+					Boolean invalidRecipe = false;
 					Integer currentLine = 0;
 					for (String line : ingredients.split("\\r?\\n")) {
 						Integer currentColumn = 0;
@@ -332,6 +339,9 @@ public class SmpManager {
 							} else {
 								ingredient = this.getMaterial(smpName, ingredientitem);
 							}
+							if (ingredient == null) {
+								invalidRecipe = true;
+							}
 
 							// Skip "air"
 							if (ingredient == null || ingredientitem.equals("0")) {
@@ -346,7 +356,9 @@ public class SmpManager {
 						currentLine++;
 					}
 					// Finaly register recipe.
-					SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
+					if (!invalidRecipe) {
+						SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
+					}
 				}
 			}
 		}
