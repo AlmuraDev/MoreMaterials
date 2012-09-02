@@ -124,7 +124,7 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 		// Configure itemdrop
 		String drop = this.config.getString("ItemDrop", this.materialName);
 		Integer dropCount = this.config.getInt("ItemDropAmount", 1);
-		Material material = null;
+		Material material;
 		if (drop.matches("^[0-9@]+$")) {
 			String[] matInfo = drop.split("@");
 			if (matInfo.length == 1) {

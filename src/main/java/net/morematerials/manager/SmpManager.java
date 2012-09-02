@@ -263,6 +263,10 @@ public class SmpManager {
 		} else {
 			material = this.getMaterial(smpName, matName);
 		}
+		
+		if (material == null) {
+			return;
+		}
 
 		for (Object orecipe : recipes) {
 			@SuppressWarnings("unchecked")

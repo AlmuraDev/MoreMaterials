@@ -52,7 +52,6 @@ public class AssetManager {
 
 	public BufferedImage getCachedImage(String cacheFileName) {
 		// Fix for avoid using the anchor character.
-		cacheFileName = cacheFileName.replace("#", "_");
 		if (this.imageCache.containsKey(cacheFileName)) {
 			return this.imageCache.get(cacheFileName);
 		}
@@ -65,8 +64,6 @@ public class AssetManager {
 
 	public void addAsset(ZipFile smpFile, ZipEntry entry) {
 		String cacheFileName = this.plugin.getUtilsManager().getName(smpFile.getName()) + "_" + entry.getName();
-		// Fix for avoid using the anchor character.
-		cacheFileName = cacheFileName.replace("#", "_");
 
 		// Extract files to cache dir.
 		File cacheFile = new File(new File(this.plugin.getDataFolder().getPath(), "cache"), cacheFileName);
