@@ -43,7 +43,7 @@ public class CustomShapeShape extends GenericBlockDesign {
 		setBoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
 		
 		// Get texture.
-		BufferedImage bufferedImage = plugin.getWebManager().getCachedImage(textureUrl);
+		BufferedImage bufferedImage = plugin.getAssetManager().getCachedImage(textureUrl);
 		Texture texture = new Texture(plugin, textureUrl, bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getHeight());
 		this.setTexture(plugin, texture);
 

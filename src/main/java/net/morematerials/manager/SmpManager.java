@@ -87,6 +87,8 @@ public class SmpManager {
 		
 		// Free up the memory.
 		this.storedConfigs.clear();
+		this.shapesMap.clear();
+		this.plugin.getAssetManager().freeImageCacheMemory();
 	}
 
 	private void loadPackage(File file) throws Exception {
@@ -111,7 +113,7 @@ public class SmpManager {
 				this.shapesMap.put(smpName + "_" + matName, new CustomShapeTemplate(this.plugin, smpFile, entry));
 			} else {
 				// Add all other files as asset.
-				this.plugin.getWebManager().addAsset(smpFile, entry);
+				this.plugin.getAssetManager().addAsset(smpFile, entry);
 			}
 		}
 		smpFile.close();

@@ -58,6 +58,10 @@ public class AssetManager {
 		}
 		return null;
 	}
+	
+	public void freeImageCacheMemory() {
+		this.imageCache.clear();
+	}
 
 	public void addAsset(ZipFile smpFile, ZipEntry entry) {
 		String cacheFileName = this.plugin.getUtilsManager().getName(smpFile.getName()) + "_" + entry.getName();

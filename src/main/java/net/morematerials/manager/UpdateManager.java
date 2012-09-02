@@ -43,6 +43,9 @@ public class UpdateManager {
 				}
 			}
 		}
+		
+		// Cleanups
+		this.itemMap.clear();
 	}
 	
 	private void updateSmp(File file) throws Exception {

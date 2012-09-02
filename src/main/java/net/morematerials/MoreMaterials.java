@@ -50,7 +50,7 @@ public class MoreMaterials extends JavaPlugin {
 	private HandlerManager handlerManager;
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;
-	private AssetManager webManager;
+	private AssetManager assetManager;
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
 
@@ -69,7 +69,7 @@ public class MoreMaterials extends JavaPlugin {
 
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
-		this.webManager = new AssetManager(this);
+		this.assetManager = new AssetManager(this);
 		this.handlerManager = new HandlerManager(this);
 		this.furnaceRecipeManager = new FurnaceRecipeManager();
 		this.smpManager = new SmpManager(this);
@@ -143,8 +143,8 @@ public class MoreMaterials extends JavaPlugin {
 		return this.utilsManager;
 	}
 
-	public AssetManager getWebManager() {
-		return this.webManager;
+	public AssetManager getAssetManager() {
+		return this.assetManager;
 	}
 	
 	public UpdateManager getUpdateManager() {
