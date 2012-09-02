@@ -76,10 +76,12 @@ public class DebugExecutor implements CommandExecutor {
 			// Get material information.
 			String smpName = ((CustomMaterial) material).getSmpName();
 			String matName = ((CustomMaterial) material).getMaterialName();
+			String disName = ((CustomMaterial) material).getDisplayName();
 			
 			// Display debug stuff.
 			sender.sendMessage(this.plugin.getUtilsManager().getMessage("SMP Name: " + smpName));
 			sender.sendMessage(this.plugin.getUtilsManager().getMessage("Material Name: " + matName));
+			sender.sendMessage(this.plugin.getUtilsManager().getMessage("Display Name: " + disName));
 			sender.sendMessage(this.plugin.getUtilsManager().getMessage("Custom ID: " + materialId));
 		}
 		return true;

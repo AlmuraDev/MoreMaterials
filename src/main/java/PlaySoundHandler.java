@@ -57,6 +57,8 @@ public class PlaySoundHandler extends GenericHandler {
 
 		// Default location is the world spawn.
 		Location location = this.plugin.getServer().getWorlds().get(0).getSpawnLocation();
+		//TODO check if we can lookup if this object has a .getPlayer() method, and call it if it has.
+		//     Reason: i dont want to list all kind of events here :D
 		if (event instanceof PlayerInteractEvent) {
 			location = ((PlayerInteractEvent) event).getPlayer().getLocation();
 		} else if (event instanceof PlayerMoveEvent) {

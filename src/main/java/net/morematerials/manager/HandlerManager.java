@@ -105,7 +105,7 @@ public class HandlerManager {
 				this.plugin.getUtilsManager().log("Not a handler: " + useName, Level.WARNING);
 			} else {
 				GenericHandler handler = (GenericHandler) object;
-				handler.createAndInit(this.plugin);
+				handler.init(this.plugin);
 				this.handlers.put(useName, handler);
 				this.plugin.getUtilsManager().log("Loaded handler: " + useName);
 			}

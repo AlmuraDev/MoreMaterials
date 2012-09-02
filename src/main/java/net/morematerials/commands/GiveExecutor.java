@@ -51,7 +51,7 @@ public class GiveExecutor implements CommandExecutor {
 		}
 		
 		// Also this command is only useable by players with permission
-		if (this.plugin.getUtilsManager().hasPermission(sender, "morematerials.admin")) {
+		if (!this.plugin.getUtilsManager().hasPermission(sender, "morematerials.admin")) {
 			return false;
 		}
 		
@@ -64,8 +64,17 @@ public class GiveExecutor implements CommandExecutor {
 		// How many materials should we add?
 		Integer amount = args.length > 1 ? Integer.parseInt(args[1]) : 1;
 		
-		Material material = this.plugin.getSmpManager().getMaterial(Integer.parseInt(args[0]));
-		if (material != null) {
+		Material material = null;
+		if (args[0].matches("^[0-9]+$")) {
+			material = this.plugin.getSmpManager().getMaterial(Integer.parseInt(args[0]));
+		} else {
+			String[] matString = args[0].split("\\.");
+			if (matString.length > 1) {
+				material = this.plugin.getSmpManager().getMaterial(matString[0], matString[1]);
+			}
+		}
+		
+		if (material == null) {
 			// No material found.
 			sender.sendMessage(this.plugin.getUtilsManager().getMessage("No material found for: " + args[0]));
 		} else {

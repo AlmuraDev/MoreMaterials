@@ -26,9 +26,9 @@
 
 package net.morematerials.materials;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.morematerials.MoreMaterials;
 
@@ -50,7 +50,7 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
-		String texture = yaml.getString("Texture");
+		String texture = yaml.getString("Texture", "");
 		
 		// Allow to reference textures from other .smp files.
 		String[] fileNameParts = texture.split("/");
@@ -73,19 +73,19 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 				designTemplate = new CustomShapeTemplate(plugin);
 			}
 		}
-		GenericBlockDesign design = designTemplate.createInstance(texture, (List<String>) yaml.getList("Coords"));
+		GenericBlockDesign design = designTemplate.createInstance(texture, (List<String>) yaml.getList("Coords", new ArrayList<String>()));
 
 		// Build the block.
-		return new MMCustomBlock(plugin, yaml.getString("Title", matName), texture, smpName, matName, design, yaml.getBoolean("Rotation", false), yaml.getInt("BaseId", 1), yaml);
+		return new MMCustomBlock(plugin, texture, smpName, matName, design, yaml);
 	}
 
-	public MMCustomBlock(MoreMaterials plugin, String name, String texture, String smpName, String matName, GenericBlockDesign design, Boolean rotate, Integer baseId, YamlConfiguration config) {
-		super(plugin, smpName + "." + matName, baseId, design, rotate);
+	public MMCustomBlock(MoreMaterials plugin, String texture, String smpName, String matName, GenericBlockDesign design, YamlConfiguration config) {
+		super(plugin, smpName + "." + matName, config.getInt("BaseId", 1), design, config.getBoolean("Rotation", false));
 		this.plugin = plugin;
 		this.smpName = smpName;
 		this.materialName = matName;
 		this.config = config;
-		this.setName(name);
+		this.setName(config.getString("Title", matName));
 		
 		// Fuel support
 		this.burnTime = this.config.getInt("BurnTime", 0);
@@ -109,16 +109,12 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	}
 	
 	private void registerHandlers() {
-		Set<String> eventTypes = this.config.getConfigurationSection("Handlers").getKeys(false);
-		for (String eventType : eventTypes) {
-			if (this.config.contains("Handlers." + eventType)) {
-				List<?> handlerList = this.config.getList("Handlers." + eventType);
-				for (Object handlerEntry : handlerList) {
-					@SuppressWarnings("unchecked")
-					Map<String, Object> handlerConfig = (Map<String, Object>) handlerEntry;
-					if (this.plugin.getHandlerManager().getHandler((String) handlerConfig.get("Name")) != null) {
-						this.plugin.getHandlerManager().registerHandler(eventType, this.getCustomId(), handlerConfig);
-					}
+		for (String eventType : this.config.getConfigurationSection("Handlers").getKeys(false)) {
+			for (Object handlerEntry : this.config.getList("Handlers." + eventType)) {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> handlerConfig = (Map<String, Object>) handlerEntry;
+				if (this.plugin.getHandlerManager().getHandler((String) handlerConfig.get("Name")) != null) {
+					this.plugin.getHandlerManager().registerHandler(eventType, this.getCustomId(), handlerConfig);
 				}
 			}
 		}
@@ -157,4 +153,9 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	public Integer getBurnTime() {
 		return this.burnTime;
 	}
+	
+	public String getDisplayName() {
+		return this.getDisplayName();
+	}
+
 }

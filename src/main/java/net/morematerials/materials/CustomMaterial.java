@@ -6,4 +6,6 @@ public interface CustomMaterial {
 	
 	public String getMaterialName();
 	
+	public String getDisplayName();
+	
 }

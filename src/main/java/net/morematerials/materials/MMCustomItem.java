@@ -26,9 +26,7 @@
 
 package net.morematerials.materials;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.morematerials.MoreMaterials;
 
@@ -44,7 +42,7 @@ public class MMCustomItem extends GenericCustomItem implements CustomFuel, Custo
 	private Integer burnTime;
 
 	public static MMCustomItem create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
-		String texture = yaml.getString("Texture");
+		String texture = yaml.getString("Texture", "");
 		
 		// Allow to reference textures from other .smp files.
 		String[] fileNameParts = texture.split("/");
@@ -81,16 +79,12 @@ public class MMCustomItem extends GenericCustomItem implements CustomFuel, Custo
 	}
 	
 	private void registerHandlers() {
-		Set<String> eventTypes = this.config.getConfigurationSection("Handlers").getKeys(false);
-		for (String eventType : eventTypes) {
-			if (this.config.contains("Handlers." + eventType)) {
-				List<?> handlerList = this.config.getList("Handlers." + eventType);
-				for (Object handlerEntry : handlerList) {
-					@SuppressWarnings("unchecked")
-					Map<String, Object> handlerConfig = (Map<String, Object>) handlerEntry;
-					if (this.plugin.getHandlerManager().getHandler((String) handlerConfig.get("Name")) != null) {
-						this.plugin.getHandlerManager().registerHandler(eventType, this.getCustomId(), handlerConfig);
-					}
+		for (String eventType : this.config.getConfigurationSection("Handlers").getKeys(false)) {
+			for (Object handlerEntry : this.config.getList("Handlers." + eventType)) {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> handlerConfig = (Map<String, Object>) handlerEntry;
+				if (this.plugin.getHandlerManager().getHandler((String) handlerConfig.get("Name")) != null) {
+					this.plugin.getHandlerManager().registerHandler(eventType, this.getCustomId(), handlerConfig);
 				}
 			}
 		}
@@ -107,4 +101,9 @@ public class MMCustomItem extends GenericCustomItem implements CustomFuel, Custo
 	public Integer getBurnTime() {
 		return this.burnTime;
 	}
+
+	public String getDisplayName() {
+		return this.getDisplayName();
+	}
+
 }

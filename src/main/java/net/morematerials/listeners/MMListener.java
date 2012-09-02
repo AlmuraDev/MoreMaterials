@@ -61,6 +61,7 @@ public class MMListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
+		// The click events for hold item.
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
 			if (stack.getMaterial() instanceof GenericCustomItem) {
@@ -76,6 +77,8 @@ public class MMListener implements Listener {
 				this.plugin.getHandlerManager().triggerHandlers("HoldRightClick", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
 			}
 		}
+		
+		// The click event for the block you clicked on
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block block = ((SpoutCraftBlock) event.getClickedBlock()).getBlockType();
 			if (block instanceof GenericCustomBlock) {
@@ -94,8 +97,16 @@ public class MMListener implements Listener {
 		Location location = event.getPlayer().getLocation();
 		Block block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location)).getBlockType();
 		
+		// Touch represents a block you are standing in.
 		if (block instanceof GenericCustomBlock) {
 			this.plugin.getHandlerManager().triggerHandlers("Touch", ((GenericCustomBlock) block).getCustomId(), event);
+		}
+
+		block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location.subtract(0, 1, 0))).getBlockType();
+		
+		// Walkover represents the block under your position.
+		if (block instanceof GenericCustomBlock) {
+			this.plugin.getHandlerManager().triggerHandlers("Walkover", ((GenericCustomBlock) block).getCustomId(), event);
 		}
 	}
 

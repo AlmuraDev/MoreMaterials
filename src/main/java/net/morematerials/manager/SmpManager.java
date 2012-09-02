@@ -152,7 +152,7 @@ public class SmpManager {
 			this.blocksList.add(MMCustomBlock.create(this.plugin, yaml, smpName, matName));
 		} else if (yaml.getString("Type", "").equals("Tool")) {
 			this.toolsList.add(MMCustomTool.create(this.plugin, yaml, smpName, matName));
-		} else {
+		} else if (yaml.getString("Type", "").equals("Item")) {
 			this.itemsList.add(MMCustomItem.create(this.plugin, yaml, smpName, matName));
 		}
 	}

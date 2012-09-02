@@ -40,7 +40,4 @@ public abstract class GenericHandler {
 
 	public abstract void shutdown();
 
-	public final void createAndInit(MoreMaterials instance) {
-		init(instance);
-	}
 }
