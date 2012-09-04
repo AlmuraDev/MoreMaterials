@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -43,12 +44,14 @@ public class CustomShapeTemplate {
 	
 	private String format;
 	private String shapeData;
+	private String name;
 	private MoreMaterials plugin;
 	
 	public CustomShapeTemplate(MoreMaterials plugin, ZipFile smpFile, ZipEntry entry) {
 		this.plugin = plugin;
 		
 		// We can specify the format by fileending.
+		this.name = smpFile.getName() + "/" + entry.getName();
 		this.format = entry.getName().substring(entry.getName().lastIndexOf('.') + 1);
 		
 		// Now we need to extract the format data.
@@ -73,6 +76,7 @@ public class CustomShapeTemplate {
 		
 		// We can specify the format by fileending.
 		this.format = "shape";
+		this.name = "cube";
 		
 		// Now we need to extract the format data.
 		try {
@@ -92,10 +96,15 @@ public class CustomShapeTemplate {
 	}
 
 	public GenericBlockDesign createInstance(String textureUrl, List<String> coordList) {
-		if (this.format.equals("shape")) {
-			return new CustomShapeShape(this.plugin, shapeData, textureUrl, coordList);
-		} else if (this.format.equals("obj")) {
-			return new CustomObjShape(this.plugin, shapeData, textureUrl, coordList);
+		try {
+			if (this.format.equals("shape")) {
+				return new CustomShapeShape(this.plugin, shapeData, textureUrl, coordList);
+			} else if (this.format.equals("obj")) {
+				return new CustomObjShape(this.plugin, shapeData, textureUrl, coordList);
+			}
+		} catch (Exception exception) {
+			this.plugin.getUtilsManager().log("Shape " + this.name + " not readable.", Level.WARNING);
+			return (new CustomShapeTemplate(this.plugin)).createInstance(textureUrl, coordList);
 		}
 		return null;
 	}

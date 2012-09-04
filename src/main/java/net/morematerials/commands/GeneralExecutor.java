@@ -70,6 +70,7 @@ public class GeneralExecutor implements CommandExecutor {
 		sender.sendMessage(ChatColor.BLUE + " -> Flenix" + ChatColor.WHITE + " - For awesome packs!");
 		sender.sendMessage(ChatColor.BLUE + " -> Kaynide" + ChatColor.WHITE + " - Also for awesome packs!");
 		sender.sendMessage(ChatColor.BLUE + " -> Layane" + ChatColor.WHITE + " - For submitting patches.");
+		sender.sendMessage(ChatColor.BLUE + " -> Dockter" + ChatColor.WHITE + " - For a lot of testing.");
 
 		return true;
 	}
