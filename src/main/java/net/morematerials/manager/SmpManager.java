@@ -282,7 +282,7 @@ public class SmpManager {
 				// Get correct ingredient material
 				Material ingredient;
 				if (ingredients.matches("^[0-9@]+$")) {
-					String[] matInfo = matName.split("@");
+					String[] matInfo = ingredients.split("@");
 					if (matInfo.length == 1) {
 						ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
 					} else {
@@ -303,7 +303,7 @@ public class SmpManager {
 					// Get correct ingredient material
 					Material ingredient;
 					if (ingredients.matches("^[0-9@]+$")) {
-						String[] matInfo = matName.split("@");
+						String[] matInfo = ingredients.split("@");
 						if (matInfo.length == 1) {
 							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
 						} else {
@@ -334,7 +334,7 @@ public class SmpManager {
 							// Get correct ingredient material
 							Material ingredient;
 							if (ingredients.matches("^[0-9@]+$")) {
-								String[] matInfo = matName.split("@");
+								String[] matInfo = ingredients.split("@");
 								if (matInfo.length == 1) {
 									ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
 								} else {
