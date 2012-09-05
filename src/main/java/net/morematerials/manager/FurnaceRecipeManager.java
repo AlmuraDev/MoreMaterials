@@ -29,6 +29,9 @@ package net.morematerials.manager;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.material.MaterialData;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Material;
 
@@ -38,6 +41,7 @@ public class FurnaceRecipeManager {
 
 	public void registerRecipe(SpoutItemStack result, Material ingredient) {
 		this.recipes.put(ingredient, result);
+		Bukkit.getServer().addRecipe(new FurnaceRecipe(result, (new MaterialData(ingredient.getRawId(), (byte) ingredient.getRawId()))));
 	}
 
 	public SpoutItemStack getResult(SpoutItemStack source) {
