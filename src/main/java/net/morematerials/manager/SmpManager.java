@@ -274,7 +274,7 @@ public class SmpManager {
 			// This is what we want to craft.
 			Integer amount = recipe.containsKey("Amount") ? (Integer) recipe.get("Amount") : 1;
 			SpoutItemStack stack = new SpoutItemStack(material, amount);
-			String ingredients = (String) recipe.get("Ingredients");
+			String ingredients = "" + recipe.get("Ingredients");
 
 			// Building recipe
 			String type = (String) recipe.get("Type");
@@ -291,9 +291,11 @@ public class SmpManager {
 				} else {
 					ingredient = this.getMaterial(smpName, ingredients);
 				}
+				
 				if (ingredient == null) {
 					continue;
 				}
+				
 				this.plugin.getFurnaceRecipeManager().registerRecipe(new SpoutItemStack(material, amount), ingredient);
 			} else {
 				// Get recipe type.
@@ -312,9 +314,11 @@ public class SmpManager {
 					} else {
 						ingredient = this.getMaterial(smpName, ingredients);
 					}
+					
 					if (ingredient == null) {
 						continue;
 					}
+					
 					((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
 					// Finaly register recipe.
 					SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
@@ -322,43 +326,41 @@ public class SmpManager {
 					SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(stack).shape("abc","def", "ghi");
 					
 					// Split ingredients.
-					ingredients = ingredients.replaceAll("\\s{2,}", " ");
+					ingredients = ingredients.trim().replaceAll("[\\s\\r\\n]+", " ");
 					
 					// Parse all lines
 					Boolean invalidRecipe = false;
-					Integer currentLine = 0;
-					for (String line : ingredients.split("\\r?\\n")) {
-						Integer currentColumn = 0;
+					Integer currentColumn = 0;
 						
-						for (String ingredientitem : line.split(" ")) {
-							// Get correct ingredient material
-							Material ingredient;
-							if (ingredients.matches("^[0-9@]+$")) {
-								String[] matInfo = ingredients.split("@");
-								if (matInfo.length == 1) {
-									ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
-								} else {
-									ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
-								}
+					for (String ingredientitem : ingredients.split(" ")) {
+						// Get correct ingredient material
+						Material ingredient;
+						if (ingredientitem.matches("^[0-9@]+$")) {
+							String[] matInfo = ingredientitem.split("@");
+							if (matInfo.length == 1) {
+								ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
 							} else {
-								ingredient = this.getMaterial(smpName, ingredientitem);
+								ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
 							}
-							if (ingredient == null) {
-								invalidRecipe = true;
-							}
-
-							// Skip "air"
-							if (ingredient == null || ingredientitem.equals("0")) {
-								currentColumn++;
-								continue;
-							}
-							
-							// Add the ingredient
-							sRecipe.setIngredient((char) ('a' + currentColumn + currentLine * 3), ingredient);
-							currentColumn++;
+						} else {
+							ingredient = this.getMaterial(smpName, ingredientitem);
 						}
-						currentLine++;
+						
+						if (ingredient == null) {
+							invalidRecipe = true;
+						}
+
+						// Skip "air"
+						if (ingredient == null || ingredientitem.equals("0")) {
+							currentColumn++;
+							continue;
+						}
+						
+						// Add the ingredient
+						sRecipe.setIngredient((char) ('a' + currentColumn), ingredient);
+						currentColumn++;
 					}
+					
 					// Finaly register recipe.
 					if (!invalidRecipe) {
 						SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
