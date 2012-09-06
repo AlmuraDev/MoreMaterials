@@ -26,11 +26,9 @@
 
 package net.morematerials.listeners;
 
-import net.morematerials.CacheDispatcher;
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomFuel;
 import net.morematerials.materials.MMCustomBlock;
-import org.bukkit.Bukkit;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -46,7 +44,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.block.SpoutBlock;
-import org.getspout.spoutapi.event.spout.SpoutCraftEnableEvent;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
@@ -185,12 +182,5 @@ public class MMListener implements Listener {
 		if (itemStack != null) {
 			event.setResult(itemStack);
 		}
-	}
-	
-	@EventHandler
-	public void onAuth(SpoutCraftEnableEvent event) {
-		CacheDispatcher cd = new CacheDispatcher(event.getPlayer(), plugin);
-		int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, cd, 20L*5, 20L*5);
-		cd.setTaskID(task);
 	}
 }

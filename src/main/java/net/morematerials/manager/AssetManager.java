@@ -92,8 +92,8 @@ public class AssetManager {
 			this.imageCache.put(cacheFileName, bufferedImage);
 		}
 		
-		// Add file to spout cache
-		MoreMaterials.addToCache(this.plugin,cacheFile);
+		// Add file to spout cache.
+		SpoutManager.getFileManager().addToCache(this.plugin, cacheFile);
 	}
 
 }
