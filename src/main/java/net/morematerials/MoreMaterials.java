@@ -27,11 +27,9 @@
 package net.morematerials;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import net.morematerials.commands.DebugExecutor;
@@ -47,11 +45,8 @@ import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
-import org.bukkit.plugin.Plugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.spout.player.SimpleFileManager;
-import org.getspout.spoutapi.SpoutManager;
 
 public class MoreMaterials extends JavaPlugin {
 
@@ -129,18 +124,6 @@ public class MoreMaterials extends JavaPlugin {
 			} catch (Exception exception) {
 				this.utilsManager.log("Stat tracking error!", Level.SEVERE);
 			}
-		}
-		
-		//private Map<Plugin,  List<File>> preLoginCache = new HashMap<Plugin,  List<File>>();
-		Class x = SimpleFileManager.class;
-		try{
-		Field f = x.getDeclaredField("preLoginCache");
-		f.setAccessible(true);
-		Map<Plugin,  List<File>> gg = (Map<Plugin,  List<File>>) f.get(SpoutManager.getFileManager());
-		gg.remove(this);
-		f.set(SpoutManager.getFileManager(), gg);
-		} catch(Exception ex) {
-			ex.printStackTrace();
 		}
 
 		// Registered events.
