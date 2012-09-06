@@ -27,6 +27,9 @@
 package net.morematerials;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 
 import net.morematerials.commands.DebugExecutor;
@@ -53,6 +56,7 @@ public class MoreMaterials extends JavaPlugin {
 	private AssetManager assetManager;
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
+	private static List<File> cached = new ArrayList<File>();
 
 	@Override
 	public void onEnable() {
@@ -153,6 +157,16 @@ public class MoreMaterials extends JavaPlugin {
 
 	public FurnaceRecipeManager getFurnaceRecipeManager() {
 		return this.furnaceRecipeManager;
+	}
+	
+	public static List<File> getCached() {
+		List<File> toRet = new ArrayList<File>();
+		toRet.addAll(cached);
+		return toRet;
+	}
+
+	public static void addToCache(MoreMaterials plugin, File cacheFile) {
+		cached.add(cacheFile);
 	}
 
 }
