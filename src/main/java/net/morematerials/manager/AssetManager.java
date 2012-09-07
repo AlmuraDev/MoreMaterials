@@ -93,7 +93,7 @@ public class AssetManager {
 		}
 		
 		// Add file to spout cache.
-		SpoutManager.getFileManager().addToPreLoginCache(plugin, cacheFile);
+		SpoutManager.getFileManager().addToPreLoginCache(this.plugin, cacheFile);
 	}
 
 }
