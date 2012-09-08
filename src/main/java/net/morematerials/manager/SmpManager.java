@@ -277,7 +277,7 @@ public class SmpManager {
 			String ingredients = "" + recipe.get("Ingredients");
 
 			// Building recipe
-			String type = (String) recipe.get("Type");
+			String type = recipe.containsKey("Type") ? (String) recipe.get("Type") : "";
 			if (type.equalsIgnoreCase("Furnace")) {
 				// Get correct ingredient material
 				Material ingredient;

@@ -56,6 +56,11 @@ public class CustomShapeShape extends GenericBlockDesign {
 			SubTexture subtex = new SubTexture(texture, Integer.parseInt(coords[0]), bufferedImage.getHeight() - (Integer.parseInt(coords[1]) + Integer.parseInt(coords[3])), Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
 			subTextures.add(subtex);
 		}
+		
+		// If no coords are set, whole texture is used.
+		if (coordList.size() == 0) {
+			subTextures.add(new SubTexture(texture, 0, 0, texture.getWidth(), texture.getHeight()));
+		}
 
 		// Building the shape together
 		List<?> shapes = config.getList("Shapes");
