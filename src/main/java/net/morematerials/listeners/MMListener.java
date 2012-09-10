@@ -43,6 +43,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spout.block.SpoutCraftBlock;
+import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Block;
@@ -50,6 +51,7 @@ import org.getspout.spoutapi.material.block.GenericCustomBlock;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 import org.getspout.spoutapi.player.SpoutPlayer;
+import org.getspout.spoutapi.sound.SoundEffect;
 
 public class MMListener implements Listener {
 	
@@ -160,7 +162,7 @@ public class MMListener implements Listener {
 				} else {
 					player.setItemInHand(new ItemStack(Material.AIR));
 					//FIXME must be added to spoutPlugin
-					//SpoutManager.getSoundManager().playSoundEffect(player, SoundEffect.BREAK);
+					SpoutManager.getSoundManager().playSoundEffect(player, SoundEffect.BREAK);
 				}
 			}
 		}
