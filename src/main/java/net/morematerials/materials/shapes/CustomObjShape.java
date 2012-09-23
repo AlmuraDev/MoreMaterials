@@ -6,11 +6,10 @@ import java.util.List;
 
 import net.morematerials.MoreMaterials;
 
-import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
 
-public class CustomObjShape extends GenericBlockDesign {
-
+public class CustomObjShape extends CustomAbstractShape {
+	
 	public CustomObjShape(MoreMaterials plugin, String shapeData, String textureUrl, List<String> coordList) {
 		String[] lines = shapeData.split("\n");
 		
