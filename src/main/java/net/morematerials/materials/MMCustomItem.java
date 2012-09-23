@@ -105,5 +105,8 @@ public class MMCustomItem extends GenericCustomItem implements CustomFuel, Custo
 	public String getDisplayName() {
 		return this.getDisplayName();
 	}
-
+	
+	public YamlConfiguration getConfig() {
+		return this.config;
+	}
 }
