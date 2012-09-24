@@ -160,5 +160,9 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	public String getDisplayName() {
 		return this.getDisplayName();
 	}
+	
+	public YamlConfiguration getConfig() {
+		return this.config;
+	}
 
 }

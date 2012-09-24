@@ -121,5 +121,9 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 	public String getDisplayName() {
 		return this.getDisplayName();
 	}
+	
+	public YamlConfiguration getConfig() {
+		return this.config;
+	}
 
 }
