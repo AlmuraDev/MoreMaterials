@@ -42,6 +42,7 @@ import org.getspout.spoutapi.block.design.GenericBlockDesign;
 
 public class CustomShapeTemplate {
 	
+	//TODO implement model scale to avoid the requirement to resize models.
 	private String format;
 	private String shapeData;
 	private String name;

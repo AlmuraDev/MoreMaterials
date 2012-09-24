@@ -161,7 +161,6 @@ public class MMListener implements Listener {
 					player.setItemInHand(stack);
 				} else {
 					player.setItemInHand(new ItemStack(Material.AIR));
-					//FIXME must be added to spoutPlugin
 					SpoutManager.getSoundManager().playSoundEffect(player, SoundEffect.BREAK);
 				}
 			}

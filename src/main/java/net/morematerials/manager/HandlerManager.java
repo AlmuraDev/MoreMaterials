@@ -122,16 +122,18 @@ public class HandlerManager {
 	}
 
 	public void registerHandler(String eventType, Integer materialId, Map<String, Object> config) {
-		//TODO this is ugly but works, refactor this!
-		config.put("__materialID__", materialId);
-		config.put("__eventTYPE__", eventType);
-		this.handlerRegister.add(config);
+		Map<String, Object> internalConfig = new HashMap<String, Object>();
+		internalConfig.put("materialId", materialId);
+		internalConfig.put("eventType", eventType);
+		internalConfig.put("config", config);
+		this.handlerRegister.add(internalConfig);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void triggerHandlers(String eventType, Integer materialId, Event event) {
 		for (Map<String, Object> config : this.handlerRegister) {
-			if (((Integer) config.get("__materialID__")).equals(materialId) && ((String) config.get("__eventTYPE__")).equals(eventType)) {
-				this.getHandler((String) config.get("Name")).onActivation(event, config);
+			if (((Integer) config.get("materialId")).equals(materialId) && ((String) config.get("eventType")).equals(eventType)) {
+				this.getHandler((String) config.get("Name")).onActivation(event, (Map<String, Object>) config.get("config"));
 			}
 		}
 	}
