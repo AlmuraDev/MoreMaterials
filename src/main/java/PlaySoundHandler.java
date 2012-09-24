@@ -24,6 +24,7 @@
  * THE SOFTWARE.
  */
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import net.morematerials.MoreMaterials;
@@ -31,9 +32,8 @@ import net.morematerials.handlers.GenericHandler;
 import net.morematerials.materials.CustomMaterial;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.Material;
 
@@ -57,12 +57,13 @@ public class PlaySoundHandler extends GenericHandler {
 
 		// Default location is the world spawn.
 		Location location = this.plugin.getServer().getWorlds().get(0).getSpawnLocation();
-		//TODO check if we can lookup if this object has a .getPlayer() method, and call it if it has.
-		//     Reason: i dont want to list all kind of events here :D
-		if (event instanceof PlayerInteractEvent) {
-			location = ((PlayerInteractEvent) event).getPlayer().getLocation();
-		} else if (event instanceof PlayerMoveEvent) {
-			location = ((PlayerMoveEvent) event).getPlayer().getLocation();
+		try {
+			Method method = event.getClass().getMethod("getPlayer");
+			Object player = method.invoke(event);
+			if (player instanceof Player) {
+				location = ((Player) player).getLocation();
+			}
+		} catch (Exception exception) {
 		}
 
 		// Now play the sound!
