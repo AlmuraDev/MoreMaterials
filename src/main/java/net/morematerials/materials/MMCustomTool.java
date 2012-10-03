@@ -33,6 +33,8 @@ import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.material.Block;
+import org.getspout.spoutapi.material.Material;
+import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 
 public class MMCustomTool extends GenericCustomTool implements CustomFuel, CustomMaterial {
@@ -108,8 +110,22 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 			List<?> blocks = this.config.getList("ToolLevels");
 			for (Integer i = 0; i < blocks.size(); i++) {
 				String[] blockInfo = ((String) blocks.get(i)).split("[\\s]+");
-				Block block = (Block) this.plugin.getSmpManager().getMaterial(this.smpName, blockInfo[0]);
-				this.setStrengthModifier(block, Float.parseFloat(blockInfo[1]));
+				Material material;
+				
+				if (blockInfo[0].matches("^[0-9@]+$")) {
+					String[] matInfo = blockInfo[0].split("@");
+					if (matInfo.length == 1) {
+						material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+					} else {
+						material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+					}
+				} else {
+					material = this.plugin.getSmpManager().getMaterial(this.smpName, blockInfo[0]);
+				}
+				
+				if (material instanceof Block) {
+					this.setStrengthModifier((Block) material, Float.parseFloat(blockInfo[1]));
+				}
 			}
 		}
 	}
