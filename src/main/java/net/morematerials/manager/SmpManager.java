@@ -300,24 +300,27 @@ public class SmpManager {
 			} else if (type.equalsIgnoreCase("Shapeless")) {
 				SpoutShapelessRecipe sRecipe = new SpoutShapelessRecipe(stack);
 				
-				// Get correct ingredient material
+				// Get correct ingredient materials
 				Material ingredient;
-				if (ingredients.matches("^[0-9@]+$")) {
-					String[] matInfo = ingredients.split("@");
-					if (matInfo.length == 1) {
-						ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+				ingredients = ingredients.trim().replaceAll("[\\s\\r\\n]+", " ");
+				for (String ingredientitem : ingredients.split(" ")) {
+					if (ingredientitem.matches("^[0-9@]+$")) {
+						String[] matInfo = ingredientitem.split("@");
+						if (matInfo.length == 1) {
+							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
+						} else {
+							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+						}
 					} else {
-						ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+						ingredient = this.getMaterial(smpName, ingredientitem);
 					}
-				} else {
-					ingredient = this.getMaterial(smpName, ingredients);
+					
+					if (ingredient == null) {
+						continue;
+					}
+					
+					((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
 				}
-				
-				if (ingredient == null) {
-					continue;
-				}
-				
-				((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
 				// Finaly register recipe.
 				SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
 			} else if (type.equalsIgnoreCase("Shaped")) {
