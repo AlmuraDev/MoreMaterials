@@ -14,6 +14,6 @@ public abstract class CustomAbstractShape extends GenericBlockDesign {
 		
 		Double length = Math.sqrt((normal.getX() * normal.getX()) + (normal.getY() * normal.getY()) + (normal.getZ() * normal.getZ()));
 		
-		this.setLightSource(quad, 1 - (int) Math.round(normal.getX() / length), 1 - (int) Math.round(normal.getY() / length), 1 - (int) Math.round(normal.getZ() / length));
+		this.setLightSource(quad, (int) Math.round(normal.getX() / length), (int) Math.round(normal.getY() / length), (int) Math.round(normal.getZ() / length));
 	}
 }
