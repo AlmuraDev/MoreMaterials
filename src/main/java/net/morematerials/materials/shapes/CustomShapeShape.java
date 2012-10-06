@@ -8,11 +8,12 @@ import java.util.Map;
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.getspout.spoutapi.block.design.GenericBlockDesign;
 import org.getspout.spoutapi.block.design.Quad;
 import org.getspout.spoutapi.block.design.SubTexture;
 import org.getspout.spoutapi.block.design.Texture;
 
-public class CustomShapeShape extends CustomAbstractShape {
+public class CustomShapeShape extends GenericBlockDesign {
 
 	public CustomShapeShape(MoreMaterials plugin, String shapeData, String textureUrl, List<String> coordList) {
 		// Load the .shape format string.
@@ -91,13 +92,9 @@ public class CustomShapeShape extends CustomAbstractShape {
 				);
 			}
 			setQuad(quad);
-			this.calculateLightSource(i,
-					quad.getVertex(1).getX(), quad.getVertex(1).getY(), quad.getVertex(1).getZ(),
-					quad.getVertex(2).getX(), quad.getVertex(2).getY(), quad.getVertex(2).getZ(),
-					quad.getVertex(3).getX(), quad.getVertex(3).getY(), quad.getVertex(3).getZ()
-			);
 			i++;
 		}
+		this.calculateLightSources();
 	}
 	
 }

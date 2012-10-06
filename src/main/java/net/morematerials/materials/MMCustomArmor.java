@@ -26,18 +26,16 @@
 
 package net.morematerials.materials;
 
-import java.util.List;
 import java.util.Map;
 
 import net.morematerials.MoreMaterials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.getspout.spoutapi.material.Block;
-import org.getspout.spoutapi.material.Material;
-import org.getspout.spoutapi.material.MaterialData;
+//import org.getspout.spoutapi.material.item.GenericCustomArmor;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 
-public class MMCustomTool extends GenericCustomTool implements CustomFuel, CustomMaterial {
+//public class MMCustomArmor extends GenericCustomArmor implements CustomFuel, CustomMaterial {
+public class MMCustomArmor extends GenericCustomTool implements CustomFuel, CustomMaterial {
 
 	private String materialName;
 	private String smpName;
@@ -45,25 +43,46 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 	private MoreMaterials plugin;
 	private Integer burnTime;
 
-	public static MMCustomTool create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
-		String texture = yaml.getString("Texture", "");
+	public static MMCustomArmor create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
+		String itemTexture = yaml.getString("ItemTexture", "");
+		String armorTexture = yaml.getString("ArmorTexture", "");
 		
 		// Allow to reference textures from other .smp files.
-		String[] fileNameParts = texture.split("/");
+		String[] fileNameParts = itemTexture.split("/");
 		if (fileNameParts.length == 2) {
-			texture = fileNameParts[0] + "_" + fileNameParts[1];
+			itemTexture = fileNameParts[0] + "_" + fileNameParts[1];
 		} else {
-			texture = smpName + "_" + texture;
+			itemTexture = smpName + "_" + itemTexture;
+		}
+		fileNameParts = armorTexture.split("/");
+		if (fileNameParts.length == 2) {
+			armorTexture = fileNameParts[0] + "_" + fileNameParts[1];
+		} else {
+			armorTexture = smpName + "_" + armorTexture;
 		}
 		
 		// TODO use texture Coords (looks like SpoutPlugin needs a patch)
 		
-		// Build the tool.
-		return new MMCustomTool(plugin, yaml, texture, smpName, matName);
+		// Build the armor.
+		return new MMCustomArmor(plugin, yaml, itemTexture, armorTexture, smpName, matName, getSlotId(yaml.getString("Slot", "")));
 	}
 
-	public MMCustomTool(MoreMaterials plugin, YamlConfiguration config, String texture, String smpName, String matName) {
-		super(plugin, smpName + "." + matName, texture);
+	private static short getSlotId(String slot) {
+		if (slot.equals("Head")) {
+			return 5;
+		} else if (slot.equals("Chest")) {
+			return 6;
+		} else if (slot.equals("Legs")) {
+			return 7;
+		} else if (slot.equals("Feet")) {
+			return 8;
+		}
+		return 0;
+	}
+
+	public MMCustomArmor(MoreMaterials plugin, YamlConfiguration config, String itemTexture, String armorTexture, String smpName, String matName, short slot) {
+//		super(plugin, smpName + "." + matName, itemTexture, armorTexture, slot);
+		super(plugin, smpName + "." + matName, itemTexture);
 		this.smpName = smpName;
 		this.materialName = matName;
 		this.config = config;
@@ -76,7 +95,10 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 		// Set the items durability
 		this.setMaxDurability((short) this.config.getInt("Durability", 0));
 		
-		// Tools are never stackable!
+		// Set the armor value
+		//this.setMaxArmor((short) this.config.getInt("Armor", 1));
+		
+		// Armor is never stackable!
 		this.setStackable(false);
 		
 		// Register handlers.
@@ -103,31 +125,6 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 
 	public String getMaterialName() {
 		return this.materialName;
-	}
-
-	public void configureModifiers() {
-		if (this.config.contains("ToolLevels")) {
-			List<?> blocks = this.config.getList("ToolLevels");
-			for (Integer i = 0; i < blocks.size(); i++) {
-				String[] blockInfo = ((String) blocks.get(i)).split("[\\s]+");
-				Material material;
-				
-				if (blockInfo[0].matches("^[0-9@]+$")) {
-					String[] matInfo = blockInfo[0].split("@");
-					if (matInfo.length == 1) {
-						material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
-					} else {
-						material = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
-					}
-				} else {
-					material = this.plugin.getSmpManager().getMaterial(this.smpName, blockInfo[0]);
-				}
-				
-				if (material instanceof Block) {
-					this.setStrengthModifier((Block) material, Float.parseFloat(blockInfo[1]));
-				}
-			}
-		}
 	}
 	
 	public Integer getBurnTime() {

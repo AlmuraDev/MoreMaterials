@@ -64,13 +64,13 @@ public class MMCustomItem extends GenericCustomItem implements CustomFuel, Custo
 		this.materialName = matName;
 		this.config = config;
 		this.plugin = plugin;
-		this.setName(config.getString("Title", matName));
+		this.setName(this.config.getString("Title", matName));
 		
 		// Fuel support
 		this.burnTime = this.config.getInt("BurnTime", 0);
 		
 		// Set the items stackability
-		this.setStackable(config.getBoolean("Stackable", true));
+		this.setStackable(this.config.getBoolean("Stackable", true));
 		
 		// Register handlers.
 		if (this.config.contains("Handlers")) {

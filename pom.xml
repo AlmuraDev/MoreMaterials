@@ -22,7 +22,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<craftbukkit.version>1.3.2-R1.0</craftbukkit.version>
-		<spoutplugin.version>dev-SNAPSHOT</spoutplugin.version>
+		<spoutplugin.version>1.3.2-R1.0-SNAPSHOT</spoutplugin.version>
 	</properties>
 
 	<dependencies>

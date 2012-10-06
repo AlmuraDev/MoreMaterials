@@ -117,7 +117,6 @@ public class CustomListener implements Listener {
 	@EventHandler
 	public void OnFurnaceBurn(FurnaceBurnEvent event) {
 		SpoutItemStack item = new SpoutItemStack(event.getFuel());
-		
 		if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
 			event.setBurning(true);
 			event.setBurnTime(((CustomFuel)item.getMaterial()).getBurnTime());
@@ -128,7 +127,11 @@ public class CustomListener implements Listener {
 	public void onPlayerSmelt(FurnaceSmeltEvent event) {
 		SpoutItemStack itemStack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(event.getSource()));
 		if (itemStack != null) {
-			event.setResult(itemStack);
+			if (event.getResult() != null) {
+				event.getResult().setAmount(Math.min(event.getResult().getAmount() + itemStack.getAmount(), 64));
+			} else {
+				event.setResult(itemStack);
+			}
 		}
 	}
 }

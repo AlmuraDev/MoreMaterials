@@ -85,7 +85,7 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 		this.smpName = smpName;
 		this.materialName = matName;
 		this.config = config;
-		this.setName(config.getString("Title", matName));
+		this.setName(this.config.getString("Title", matName));
 		
 		// Fuel support
 		this.burnTime = this.config.getInt("BurnTime", 0);

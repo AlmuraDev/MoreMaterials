@@ -47,6 +47,7 @@ import org.getspout.spoutapi.material.MaterialData;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomShapeTemplate;
+import net.morematerials.materials.MMCustomArmor;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomItem;
 import net.morematerials.materials.MMCustomTool;
@@ -58,6 +59,7 @@ public class SmpManager {
 	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
+	private ArrayList<MMCustomArmor> armorList = new ArrayList<MMCustomArmor>();
 	private HashMap<String, CustomShapeTemplate> shapesMap = new HashMap<String, CustomShapeTemplate>();
 	
 	HashMap<String, HashMap<String, YamlConfiguration>> storedConfigs = new HashMap<String, HashMap<String, YamlConfiguration>>();
@@ -156,6 +158,8 @@ public class SmpManager {
 			this.toolsList.add(MMCustomTool.create(this.plugin, yaml, smpName, matName));
 		} else if (yaml.getString("Type", "").equals("Item")) {
 			this.itemsList.add(MMCustomItem.create(this.plugin, yaml, smpName, matName));
+		} else if (yaml.getString("Type", "").equals("Armor")) {
+			this.armorList.add(MMCustomArmor.create(this.plugin, yaml, smpName, matName));
 		}
 	}
 
@@ -210,6 +214,15 @@ public class SmpManager {
 			}
 		}
 		
+		// Then also check for matching armor.
+		MMCustomArmor currentArmor;
+		for (Integer i = 0; i < this.armorList.size(); i++) {
+			currentArmor = this.armorList.get(i);
+			if (currentArmor.getSmpName().equals(smpName) && currentArmor.getMaterialName().equals(matName)) {
+				return currentArmor;
+			}
+		}
+		
 		return null;
 	}
 
@@ -238,6 +251,15 @@ public class SmpManager {
 			currentTool = this.toolsList.get(i);
 			if (currentTool.getCustomId() == materialId) {
 				return currentTool;
+			}
+		}
+		
+		// Then also check for matching armor.
+		MMCustomArmor currentArmor;
+		for (Integer i = 0; i < this.armorList.size(); i++) {
+			currentArmor = this.armorList.get(i);
+			if (currentArmor.getCustomId() == materialId) {
+				return currentArmor;
 			}
 		}
 		
