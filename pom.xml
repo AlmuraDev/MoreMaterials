@@ -11,7 +11,7 @@
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org</url>
+			<url>http://repo.bukkit.org/content/repositories/releases/</url>
 		</repository>
 		<repository>
 			<id>spout-repo</id>
@@ -21,7 +21,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.3.2-R0.2-SNAPSHOT</craftbukkit.version>
+		<craftbukkit.version>1.3.2-R1.0</craftbukkit.version>
 		<spoutplugin.version>dev-SNAPSHOT</spoutplugin.version>
 	</properties>
 

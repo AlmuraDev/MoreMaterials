@@ -50,7 +50,7 @@ public class PlaySoundHandler extends GenericHandler {
 
 	@Override
 	public void onActivation(Event event, Map<String, Object> config) {
-		Material material = this.plugin.getSmpManager().getMaterial((Integer) config.get("__materialID__"));
+		Material material = this.plugin.getSmpManager().getMaterial((Integer) config.get("materialId"));
 		
 		// We can safely cast, because this event is only triggered for MoreMaterials materials!
 		String smpName = ((CustomMaterial) material).getSmpName();
@@ -69,10 +69,10 @@ public class PlaySoundHandler extends GenericHandler {
 		// Now play the sound!
 		String[] sound = ((String) config.get("Sound")).split("/");
 		if (sound.length == 1) {
-			sound[1] = sound[0];
-			sound[0] = smpName;
+			SpoutManager.getSoundManager().playGlobalCustomSoundEffect(this.plugin, smpName + "_" + sound[0], false, location, 32, 100);
+		} else {
+			SpoutManager.getSoundManager().playGlobalCustomSoundEffect(this.plugin, sound[0] + "_" + sound[1], false, location, 32, 100);
 		}
-		SpoutManager.getSoundManager().playGlobalCustomSoundEffect(this.plugin, sound[0] + "_" + sound[1], false, location, 32, 100);
 	}
 	
 }
