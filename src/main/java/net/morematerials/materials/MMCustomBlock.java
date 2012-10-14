@@ -80,7 +80,7 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	}
 
 	public MMCustomBlock(MoreMaterials plugin, String texture, String smpName, String matName, GenericBlockDesign design, YamlConfiguration config) {
-		super(plugin, smpName + "." + matName, config.getInt("BaseId", 1), design, config.getBoolean("Rotation", false));
+		super(plugin, smpName + "." + matName, config.getInt("BaseId", 1), design, config.getBoolean("Rotation", false), config.getBoolean("MirroredRotation", false), config.getBoolean("FullRotation", false));
 		this.plugin = plugin;
 		this.smpName = smpName;
 		this.materialName = matName;

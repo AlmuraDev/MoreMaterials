@@ -38,7 +38,7 @@ public class CustomListener implements Listener {
 	
 
 	@EventHandler
-	public void EntityDamage(EntityDamageEvent event) {
+	public void onEntityDamage(EntityDamageEvent event) {
 		// This is for the Damage property
 		if (event instanceof EntityDamageByEntityEvent) {
 			Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
@@ -115,7 +115,7 @@ public class CustomListener implements Listener {
 	}
 
 	@EventHandler
-	public void OnFurnaceBurn(FurnaceBurnEvent event) {
+	public void onFurnaceBurn(FurnaceBurnEvent event) {
 		SpoutItemStack item = new SpoutItemStack(event.getFuel());
 		if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
 			event.setBurning(true);
