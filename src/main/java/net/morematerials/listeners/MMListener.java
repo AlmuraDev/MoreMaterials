@@ -28,10 +28,12 @@ package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.getspout.spout.block.SpoutCraftBlock;
@@ -46,6 +48,26 @@ public class MMListener implements Listener {
 
 	public MMListener(MoreMaterials plugin) {
 		this.plugin = plugin;
+	}
+
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		// Make sure we have a valid event.
+		if (event.getPlayer() == null || event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+			return;
+		}
+		
+		// Events for broken custom blocks.
+		Block block = ((SpoutCraftBlock) event.getBlock()).getBlockType();
+		if (block instanceof GenericCustomBlock) {
+			this.plugin.getHandlerManager().triggerHandlers("BlockBreak", ((GenericCustomBlock) block).getCustomId(), event);
+		}
+
+		// Events for the item held while breaking a block.
+		SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
+		if (stack.getMaterial() instanceof GenericCustomItem) {
+			this.plugin.getHandlerManager().triggerHandlers("HoldBlockBreak", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
+		}
 	}
 	
 	@EventHandler
