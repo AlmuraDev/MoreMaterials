@@ -44,7 +44,7 @@ public class CustomListener implements Listener {
 			Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
 			// If a player caused the damage
 			if (damager instanceof Player) {
-				SpoutItemStack stack = new SpoutItemStack(((SpoutPlayer) damager).getItemInHand());
+				SpoutItemStack stack = new SpoutItemStack(((Player) damager).getItemInHand());
 				// If player holds a custom tool in hand.
 				if (stack.getMaterial() instanceof GenericCustomTool) {
 					// Get the material
