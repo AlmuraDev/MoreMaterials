@@ -72,5 +72,6 @@ public class CustomObjShape extends GenericBlockDesign {
 			}
 			i++;
 		}
+		this.calculateLightSources();
 	}
 }

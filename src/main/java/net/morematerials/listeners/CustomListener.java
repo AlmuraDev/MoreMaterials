@@ -35,7 +35,6 @@ public class CustomListener implements Listener {
 	public CustomListener(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
-	
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
