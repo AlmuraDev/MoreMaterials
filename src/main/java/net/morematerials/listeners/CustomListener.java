@@ -127,7 +127,9 @@ public class CustomListener implements Listener {
 		SpoutItemStack itemStack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(event.getSource()));
         if (itemStack != null && event.getResult() != null) {
             event.setResult(itemStack);
+            System.out.println("Set result!");
         } else {
+            System.out.println("Cancelling event!");
             event.setCancelled(true);
 		}
 	}
