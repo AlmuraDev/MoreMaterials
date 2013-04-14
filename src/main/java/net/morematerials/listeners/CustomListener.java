@@ -121,7 +121,7 @@ public class CustomListener implements Listener {
 	@EventHandler
 	public void onFurnaceBurn(FurnaceBurnEvent event) {
 		SpoutItemStack item = new SpoutItemStack(event.getFuel());
-        SpoutItemStack stack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(((Furnace) event.getBlock()).getInventory().getSmelting()));
+        SpoutItemStack stack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(((Furnace) event.getBlock().getState()).getInventory().getSmelting()));
         if (stack == null) {
             event.setBurning(false);
         }
