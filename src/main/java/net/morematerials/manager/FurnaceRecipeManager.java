@@ -41,11 +41,15 @@ public class FurnaceRecipeManager {
 
 	public void registerRecipe(SpoutItemStack result, Material ingredient) {
 		this.recipes.put(ingredient, result);
+        System.out.println("Ingredient: " + ingredient);
+        System.out.println("Result: " + result);
 		Bukkit.getServer().addRecipe(new FurnaceRecipe(result, (new MaterialData(ingredient.getRawId(), (byte) ingredient.getRawId()))));
+        System.out.println("Add Recipe: " + Bukkit.getServer().addRecipe(new FurnaceRecipe(result, (new MaterialData(ingredient.getRawId(), (byte) ingredient.getRawId())))));
 	}
 
 	public SpoutItemStack getResult(SpoutItemStack source) {
 		if (this.recipes.containsKey(source.getMaterial())) {
+            System.out.println(source.getMaterial());
 			return this.recipes.get(source.getMaterial());
 		}
 		return null;
