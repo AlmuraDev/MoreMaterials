@@ -344,7 +344,7 @@ public class SmpManager {
 						continue;
 					}
 					
-					((SpoutShapelessRecipe) sRecipe).addIngredient(ingredient);
+					(sRecipe).addIngredient(ingredient);
 				}
 				// Finaly register recipe.
 				SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
