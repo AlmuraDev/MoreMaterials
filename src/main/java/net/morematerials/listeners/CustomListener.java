@@ -125,14 +125,10 @@ public class CustomListener implements Listener {
 	@EventHandler
 	public void onPlayerSmelt(FurnaceSmeltEvent event) {
 		SpoutItemStack itemStack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(event.getSource()));
-        System.out.println("itemStack: " + itemStack);
+        System.out.println("itemStack: " + itemStack.getMaterial().getName());
         if (itemStack != null) {
 			if (event.getResult() != null) {
-				event.getResult().setAmount(Math.min(event.getResult().getAmount() + itemStack.getAmount(), 64));
-                System.out.println("Some random crap set as result");
-			} else {
-				event.setResult(itemStack);
-                System.out.println("itemStack set as result");
+                event.setResult(itemStack);
 			}
 		} else {
             System.out.println("itemStack is null");
