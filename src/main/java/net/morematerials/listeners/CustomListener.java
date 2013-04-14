@@ -1,5 +1,6 @@
 package net.morematerials.listeners;
 
+import net.minecraft.server.v1_5_R2.RecipesFurnace;
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomFuel;
 import net.morematerials.materials.MMCustomBlock;
@@ -7,6 +8,7 @@ import net.morematerials.materials.MMCustomTool;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +18,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.FurnaceAndDispenser;
 import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
@@ -116,20 +121,23 @@ public class CustomListener implements Listener {
 	@EventHandler
 	public void onFurnaceBurn(FurnaceBurnEvent event) {
 		SpoutItemStack item = new SpoutItemStack(event.getFuel());
-		if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
+        SpoutItemStack stack = (SpoutItemStack) ((Furnace) event.getBlock()).getInventory().getSmelting();
+        if (stack == null) {
+            event.setBurning(false);
+        }
+
+        if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
 			event.setBurning(true);
 			event.setBurnTime(((CustomFuel)item.getMaterial()).getBurnTime());
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerSmelt(FurnaceSmeltEvent event) {
 		SpoutItemStack itemStack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(event.getSource()));
         if (itemStack != null && event.getResult() != null) {
             event.setResult(itemStack);
-            System.out.println("Set result!");
         } else {
-            System.out.println("Cancelling event!");
             event.setCancelled(true);
 		}
 	}
