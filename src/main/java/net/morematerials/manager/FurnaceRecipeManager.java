@@ -45,8 +45,8 @@ public class FurnaceRecipeManager {
 	}
 
 	public SpoutItemStack getResult(SpoutItemStack source) {
-		if (this.recipes.containsKey((Material) source.getMaterial())) {
-			return this.recipes.get((Material) source.getMaterial());
+		if (this.recipes.containsKey(source.getMaterial())) {
+			return this.recipes.get(source.getMaterial());
 		}
 		return null;
 	}

@@ -9,20 +9,16 @@
 	<url>http://www.morematerials.net</url>
 
 	<repositories>
-		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>spout-repo</id>
-			<url>http://repo.spout.org</url>
-		</repository>
+        <repository>
+            <id>spout-repo</id>
+            <url>http://repo.spout.org</url>
+        </repository>
 	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.5.1-R0.1-SNAPSHOT</craftbukkit.version>
-		<spoutplugin.version>1.5.1-R0.1-SNAPSHOT</spoutplugin.version>
+		<craftbukkit.version>1.5.1-R0.3-SNAPSHOT</craftbukkit.version>
+		<spoutplugin.version>1.5.1-R0.2-SNAPSHOT</spoutplugin.version>
 	</properties>
 
 	<dependencies>
