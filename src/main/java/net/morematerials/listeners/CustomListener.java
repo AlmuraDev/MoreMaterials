@@ -136,13 +136,17 @@ public class CustomListener implements Listener {
 	public void onPlayerSmelt(FurnaceSmeltEvent event) {
 		SpoutItemStack itemStack = this.plugin.getFurnaceRecipeManager().getResult(new SpoutItemStack(event.getSource()));
 		SpoutItemStack nullStack = new SpoutItemStack(event.getSource());
-        if (itemStack != null && event.getResult() != null) {
-        	// kick out specified custom furnace recipe result.
-            event.setResult(itemStack);
-        } else {        	
-        	// Kick out exact item from Furnace and empty Source slot.
-        	event.getSource().setAmount(0-(event.getSource().getAmount()));
-        	event.setResult(nullStack);        	
-        }
+		if (itemStack != null && event.getResult() != null) {
+			// kick out specified custom furnace recipe result.
+			event.setResult(itemStack);
+		} else {						
+			if (event.getSource().getTypeId()== 318) {
+				// Custom Recipe but no recipe found.  Kick out exact item from Furnace and empty Source slot.
+				event.getSource().setAmount(0-(event.getSource().getAmount()));
+				event.setResult(nullStack);
+			} else {
+				// Vanilla Recipe
+			}
+		}
 	}
 }
