@@ -319,9 +319,9 @@ public class SmpManager {
 				}
 				
 				this.plugin.getFurnaceRecipeManager().registerRecipe(new SpoutItemStack(material, amount), ingredient);
-                System.out.println("Material: " + material.getName());
-                System.out.println("Amount: " + amount);
-                System.out.println("Ingredient: " + ingredient.getName());
+                //System.out.println("Material: " + material.getName());
+                //System.out.println("Amount: " + amount);
+                //System.out.println("Ingredient: " + ingredient.getName());
 			} else if (type.equalsIgnoreCase("Shapeless")) {
 				SpoutShapelessRecipe sRecipe = new SpoutShapelessRecipe(stack);
 				

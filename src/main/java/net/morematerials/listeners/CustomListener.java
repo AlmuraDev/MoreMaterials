@@ -1,6 +1,5 @@
 package net.morematerials.listeners;
 
-import net.minecraft.server.v1_5_R2.RecipesFurnace;
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomFuel;
 import net.morematerials.materials.MMCustomBlock;
@@ -18,10 +17,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.FurnaceAndDispenser;
 import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
@@ -71,7 +67,6 @@ public class CustomListener implements Listener {
 		}
 		
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
-
 		// Check for durability and ItemDropRequired.
 		if (player.getItemInHand() != null) {
 			SpoutItemStack stack = new SpoutItemStack(player.getItemInHand());
