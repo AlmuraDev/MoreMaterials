@@ -1,33 +1,29 @@
 package net.morematerials.handlers;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
 import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
 /* ConsumeFoodHandler
- * Author: Dockter, AlmuraDev © 2013
- * Version: 1.3
- * Updated: 2/23/2013
+ * Author: Dockter, AlmuraDev ï¿½ 2013
+ * Version: 1.4
+ * Updated: 4/17/2013
  */
 
 public class ConsumeHandler extends GenericHandler {
 
-	private boolean showDebug = false;
 	private boolean consumeItem = false;
 	private boolean playerFeedback = false;
 	private int foodChange = 0;
@@ -48,9 +44,20 @@ public class ConsumeHandler extends GenericHandler {
     	if (!(event instanceof PlayerInteractEvent)) {  //Always do this.
         	return;
         }
-    	
+    	 
         // Setup Player Environment
-        PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;
+    	PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;	
+    	Location location = playerEvent.getClickedBlock().getLocation();
+    	
+    	// Check Location for typically right clicked item and exit handler if found
+    	if (location != null) {
+    		Material mat = location.getBlock().getType();
+    		if (mat.equals(Material.WOODEN_DOOR) || mat.equals(Material.IRON_DOOR) || mat.equals(Material.TRAP_DOOR) || mat.equals(Material.WOOD_DOOR) || mat.equals(Material.FENCE_GATE) || mat.equals(Material.IRON_DOOR_BLOCK)) {
+    			return;
+    		}
+    	}  	
+    	
+        // Setup Player Environment if we got here.       
         Player sPlayer = playerEvent.getPlayer();        
         ItemStack itemToConsume = sPlayer.getInventory().getItemInHand();
          
