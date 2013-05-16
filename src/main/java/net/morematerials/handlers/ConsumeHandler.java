@@ -72,6 +72,10 @@ public class ConsumeHandler extends GenericHandler {
         Player sPlayer = playerEvent.getPlayer();        
         ItemStack itemToConsume = sPlayer.getInventory().getItemInHand();
          
+        // Check Player Permissions
+        if (!sPlayer.hasPermission("morematerials.handlers.consume")) {
+        	return;
+        }
         // Pull Configuration Options              
         if (config.containsKey("consumeItem")) {
         	consumeItem = (Boolean) config.get("consumeItem");
