@@ -1,7 +1,7 @@
 name: MoreMaterials
-version: 1.8
+version: 2.0
 description: Custom blocks and items!
-authors: [IceReaper]
+authors: [AlmuraDev, IceReaper, Znickq]
 website: http://www.morematerials.net
 
 depend: [Spout]
@@ -26,8 +26,12 @@ permissions:
     children:
       morematerials.admin: true
       morematerials.craft: true
+      morematerials.handlers.consume: true
   morematerials.admin:
     description: Access to commands.
+    default: op
+  morematerials.handlers.consume:
+    description: allows user to utilize built-in consume handler.
     default: op
   morematerials.craft:
     description: Allows crafting of MoreMaterials blocks and items.

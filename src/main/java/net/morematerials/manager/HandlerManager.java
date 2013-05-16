@@ -150,4 +150,23 @@ public class HandlerManager {
 		// Set the classpath.
 		this.compilerOptions.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator), "-d", binFolder.getAbsolutePath()));
 	}
+	
+	public void inject (Class<? extends GenericHandler>clazz) {
+		String useName = clazz.getName().split("Handler")[0].split("net.morematerials.handlers.")[1];
+				
+		try {
+			Object object = clazz.newInstance();
+			GenericHandler handler = (GenericHandler) object;
+			handler.init(this.plugin);
+			this.handlers.put(useName, handler);
+			this.plugin.getUtilsManager().log("Loaded Internal MM handler: " + useName);			
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

@@ -4,7 +4,6 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -18,7 +17,7 @@ import net.morematerials.handlers.GenericHandler;
 
 /* ConsumeFoodHandler
  * Author: Dockter, AlmuraDev � 2013
- * Version: 1.4
+ * Version: 1.5
  * Updated: 4/17/2013
  */
 
@@ -30,46 +29,98 @@ public class ConsumeHandler extends GenericHandler {
 	private int healthChange = 0;
 	private int oxygenChange = 0;
 	private String itemName = " ";
+	private String itemType = " ";
 	private String additionalMessage = " ";
 	
 	
 	@Override
-	public void init(MoreMaterials arg0) {
+	public void init(MoreMaterials arg0) {		
 		// Nothing to do here.
 	}
        
     @Override
-    public void onActivation(Event event, Map<String, Object> config) {
-    	    	
+    public void onActivation(Event event, Map<String, Object> config) {    	
     	if (!(event instanceof PlayerInteractEvent)) {  //Always do this.
         	return;
         }
-    	 
+    	
+    	switch (((PlayerInteractEvent) event).getAction()) {		
+	    	case RIGHT_CLICK_BLOCK:
+	    		// Exit this method if player clicking on chest, door, button, etc.
+	    		switch (((PlayerInteractEvent) event).getClickedBlock().getType()) {
+		    		case CHEST:
+		    		case WOOD_BUTTON:
+		    		case STONE_BUTTON:
+		    		case WOOD_DOOR:
+		    		case IRON_DOOR:
+		    		case IRON_DOOR_BLOCK:
+		    		case FENCE_GATE:
+		    		case BREWING_STAND:
+		    		case FURNACE:
+		    		case BURNING_FURNACE:
+		    			return;
+		    		default:
+		    			break;
+	    		}
+	    	default:
+	    		break;
+    	}
         // Setup Player Environment
     	PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;	
-    	Location location = playerEvent.getClickedBlock().getLocation();
-    	
-    	// Check Location for typically right clicked item and exit handler if found
-    	if (location != null) {
-    		Material mat = location.getBlock().getType();
-    		if (mat.equals(Material.WOODEN_DOOR) || mat.equals(Material.IRON_DOOR) || mat.equals(Material.TRAP_DOOR) || mat.equals(Material.WOOD_DOOR) || mat.equals(Material.FENCE_GATE) || mat.equals(Material.IRON_DOOR_BLOCK)) {
-    			return;
-    		}
-    	}  	
     	
         // Setup Player Environment if we got here.       
         Player sPlayer = playerEvent.getPlayer();        
         ItemStack itemToConsume = sPlayer.getInventory().getItemInHand();
          
         // Pull Configuration Options              
-        consumeItem = (Boolean) config.get("consumeItem");
-        playerFeedback = (Boolean) config.get("playerFeedback");
-        foodChange = (Integer) config.get("foodChange");        
-        healthChange = (Integer) config.get("healthChange");
-        oxygenChange = (Integer) config.get("oxygenChange");
-        itemName = (String) config.get("itemName");
-        additionalMessage = (String) config.get("additionalMessage");
-                    
+        if (config.containsKey("consumeItem")) {
+        	consumeItem = (Boolean) config.get("consumeItem");
+        } else {
+        	consumeItem = false;
+        }
+        
+        if (config.containsKey("playerFeedback")) {
+        	playerFeedback = (Boolean) config.get("playerFeedback");	
+        } else {
+        	playerFeedback = false;
+        }
+        
+        if (config.containsKey("foodChange")) {
+        	foodChange = (Integer) config.get("foodChange");	
+        } else {
+        	foodChange = 0;
+        }
+                
+        if (config.containsKey("healthChange")) {
+        	healthChange = (Integer) config.get("healthChange");	
+        } else {
+        	healthChange = 0;
+        }
+        
+        if (config.containsKey("oxygenChange")) {
+        	oxygenChange = (Integer) config.get("oxygenChange");	
+        } else {
+        	oxygenChange = 0;
+        }
+        
+        if (config.containsKey("itemType")) {
+        	itemType = (String) config.get("itemType");	
+        } else {
+        	itemType = "";
+        }
+        
+        if (config.containsKey("itemName")) {
+        	itemName = (String) config.get("itemName");	
+        } else {
+        	itemName = "";
+        }
+        
+        if (config.containsKey("additionalMessage")) {
+        	additionalMessage = (String) config.get("additionalMessage");	
+        } else {
+        	additionalMessage = "";
+        }    
+        
         // Consume Food Item
         if (foodChange > 0) {
         	// Check users food level, return if already 20.
@@ -82,6 +133,10 @@ public class ConsumeHandler extends GenericHandler {
 
         		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());  
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
+        	} else {
+        		//if (itemType.equalsIgnoreCase("Food")) {
+        			consumeItem = false;
+        		//}
         	}
         }
 
@@ -96,9 +151,12 @@ public class ConsumeHandler extends GenericHandler {
 
         		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());  
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
+        	} else {
+        		//if (itemType.equalsIgnoreCase("Food")) {
+        			consumeItem = false;
+        		//}
         	}
         }
-
         
         // Health Change based on Config.
     	if (healthChange < 0) {
@@ -141,11 +199,24 @@ public class ConsumeHandler extends GenericHandler {
 
         // Player Feedback        
         if (!itemName.equalsIgnoreCase(" ") && playerFeedback) {
-        	sPlayer.sendMessage("You have consumed " + ChatColor.GOLD + itemName + ChatColor.WHITE + ".");        	
+        	if (itemType.equalsIgnoreCase("Food")) {
+        		if (consumeItem) {
+        			sPlayer.sendMessage("You have consumed " + ChatColor.GOLD + itemName + ChatColor.WHITE + ".");
+        		}
+        	} else {
+        		sPlayer.sendMessage("You have consumed " + ChatColor.GOLD + itemName + ChatColor.WHITE + ".");
+        	}
+        	        	
         }
         
         if (!additionalMessage.equalsIgnoreCase(" ") && playerFeedback) {
-    		sPlayer.sendMessage(additionalMessage);
+    		if (itemType.equalsIgnoreCase("Food")) {
+    			if (consumeItem) {
+    				sPlayer.sendMessage(additionalMessage);		
+    			}
+    		} else {
+    			sPlayer.sendMessage(additionalMessage);
+    		}        	
     	}
         
         // Modify Item quantity in hand that was just consumed
