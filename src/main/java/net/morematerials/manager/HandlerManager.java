@@ -49,6 +49,7 @@ import org.bukkit.event.Event;
 import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
+@SuppressWarnings("restriction")
 public class HandlerManager {
 
 	private Map<String, GenericHandler> handlers = new HashMap<String, GenericHandler>();
@@ -59,9 +60,9 @@ public class HandlerManager {
 
 	public HandlerManager(MoreMaterials plugin) {
 		this.plugin = plugin;
-		
+
 		File folder = new File(plugin.getDataFolder(), "handlers");
-		
+
 		// We can only compile if the JDK is found.
 		if (ToolProvider.getSystemJavaCompiler() != null) {
 			this.prepareCompiler(new File(folder, "bin"));
@@ -75,9 +76,10 @@ public class HandlerManager {
 				}
 			}
 		} else {
-			this.plugin.getUtilsManager().log("JDK not found - cannot compile Handlers!", Level.WARNING);
+			this.plugin.getUtilsManager().log("Server not using Java JDK environment, custom handlers will not function.", Level.INFO);
+			this.plugin.getUtilsManager().log("Ignore this error if your not trying to use your own custom handlers.", Level.INFO);
 		}
-		
+
 		for (File file : (new File(folder, "bin")).listFiles()) {
 			if (file.getName().endsWith(".class") && file.getName().indexOf("$") == -1) {
 				this.load(file);
@@ -126,7 +128,7 @@ public class HandlerManager {
 		config.put("eventType", eventType);
 		this.handlerRegister.add(config);
 	}
-	
+
 	public void triggerHandlers(String eventType, Integer materialId, Event event) {
 		for (Map<String, Object> config : this.handlerRegister) {
 			if (((Integer) config.get("materialId")).equals(materialId) && ((String) config.get("eventType")).equals(eventType)) {
@@ -134,26 +136,26 @@ public class HandlerManager {
 			}
 		}
 	}
-	
+
 	private void prepareCompiler(File binFolder) {
 		//Search & add dependencies
 		List<String> libs = new ArrayList<String>();
 		libs.add(System.getProperty("java.class.path"));
-		
+
 		// Add all plugins to allow using other plugins.
 		for (File lib : (new File("plugins")).listFiles()) {
 			if (lib.getName().endsWith(".jar")) {
 				libs.add("plugins/" + lib.getName());
 			}
 		}
-		
+
 		// Set the classpath.
 		this.compilerOptions.addAll(Arrays.asList("-classpath", StringUtils.join(libs, File.pathSeparator), "-d", binFolder.getAbsolutePath()));
 	}
-	
+
 	public void inject (Class<? extends GenericHandler>clazz) {
 		String useName = clazz.getName().split("Handler")[0].split("net.morematerials.handlers.")[1];
-				
+
 		try {
 			Object object = clazz.newInstance();
 			GenericHandler handler = (GenericHandler) object;
@@ -161,12 +163,9 @@ public class HandlerManager {
 			this.handlers.put(useName, handler);
 			this.plugin.getUtilsManager().log("Loaded Internal MM handler: " + useName);			
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }
