@@ -58,6 +58,9 @@ public class ConsumeHandler extends GenericHandler {
 		    		case BREWING_STAND:
 		    		case FURNACE:
 		    		case BURNING_FURNACE:
+		    		case WOODEN_DOOR:
+		    		case DISPENSER:
+		    			
 		    			return;
 		    		default:
 		    			break;
@@ -65,8 +68,9 @@ public class ConsumeHandler extends GenericHandler {
 	    	default:
 	    		break;
     	}
+    	
         // Setup Player Environment
-    	PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;	
+    	PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;
     	
         // Setup Player Environment if we got here.       
         Player sPlayer = playerEvent.getPlayer();        

@@ -32,7 +32,15 @@ import java.util.logging.Level;
 import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
+import net.morematerials.handlers.BombHandler;
+import net.morematerials.handlers.CommandHandler;
 import net.morematerials.handlers.ConsumeHandler;
+import net.morematerials.handlers.FireBallHandler;
+import net.morematerials.handlers.HealHandler;
+import net.morematerials.handlers.LightningHandler;
+import net.morematerials.handlers.PlaySoundHandler;
+import net.morematerials.handlers.PoisonHandler;
+import net.morematerials.handlers.RotateHandler;
 import net.morematerials.listeners.CustomListener;
 import net.morematerials.listeners.MMListener;
 import net.morematerials.manager.FurnaceRecipeManager;
@@ -73,7 +81,19 @@ public class MoreMaterials extends JavaPlugin {
 		this.utilsManager = new UtilsManager(this);
 		this.assetManager = new AssetManager(this);
 		this.handlerManager = new HandlerManager(this);
+		
+		// Inject Handler Classes
+		this.handlerManager.inject(BombHandler.class);
+		this.handlerManager.inject(CommandHandler.class);
 		this.handlerManager.inject(ConsumeHandler.class);
+		this.handlerManager.inject(FireBallHandler.class);
+		this.handlerManager.inject(HealHandler.class);
+		this.handlerManager.inject(LightningHandler.class);
+		this.handlerManager.inject(PlaySoundHandler.class);
+		this.handlerManager.inject(PoisonHandler.class);
+		this.handlerManager.inject(RotateHandler.class);
+		
+		// Finish managers
 		this.furnaceRecipeManager = new FurnaceRecipeManager();
 		this.smpManager = new SmpManager(this);
 		this.updateManager = new UpdateManager(this);
