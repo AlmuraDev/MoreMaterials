@@ -40,6 +40,9 @@ permissions:
   morematerials.handlers.consume:
     description: allows user to utilize built-in consume handler.
     default: op
+  morematerials.handlers.give:
+    description: allows user to utilize built-in consume handler.
+    default: op
   morematerials.handlers.fireball:
     description: allows user to utilize built-in fireball handler.
     default: op

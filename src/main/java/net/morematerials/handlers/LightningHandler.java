@@ -7,6 +7,7 @@ import net.morematerials.handlers.GenericHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -37,7 +38,12 @@ public class LightningHandler extends GenericHandler {
         if (!sPlayer.hasPermission("morematerials.handlers.lightning")) {
         	return;
         }
-              
+        
+        final Block block = playerEvent.getClickedBlock();
+        if (block == null) {
+        	return;
+        }
+        
         final Location location = playerEvent.getClickedBlock().getLocation();
               	
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -54,6 +60,6 @@ public class LightningHandler extends GenericHandler {
 		     	smokeParticle.setMaxAge(60).setAmount(15).setGravity(1.1F);
 		     	smokeParticle.spawn();				
 			}
-		}, 20L);		
+		}, 40L);		
 	}	
 }
