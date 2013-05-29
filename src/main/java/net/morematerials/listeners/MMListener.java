@@ -30,10 +30,12 @@ import net.morematerials.MoreMaterials;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.getspout.spout.block.SpoutCraftBlock;
@@ -102,6 +104,15 @@ public class MMListener implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {	
+		SpoutItemStack stack = new SpoutItemStack(event.getPlayer().getItemInHand());
+		if (stack.getMaterial() instanceof GenericCustomItem) {
+			this.plugin.getHandlerManager().triggerHandlers("RightClickEntity", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
+		} else if (stack.getMaterial() instanceof GenericCustomBlock) {
+			this.plugin.getHandlerManager().triggerHandlers("RightClickEntity", ((GenericCustomBlock) stack.getMaterial()).getCustomId(), event);
+		}		
+	}
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {

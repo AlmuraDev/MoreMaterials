@@ -14,6 +14,8 @@ public class FireBallHandler extends GenericHandler {
 	
 	@SuppressWarnings("unused")
 	private MoreMaterials plugin;
+	private int yieldSize = 1;
+	private boolean causeFire = false;
 
 	public void init(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -34,12 +36,25 @@ public class FireBallHandler extends GenericHandler {
         if (!sPlayer.hasPermission("morematerials.handlers.fireball")) {
         	return;
         }
+        
+        if (config.containsKey("yieldsize")) {
+			yieldSize = (Integer) config.get("yieldsize");	
+		} 
+        
+        if (config.containsKey("causefire")) {
+        	causeFire = (Boolean) config.get("causefire");	
+		} 
+        
+        if (yieldSize < 1 || yieldSize > 100) {
+        	return;
+        }
+        
         Vector direction = sPlayer.getEyeLocation().getDirection().multiply(2);
 		Fireball fireball = (Fireball)sPlayer.getWorld().spawn(sPlayer.getEyeLocation().add(direction.getX(), direction.getY(), direction.getZ()), Fireball.class);
 		fireball.setShooter(sPlayer);
 		fireball.setVelocity(direction.multiply(0.25D));
-		fireball.setYield(7.0F);
-		fireball.setIsIncendiary(false);
+		fireball.setYield((float)yieldSize);
+		fireball.setIsIncendiary(causeFire);
 	}
 	
 }
