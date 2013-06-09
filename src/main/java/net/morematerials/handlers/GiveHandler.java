@@ -8,6 +8,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.MaterialData;
 
 import net.morematerials.MoreMaterials;
@@ -94,36 +95,36 @@ public class GiveHandler extends GenericHandler {
 			message = "";
 		}
 
-		returnItem = (ItemStack) MaterialData.getCustomItem(itemName);
-		if (returnItem != null) {
-			returnItem.setAmount(quantity);
-		}
+		Block block  = (Block) sPlayer.getLocation().getBlock(); 
 
-		if (returnItem == null) {		
-			returnItem = (ItemStack) MaterialData.getCustomBlock(itemName);
-			if (returnItem != null) {
-				returnItem.setAmount(quantity);
-			}
-		}
-
-		if (returnItem == null) {			
-			final Material material = Material.getMaterial(itemName.toUpperCase());
-			if (material != null) {				
-				returnItem = new org.bukkit.inventory.ItemStack(material, quantity);						
-			}
-		}	
-
-		if (returnItem != null) {			
-			Inventory playerInvt = sPlayer.getInventory();
-			if (playerInvt != null) {				
-				if (playerInvt.firstEmpty() == -1) {					
-					Block block  = (Block) sPlayer.getLocation().getBlock();        			
-					block.getWorld().dropItemNaturally(block.getLocation(), returnItem);									
-				} else {										
-					playerInvt.addItem(returnItem);					
+		if (itemName != null) {
+			final org.getspout.spoutapi.material.Material customMaterial = MaterialData.getCustomItem(itemName);
+			if (customMaterial == null) {
+				final Material material = Material.getMaterial(itemName.toUpperCase());
+				if (material != null) {			
+					final ItemStack stack = new ItemStack(material, quantity);
+					Inventory playerInvt = sPlayer.getInventory();
+					if (playerInvt != null) {				
+						if (playerInvt.firstEmpty() == -1) {		
+							block.getWorld().dropItemNaturally(block.getLocation(), stack);
+						} else {
+							playerInvt.addItem(stack);
+						}
+						sPlayer.updateInventory();
+					}
 				}
-				sPlayer.updateInventory();			
-			}
+			} else {
+				final SpoutItemStack spoutStack = new SpoutItemStack(customMaterial, quantity);
+				Inventory playerInvt = sPlayer.getInventory();
+				if (playerInvt != null) {				
+					if (playerInvt.firstEmpty() == -1) {		
+						block.getWorld().dropItemNaturally(block.getLocation(), spoutStack);
+					} else {
+						playerInvt.addItem(spoutStack);
+					}
+					sPlayer.updateInventory();
+				}
+			}			
 		}
 
 		// Player Feedback        

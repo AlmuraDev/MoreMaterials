@@ -34,6 +34,7 @@ permissions:
       morematerials.handlers.bomb: true
       morematerials.handlers.playsound: true
       morematerials.handlers.rotate: true
+      morematerials.handlers.itemreturn: true
   morematerials.admin:
     description: Access to commands.
     default: op
@@ -63,6 +64,9 @@ permissions:
     default: op
   morematerials.handlers.rotate:
     description: allows user to utilize built-in play sound handler.
+    default: op
+  morematerials.handlers.itemreturn:
+    description: allows user to utilize built-in item return handler.
     default: op
   morematerials.craft:
     description: Allows crafting of MoreMaterials blocks and items.
