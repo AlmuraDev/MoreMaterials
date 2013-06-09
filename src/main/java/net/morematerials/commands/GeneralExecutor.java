@@ -63,15 +63,7 @@ public class GeneralExecutor implements CommandExecutor {
 		// Show authors line.
 		sender.sendMessage(ChatColor.WHITE + "Credits to: " + ChatColor.BLUE + StringUtils.join(description.getAuthors(), ", "));
 
-		// Show thanks line.
-		sender.sendMessage(ChatColor.WHITE + "Very special thanks to: ");
-		sender.sendMessage(ChatColor.BLUE + " -> ZNickq" + ChatColor.WHITE + " - For all your support!");
-		sender.sendMessage(ChatColor.WHITE + "Special thanks to: ");
-		sender.sendMessage(ChatColor.BLUE + " -> Flenix" + ChatColor.WHITE + " - For awesome packs!");
-		sender.sendMessage(ChatColor.BLUE + " -> Kaynide" + ChatColor.WHITE + " - Also for awesome packs!");
-		sender.sendMessage(ChatColor.BLUE + " -> Layane" + ChatColor.WHITE + " - For submitting patches.");
-		sender.sendMessage(ChatColor.BLUE + " -> Dockter" + ChatColor.WHITE + " - For a lot of testing.");
-
+		// Show thanks line.		
 		return true;
 	}
 

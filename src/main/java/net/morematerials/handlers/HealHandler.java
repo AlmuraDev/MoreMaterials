@@ -6,16 +6,10 @@ import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.getspout.spoutapi.particle.Particle;
 import org.getspout.spoutapi.particle.Particle.ParticleType;
