@@ -55,7 +55,7 @@ import net.morematerials.materials.MMCustomTool;
 public class SmpManager {
 
 	private MoreMaterials plugin;
-
+	private boolean crossRecipe = false;
 	private ArrayList<MMCustomBlock> blocksList = new ArrayList<MMCustomBlock>();
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
@@ -223,6 +223,23 @@ public class SmpManager {
 			}
 		}
 		
+		if (smpName == null) {			
+			MMCustomBlock currentBlock_a;
+			for (Integer i = 0; i < this.blocksList.size(); i++) {
+				currentBlock_a = this.blocksList.get(i);
+				if (currentBlock_a.getMaterialName().equals(matName)) {					
+					return currentBlock_a;
+				}
+			}
+			
+			MMCustomItem currentItem_a;
+			for (Integer i = 0; i < this.itemsList.size(); i++) {
+				currentItem_a = this.itemsList.get(i);
+				if (currentItem_a.getMaterialName().equals(matName)) {					
+					return currentItem_a;
+				}
+			}
+		}
 		return null;
 	}
 
@@ -287,6 +304,7 @@ public class SmpManager {
 		}
 		
 		if (material == null) {
+			this.plugin.getUtilsManager().log("Recipe within: " + smpName + " for item: " + matName + " could not be found!", Level.WARNING);
 			return;
 		}
 
@@ -315,9 +333,22 @@ public class SmpManager {
 				}
 				
 				if (ingredient == null) {
-					continue;
+					// Look for previously registered ingredients from other SMP packages.
+					ingredient = this.getMaterial(null, ingredients);
+					if (ingredient != null) {
+						crossRecipe = true;
+					}
 				}
 				
+				if (ingredient == null) {	
+					this.plugin.getUtilsManager().log("Recipe within: " + smpName + " for item: " + matName + " using the ingredient of: " + ingredients + " could not be found!", Level.WARNING);
+					continue;
+				}			
+				
+				if (crossRecipe) {
+					this.plugin.getUtilsManager().log("Multi-SMP based shaped recipe within [" + smpName + "] for item [" + matName + "] created.", Level.INFO);
+					crossRecipe = false;
+				}
 				this.plugin.getFurnaceRecipeManager().registerRecipe(new SpoutItemStack(material, amount), ingredient);
                 //System.out.println("Material: " + material.getName());
                 //System.out.println("Amount: " + amount);
@@ -334,19 +365,32 @@ public class SmpManager {
 						if (matInfo.length == 1) {
 							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]));
 						} else {
-							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));
+							ingredient = MaterialData.getMaterial(Integer.parseInt(matInfo[0]), (short) Integer.parseInt(matInfo[1]));						
 						}
 					} else {
 						ingredient = this.getMaterial(smpName, ingredientitem);
 					}
 					
 					if (ingredient == null) {
+						// Look for previously registered ingredients from other SMP packages.
+						ingredient = this.getMaterial(null, ingredientitem);
+						if (ingredient != null) {
+							crossRecipe = true;
+						}
+					}
+					
+					if (ingredient == null) {
+						this.plugin.getUtilsManager().log("Recipe within: " + smpName + " for item: " + matName + " using the ingredient of: " + ingredientitem + " could not be found!", Level.WARNING);
 						continue;
 					}
 					
 					(sRecipe).addIngredient(ingredient);
 				}
 				// Finaly register recipe.
+				if (crossRecipe) {
+					this.plugin.getUtilsManager().log("Multi-SMP based shaped recipe within [" + smpName + "] for item [" + matName + "] created.", Level.INFO);
+					crossRecipe = false;
+				}
 				SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
 			} else if (type.equalsIgnoreCase("Shaped")) {
 				SpoutShapedRecipe sRecipe = new SpoutShapedRecipe(stack).shape("abc","def", "ghi");
@@ -373,6 +417,15 @@ public class SmpManager {
 					}
 					
 					if (ingredient == null) {
+						// Look for previously registered ingredients from other SMP packages.
+						ingredient = this.getMaterial(null, ingredientitem);
+						if (ingredient != null) {
+							crossRecipe = true;
+						}
+					}
+					
+					if (ingredient == null) {
+						this.plugin.getUtilsManager().log("Recipe within: " + smpName + " for item: " + matName + " using the ingredient of: " + ingredientitem + " could not be found!", Level.WARNING);						
 						invalidRecipe = true;
 					}
 
@@ -389,6 +442,10 @@ public class SmpManager {
 				
 				// Finaly register recipe.
 				if (!invalidRecipe) {
+					if (crossRecipe) {
+						this.plugin.getUtilsManager().log("Multi-SMP based shaped recipe within [" + smpName + "] for item [" + matName + "] created.", Level.INFO);
+						crossRecipe = false;
+					}
 					SpoutManager.getMaterialManager().registerSpoutRecipe(sRecipe);
 				}
 			}

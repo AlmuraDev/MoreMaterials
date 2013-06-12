@@ -29,6 +29,7 @@ package net.morematerials.materials;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.morematerials.MoreMaterials;
 
@@ -134,6 +135,13 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 			}
 		} else {
 			material = this.plugin.getSmpManager().getMaterial(this.smpName, drop);
+		}
+		
+		if (material == null) {
+			material = this.plugin.getSmpManager().getMaterial(null, drop);
+			if (material != null) {
+				this.plugin.getUtilsManager().log("Multi-SMP based ItemDrop within [" + smpName + "] for item [" + drop + "] created.", Level.INFO);
+			}
 		}
 		
 		if (material != null) {
