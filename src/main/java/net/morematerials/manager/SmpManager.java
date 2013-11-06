@@ -45,10 +45,12 @@ import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 
 
+
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomShapeTemplate;
 import net.morematerials.materials.MMCustomArmor;
 import net.morematerials.materials.MMCustomBlock;
+import net.morematerials.materials.MMCustomFood;
 import net.morematerials.materials.MMCustomItem;
 import net.morematerials.materials.MMCustomTool;
 
@@ -60,6 +62,7 @@ public class SmpManager {
 	private ArrayList<MMCustomItem> itemsList = new ArrayList<MMCustomItem>();
 	private ArrayList<MMCustomTool> toolsList = new ArrayList<MMCustomTool>();
 	private ArrayList<MMCustomArmor> armorList = new ArrayList<MMCustomArmor>();
+	private ArrayList<MMCustomFood> foodList = new ArrayList<MMCustomFood>();
 	private HashMap<String, CustomShapeTemplate> shapesMap = new HashMap<String, CustomShapeTemplate>();
 	
 	HashMap<String, HashMap<String, YamlConfiguration>> storedConfigs = new HashMap<String, HashMap<String, YamlConfiguration>>();
@@ -160,6 +163,8 @@ public class SmpManager {
 			this.itemsList.add(MMCustomItem.create(this.plugin, yaml, smpName, matName));
 		} else if (yaml.getString("Type", "").equals("Armor")) {
 			this.armorList.add(MMCustomArmor.create(this.plugin, yaml, smpName, matName));
+		} else if (yaml.getString("Type", "").equals("Food")) {
+			this.foodList.add(MMCustomFood.create(this.plugin, yaml, smpName, matName));
 		}
 	}
 
@@ -222,7 +227,16 @@ public class SmpManager {
 				return currentArmor;
 			}
 		}
-		
+
+		// Then also check for matching armor.
+		MMCustomFood currentFood;
+		for (Integer i = 0; i < this.foodList.size(); i++) {
+			currentFood = this.foodList.get(i);
+			if (currentFood.getSmpName().equals(smpName) && currentFood.getMaterialName().equals(matName)) {
+				return currentFood;
+			}
+		}
+
 		if (smpName == null) {			
 			MMCustomBlock currentBlock_a;
 			for (Integer i = 0; i < this.blocksList.size(); i++) {
@@ -279,7 +293,16 @@ public class SmpManager {
 				return currentArmor;
 			}
 		}
-		
+
+		// Then also check for matching armor.
+		MMCustomFood currentFood;
+		for (Integer i = 0; i < this.foodList.size(); i++) {
+			currentFood = this.foodList.get(i);
+			if (currentFood.getCustomId() == materialId) {
+				return currentFood;
+			}
+		}
+
 		return null;
 	}
 

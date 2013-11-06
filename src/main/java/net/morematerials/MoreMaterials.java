@@ -33,6 +33,8 @@ import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
 import net.morematerials.handlers.BombHandler;
+import net.morematerials.handlers.ChestHandler;
+import net.morematerials.handlers.ChunkRegenerateHandler;
 import net.morematerials.handlers.CommandHandler;
 import net.morematerials.handlers.ConsumeHandler;
 import net.morematerials.handlers.FireBallHandler;
@@ -86,6 +88,8 @@ public class MoreMaterials extends JavaPlugin {
 		
 		// Inject Handler Classes
 		this.handlerManager.inject(BombHandler.class);
+		this.handlerManager.inject(ChestHandler.class);
+		this.handlerManager.inject(ChunkRegenerateHandler.class);
 		this.handlerManager.inject(CommandHandler.class);
 		this.handlerManager.inject(ConsumeHandler.class);
 		this.handlerManager.inject(FireBallHandler.class);
