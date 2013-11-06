@@ -1,19 +1,13 @@
 package net.morematerials.handlers;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.ChunkEvent;
-import org.getspout.spout.block.SpoutCraftChunk;
-import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.SpoutWorld;
-import org.getspout.spoutapi.chunkstore.SimpleChunkDataManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ChunkRegenerateHandler extends GenericHandler {
@@ -26,8 +20,7 @@ public class ChunkRegenerateHandler extends GenericHandler {
 		this.plugin = plugin;
 	}
 
-	public void shutdown() {
-	}
+	public void shutdown() {}
 
 	@Override
 	public void onActivation(Event event, Map<String, Object> config) {

@@ -31,6 +31,7 @@ import net.morematerials.MoreMaterials;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -51,7 +52,7 @@ public class MMListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockBreak(BlockBreakEvent event) {
 		// Make sure we have a valid event.
 		if (event.getPlayer() == null || event.getPlayer().getGameMode() == GameMode.CREATIVE) {

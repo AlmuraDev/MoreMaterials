@@ -7,7 +7,6 @@ import net.morematerials.materials.MMCustomTool;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.block.Furnace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

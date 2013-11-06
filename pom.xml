@@ -4,36 +4,94 @@
 	<groupId>net.morematerials</groupId>
 	<artifactId>MoreMaterials</artifactId>
 	<packaging>jar</packaging>
-	<version>2.1</version>
+	<version>2.15</version>
 	<name>MoreMaterials</name>
 	<url>http://www.morematerials.net</url>
 
-	<repositories>
-        <repository>
-            <id>spout-repo</id>
-            <url>http://repo.spout.org</url>
-        </repository>
-	</repositories>
+	<!-- Parent information -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.5.2-R1.0</craftbukkit.version>
-		<spoutplugin.version>1.5.2-R1.0-SNAPSHOT</spoutplugin.version>
+		<buildNumber>0</buildNumber>
+		<ciSystem>unknown</ciSystem>
+		<commit>unknown</commit>
+		<mainClass>org.getspout.spout.Spout</mainClass>
+		<!--<mainClass>${project.groupId}.plugin.${project.name}</mainClass>-->
+		<bukkitVersion>1.6.2-R1.1-SNAPSHOT</bukkitVersion>
+		<spoutcraftpluginVersion>1.6.2-R1.1-SNAPSHOT</spoutcraftpluginVersion>
+		<minecraftVersion>1.6.2</minecraftVersion>
 	</properties>
 
-	<dependencies>
+	<!-- Dependency repositories -->
+	<repositories>
+		<repository>
+			<id>bukkit-releases</id>
+			<url>http://repo.bukkit.org/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>bukkit-snapshots</id>
+			<url>http://repo.bukkit.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!-- Build plugin repositories -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Project dependencies -->
+	<dependencies>		
+		<!-- Provided by third-party -->
 		<dependency>
-			<groupId>org.getspout</groupId>
-			<artifactId>spoutplugin</artifactId>
-			<version>${spoutplugin.version}</version>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkitVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>${craftbukkit.version}</version>
+			<version>${bukkitVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+            <groupId>org.spoutcraft</groupId>
+            <artifactId>spoutcraftplugin</artifactId>
+            <version>${spoutcraftpluginVersion}</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
