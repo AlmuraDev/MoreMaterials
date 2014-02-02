@@ -7,10 +7,13 @@ import net.morematerials.handlers.GenericHandler;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.getspout.spoutapi.player.SpoutPlayer;
+
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 public class ChestHandler extends GenericHandler {
 	
@@ -23,8 +26,8 @@ public class ChestHandler extends GenericHandler {
 		// Setup Player Environment
 		PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;    	
 
-		// Setup Player Environment if we got here.       
-		final Player sPlayer = playerEvent.getPlayer();   
+		// Setup Player Environment if we got here.
+		final SpoutPlayer sPlayer = (SpoutPlayer) playerEvent.getPlayer();   
 
 		// Check Player Permissions
 		if (!sPlayer.hasPermission("morematerials.handlers.chest")) {
@@ -32,14 +35,19 @@ public class ChestHandler extends GenericHandler {
 		}        		
 
 		Block block = playerEvent.getClickedBlock();
-		if (block != null) {		
-			Chest chest = (Chest)block.getState();
-			if (chest != null) {
-				Inventory inv = chest.getBlockInventory();			    
-				if (inv != null) {
-					sPlayer.openInventory(inv);		
+		ClaimedResidence res = Residence.getResidenceManager().getByLoc(block.getLocation());
+		if (res != null) {
+			if (res.getPermissions().playerHas(sPlayer.getName(),"container", true)) {				
+				if (block != null) {		
+					Chest chest = (Chest)block.getState();
+					if (chest != null) {
+						Inventory inv = chest.getBlockInventory();
+						if (inv != null) {
+							sPlayer.openInventory(inv);
+						}
+					}		
 				}
-			}		
+			}
 		}
 	}
 }
