@@ -27,6 +27,7 @@
 package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
+import net.morematerials.materials.MMCustomBlock;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -39,10 +40,12 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.getspout.spout.block.SpoutCraftBlock;
+import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.Block;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class MMListener implements Listener {
 	
@@ -114,9 +117,11 @@ public class MMListener implements Listener {
 		}		
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Location location = event.getPlayer().getLocation();
+		SpoutPlayer sPlayer = (SpoutPlayer) event.getPlayer();
 		Block block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location)).getBlockType();
 		
 		// Touch represents a block you are standing in.
@@ -126,9 +131,37 @@ public class MMListener implements Listener {
 
 		block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location.subtract(0, 1, 0))).getBlockType();
 		
+		// Getting the Spout Block below the player
+		SpoutBlock sBlock = (SpoutBlock) sPlayer.getWorld().getBlockAt(sPlayer.getLocation().add(0, -1, 0));
+				
+		// This only applies for custom blocks
+		Object item = null;
+		if (sBlock.isCustomBlock()) {
+			String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
+			String smpItem = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[2];
+			item = this.plugin.getSmpManager().getMaterial(smpName, smpItem);
+		}
+		
+		// Setting the player walkspeed.
+		if (item != null && item instanceof MMCustomBlock && ((MMCustomBlock) item).getSpeedMultiplier() != 1) {
+			sPlayer.setAirSpeedMultiplier(((MMCustomBlock) item).getSpeedMultiplier());
+			sPlayer.setWalkingMultiplier(((MMCustomBlock) item).getSpeedMultiplier());
+		} else {
+			sPlayer.setAirSpeedMultiplier(1);
+			sPlayer.setWalkingMultiplier(1);
+		}
+		
+		// Setting the player jumpheight.
+		if (item != null && item instanceof MMCustomBlock && ((MMCustomBlock) item).getJumpMultiplier() != 1) {
+			sPlayer.setJumpingMultiplier(((MMCustomBlock) item).getJumpMultiplier());
+		} else {
+			sPlayer.setJumpingMultiplier(1);
+		}
+		
 		// Walkover represents the block under your position.
 		if (block instanceof GenericCustomBlock) {
 			this.plugin.getHandlerManager().triggerHandlers("Walkover", ((GenericCustomBlock) block).getCustomId(), event);
+		
 		}
 	}
 }

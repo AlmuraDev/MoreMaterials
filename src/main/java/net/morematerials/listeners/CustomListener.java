@@ -117,7 +117,7 @@ public class CustomListener implements Listener {
 		SpoutItemStack item = new SpoutItemStack(event.getFuel());
         if (item.getMaterial() instanceof CustomFuel && ((CustomFuel)item.getMaterial()).getBurnTime() > 0) {
 			event.setBurning(true);
-			event.setBurnTime(((CustomFuel)item.getMaterial()).getBurnTime());
+			event.setBurnTime(((CustomFuel)item.getMaterial()).getBurnTime()*20);
 		}
 	}
 
