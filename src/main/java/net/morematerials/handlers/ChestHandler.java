@@ -10,6 +10,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -39,13 +40,20 @@ public class ChestHandler extends GenericHandler {
 		if (res != null) {
 			if (res.getPermissions().playerHas(sPlayer.getName(),"container", true)) {				
 				if (block != null) {		
-					Chest chest = (Chest)block.getState();
-					if (chest != null) {
-						Inventory inv = chest.getBlockInventory();
-						if (inv != null) {
-							sPlayer.openInventory(inv);
-						}
-					}		
+					try {
+						// Its possible for a class cast exception to be thrown if part of the custom block data is missing, fixed this by ignoring the exception
+						Chest chest = (Chest)block.getState();
+						if (chest != null) {
+							Inventory inv = chest.getBlockInventory();
+							if (inv != null) {
+								sPlayer.openInventory(inv);
+							}
+						}	
+					} catch (Exception exception) {
+						// Catch Class Cast Exception and ignore it
+						return;
+					} 
+
 				}
 			}
 		}

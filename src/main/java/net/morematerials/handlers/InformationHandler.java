@@ -39,10 +39,10 @@ public class InformationHandler extends GenericHandler {
 				if (pluginName.equalsIgnoreCase("MoreMaterials")) {
 					String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
 					String smpItem = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[2];
-					playerEvent.getPlayer().sendMessage("Custom Block: " + "\n" + ChatColor.DARK_GREEN + "Plugin: " + ChatColor.DARK_AQUA + pluginName + "\n" + ChatColor.DARK_GREEN + "SMP Package: " + ChatColor.DARK_AQUA + smpName+ "\n" + ChatColor.DARK_GREEN + "Block/Item Name: " + ChatColor.DARK_AQUA + smpItem);
+					playerEvent.getPlayer().sendMessage("Custom Block: " + "\n" + ChatColor.DARK_GREEN + "Plugin: " + ChatColor.DARK_AQUA + pluginName + "\n" + ChatColor.DARK_GREEN + "SMP Package: " + ChatColor.DARK_AQUA + smpName+ "\n" + ChatColor.DARK_GREEN + "Block/Item ID: " + ChatColor.DARK_AQUA + smpItem  + "\n" + ChatColor.DARK_GREEN + "Block/Item Name: " + ChatColor.DARK_AQUA + sBlock.getCustomBlock().getName() + "\n" + ChatColor.DARK_GREEN + "Light Level: " + ChatColor.DARK_AQUA + sBlock.getCustomBlock().getLightLevel() + "\n" + ChatColor.DARK_GREEN + "CustomID #: " + ChatColor.DARK_AQUA + sBlock.getCustomBlock().getCustomId()+ "\n" + ChatColor.DARK_GREEN + "Hardness: " + ChatColor.DARK_AQUA + sBlock.getCustomBlock().getHardness());
 				} else {
 					String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
-					playerEvent.getPlayer().sendMessage("Custom Block: " + "\n" + ChatColor.DARK_GREEN + "Plugin: " + ChatColor.DARK_AQUA + pluginName + "\n" + ChatColor.DARK_GREEN + "Block/Item Name: " + ChatColor.DARK_AQUA + smpName);
+					playerEvent.getPlayer().sendMessage("Custom Block: " + "\n" + ChatColor.DARK_GREEN + "Plugin: " + ChatColor.DARK_AQUA + pluginName + "\n" + ChatColor.DARK_GREEN + "Block/Item ID: " + ChatColor.DARK_AQUA + smpName  + "\n" + ChatColor.DARK_GREEN + "Block/Item Name: " + ChatColor.DARK_AQUA + sBlock.getCustomBlock().getName());					
 				}
 			} else {
 				playerEvent.getPlayer().sendMessage("Normal Blockname: " + ChatColor.DARK_AQUA + sBlock.getName());
