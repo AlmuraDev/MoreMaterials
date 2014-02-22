@@ -40,6 +40,7 @@ import net.morematerials.handlers.ConsumeHandler;
 import net.morematerials.handlers.FireBallHandler;
 import net.morematerials.handlers.GiveHandler;
 import net.morematerials.handlers.HealHandler;
+import net.morematerials.handlers.InformationHandler;
 import net.morematerials.handlers.ItemReturnHandler;
 import net.morematerials.handlers.LightningHandler;
 import net.morematerials.handlers.PlaySoundHandler;
@@ -95,6 +96,7 @@ public class MoreMaterials extends JavaPlugin {
 		this.handlerManager.inject(FireBallHandler.class);
 		this.handlerManager.inject(GiveHandler.class);
 		this.handlerManager.inject(HealHandler.class);
+		this.handlerManager.inject(InformationHandler.class);
 		this.handlerManager.inject(ItemReturnHandler.class);
 		this.handlerManager.inject(LightningHandler.class);
 		this.handlerManager.inject(PlaySoundHandler.class);

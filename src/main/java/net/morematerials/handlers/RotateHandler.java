@@ -34,11 +34,7 @@ public class RotateHandler extends GenericHandler {
         if (!sPlayer.hasPermission("morematerials.handlers.rotate")) {
         	return;
         }
-        
-		if (!(event instanceof PlayerInteractEvent) && ((String) config.get("eventType")).startsWith("Hold")) {
-			return;
-		}
-				
+        						
 		Block block = playerEvent.getClickedBlock();
 		
 		if (block == null) {

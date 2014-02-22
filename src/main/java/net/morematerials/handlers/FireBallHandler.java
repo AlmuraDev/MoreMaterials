@@ -26,7 +26,7 @@ public class FireBallHandler extends GenericHandler {
 
 	@Override
 	public void onActivation(Event event, Map<String, Object> config) {
-		  // Setup Player Environment
+		  // Setup Player Environment		
     	PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;    	
     	
         // Setup Player Environment if we got here.       

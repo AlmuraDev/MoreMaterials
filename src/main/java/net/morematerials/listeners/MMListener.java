@@ -26,11 +26,14 @@
 
 package net.morematerials.listeners;
 
+import java.lang.reflect.Method;
+
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.MMCustomBlock;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -122,7 +125,14 @@ public class MMListener implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Location location = event.getPlayer().getLocation();
 		SpoutPlayer sPlayer = (SpoutPlayer) event.getPlayer();
-		Block block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location)).getBlockType();
+		
+		Object block = null;		 
+		 try {
+			 block = ((SpoutCraftBlock) location.getWorld().getBlockAt(location)).getBlockType();	
+			} catch (Exception exception) {
+				// Catch Chunk Regen Exception and ignore it
+				return;
+			} 
 		
 		// Touch represents a block you are standing in.
 		if (block instanceof GenericCustomBlock) {
@@ -137,9 +147,12 @@ public class MMListener implements Listener {
 		// This only applies for custom blocks
 		Object item = null;
 		if (sBlock.isCustomBlock()) {
-			String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
-			String smpItem = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[2];
-			item = this.plugin.getSmpManager().getMaterial(smpName, smpItem);
+			String pluginName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[0];
+			if (pluginName.equalsIgnoreCase("MoreMaterials")) {
+				String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
+				String smpItem = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[2];
+				item = this.plugin.getSmpManager().getMaterial(smpName, smpItem);
+			}
 		}
 		
 		// Setting the player walkspeed.

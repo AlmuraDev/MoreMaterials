@@ -1,0 +1,52 @@
+package net.morematerials.handlers;
+
+import java.util.Map;
+
+import net.morematerials.MoreMaterials;
+import net.morematerials.handlers.GenericHandler;
+
+import org.bukkit.ChatColor;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.getspout.spoutapi.block.SpoutBlock;
+import org.getspout.spoutapi.player.SpoutPlayer;
+
+public class InformationHandler extends GenericHandler {
+	
+	public void init(MoreMaterials plugin) {}
+
+	public void shutdown() {}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onActivation(Event event, Map<String, Object> config) {
+		
+		// Setup Player Environment
+		PlayerInteractEvent playerEvent = (PlayerInteractEvent) event;    	
+
+		// Setup Player Environment if we got here.
+		final SpoutPlayer sPlayer = (SpoutPlayer) playerEvent.getPlayer();   
+
+		// Check Player Permissions
+		if (!sPlayer.hasPermission("morematerials.handlers.information")) {
+			return;
+		}        		
+
+		SpoutBlock sBlock = (SpoutBlock) playerEvent.getClickedBlock();
+		if (sBlock != null) {
+			if (sBlock.isCustomBlock()) {
+				String pluginName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[0];
+				if (pluginName.equalsIgnoreCase("MoreMaterials")) {
+					String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
+					String smpItem = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[2];
+					playerEvent.getPlayer().sendMessage("Custom Block: " + "\n" + ChatColor.DARK_GREEN + "Plugin: " + ChatColor.DARK_AQUA + pluginName + "\n" + ChatColor.DARK_GREEN + "SMP Package: " + ChatColor.DARK_AQUA + smpName+ "\n" + ChatColor.DARK_GREEN + "Block/Item Name: " + ChatColor.DARK_AQUA + smpItem);
+				} else {
+					String smpName = sBlock.getCustomBlock().getBlockItem().getFullName().split("\\.")[1];
+					playerEvent.getPlayer().sendMessage("Custom Block: " + "\n" + ChatColor.DARK_GREEN + "Plugin: " + ChatColor.DARK_AQUA + pluginName + "\n" + ChatColor.DARK_GREEN + "Block/Item Name: " + ChatColor.DARK_AQUA + smpName);
+				}
+			} else {
+				playerEvent.getPlayer().sendMessage("Normal Blockname: " + ChatColor.DARK_AQUA + sBlock.getName());
+			}
+		}		
+	}
+}
