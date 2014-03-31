@@ -98,7 +98,19 @@
 			<version>2.6.6.6</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/libs/Residence.jar</systemPath>
-		</dependency>	
+		</dependency>
+		 <dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>1.2.23-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>com.greatmancode</groupId>
+            <artifactId>craftconomy3</artifactId>
+            <version>3.1.4-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>	
 	</dependencies>
 
 	<build>
