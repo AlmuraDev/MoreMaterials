@@ -16,9 +16,9 @@ import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
 /* ConsumeFoodHandler
- * Author: Dockter, AlmuraDev � 2013
- * Version: 1.5
- * Updated: 4/17/2013
+ * Author: Dockter, AlmuraDev � 2014
+ * Version: 1.6
+ * Updated: 4/1/2014
  */
 
 public class ConsumeHandler extends GenericHandler {
@@ -26,6 +26,7 @@ public class ConsumeHandler extends GenericHandler {
 	private boolean consumeItem = false;
 	private boolean playerFeedback = false;
 	private int foodChange = 0;
+	private float saturationChange = 0;
 	private int healthChange = 0;
 	private int oxygenChange = 0;
 	private String itemName = " ";
@@ -98,6 +99,12 @@ public class ConsumeHandler extends GenericHandler {
         } else {
         	foodChange = 0;
         }
+        
+        if (config.containsKey("saturationChange")) {
+        	saturationChange = (Integer) config.get("saturationChange");	
+        } else {
+        	saturationChange = 0;
+        }
                 
         if (config.containsKey("healthChange")) {
         	healthChange = (Integer) config.get("healthChange");	
@@ -129,16 +136,17 @@ public class ConsumeHandler extends GenericHandler {
         	additionalMessage = "";
         }    
         
-        // Consume Food Item
+        // Consume Food Item [Food Level+]
         if (foodChange > 0) {
         	// Check users food level, return if already 20.
         	if (sPlayer.getFoodLevel() != 20) {
         		if (sPlayer.getFoodLevel()+foodChange > 20) {
         			sPlayer.setFoodLevel(20);
         		} else {
-        			sPlayer.setFoodLevel(sPlayer.getFoodLevel()+foodChange);        	
+        			sPlayer.setFoodLevel(sPlayer.getFoodLevel()+foodChange);
         		}
-
+        		
+        		
         		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());  
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
         	} else {
@@ -147,17 +155,53 @@ public class ConsumeHandler extends GenericHandler {
         		//}
         	}
         }
+        
+     // Consume Food Item [Saturaton+]
+        if (saturationChange > 0) {
+        	// Check users food level, return if already 20.
+        	if (sPlayer.getSaturation() != 20) {
+        		if (sPlayer.getSaturation()+saturationChange > 20) {
+        			sPlayer.setSaturation(20);
+        		} else {
+        			sPlayer.setSaturation(sPlayer.getSaturation()+saturationChange);
+        		}
+        	} else {
+        		//if (itemType.equalsIgnoreCase("Food")) {
+        			consumeItem = false;
+        		//}
+        	}
+        }
 
+        // Consume Food Item [Food Level-]
         if (foodChange < 0) {
         	// Check users food level, return if already 0.
         	if (sPlayer.getFoodLevel() != 0) {
-        		if (sPlayer.getFoodLevel()+foodChange < 0) {        		
+        		if (sPlayer.getFoodLevel()+foodChange < 0) {
         			sPlayer.setFoodLevel(0);
         		} else {
-        			sPlayer.setFoodLevel(sPlayer.getFoodLevel()-foodChange);        	
+        			sPlayer.setFoodLevel(sPlayer.getFoodLevel()-foodChange);
         		}
 
-        		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());  
+        		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());
+        		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
+        	} else {
+        		//if (itemType.equalsIgnoreCase("Food")) {
+        			consumeItem = false;
+        		//}
+        	}
+        }
+        
+        // Consume Food Item [Saturaton-]
+        if (saturationChange < 0) {
+        	// Check users food level, return if already 0.
+        	if (sPlayer.getSaturation() != 0) {
+        		if (sPlayer.getSaturation()+saturationChange < 0) {
+        			sPlayer.setSaturation(0);
+        		} else {
+        			sPlayer.setSaturation(sPlayer.getSaturation()-saturationChange);
+        		}
+
+        		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
         	} else {
         		//if (itemType.equalsIgnoreCase("Food")) {
