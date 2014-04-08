@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+
 import net.morematerials.MoreMaterials;
 import net.morematerials.handlers.GenericHandler;
 
@@ -23,10 +24,10 @@ import net.morematerials.handlers.GenericHandler;
 
 public class ConsumeHandler extends GenericHandler {
 
-	private boolean consumeItem = false;
+	private boolean consumeItem, usedItem = false;
 	private boolean playerFeedback = false;
 	private int foodChange = 0;
-	private float saturationChange = 0;
+	private int saturationChange = 0;
 	private int healthChange = 0;
 	private int oxygenChange = 0;
 	private String itemName = " ";
@@ -143,16 +144,11 @@ public class ConsumeHandler extends GenericHandler {
         		if (sPlayer.getFoodLevel()+foodChange > 20) {
         			sPlayer.setFoodLevel(20);
         		} else {
-        			sPlayer.setFoodLevel(sPlayer.getFoodLevel()+foodChange);
+        			sPlayer.setFoodLevel(sPlayer.getFoodLevel()+foodChange);        			
         		}
-        		
-        		
+        		usedItem = true;
         		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());  
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
-        	} else {
-        		//if (itemType.equalsIgnoreCase("Food")) {
-        			consumeItem = false;
-        		//}
         	}
         }
         
@@ -160,16 +156,13 @@ public class ConsumeHandler extends GenericHandler {
         if (saturationChange > 0) {
         	// Check users food level, return if already 20.
         	if (sPlayer.getSaturation() != 20) {
-        		if (sPlayer.getSaturation()+saturationChange > 20) {
+        		if (sPlayer.getSaturation()+(float)saturationChange > 20) {
         			sPlayer.setSaturation(20);
         		} else {
-        			sPlayer.setSaturation(sPlayer.getSaturation()+saturationChange);
+        			sPlayer.setSaturation(sPlayer.getSaturation()+(float)saturationChange);
         		}
-        	} else {
-        		//if (itemType.equalsIgnoreCase("Food")) {
-        			consumeItem = false;
-        		//}
-        	}
+        		usedItem = true;
+        	} 
         }
 
         // Consume Food Item [Food Level-]
@@ -181,14 +174,10 @@ public class ConsumeHandler extends GenericHandler {
         		} else {
         			sPlayer.setFoodLevel(sPlayer.getFoodLevel()-foodChange);
         		}
-
+        		usedItem = true;
         		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
-        	} else {
-        		//if (itemType.equalsIgnoreCase("Food")) {
-        			consumeItem = false;
-        		//}
-        	}
+        	} 
         }
         
         // Consume Food Item [Saturaton-]
@@ -200,13 +189,9 @@ public class ConsumeHandler extends GenericHandler {
         		} else {
         			sPlayer.setSaturation(sPlayer.getSaturation()-saturationChange);
         		}
-
+        		usedItem = true;
         		FoodLevelChangeEvent expEvent = new FoodLevelChangeEvent(sPlayer, (int) sPlayer.getFoodLevel());
         		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setFoodLevel doesn't.
-        	} else {
-        		//if (itemType.equalsIgnoreCase("Food")) {
-        			consumeItem = false;
-        		//}
         	}
         }
         
@@ -214,8 +199,10 @@ public class ConsumeHandler extends GenericHandler {
     	if (healthChange < 0) {
     		if (healthChange < -20) {
     			sPlayer.damage(20);
+    			usedItem = true;
     		} else {
     			sPlayer.damage((healthChange*-1));
+    			usedItem = true;
     		}    		
     	}
     	
@@ -225,6 +212,7 @@ public class ConsumeHandler extends GenericHandler {
     		} else {
     			sPlayer.setHealth(sPlayer.getHealth()+healthChange);
     		}
+    		usedItem = true;
     		EntityRegainHealthEvent expEvent = new EntityRegainHealthEvent(sPlayer, 0, RegainReason.CUSTOM);
     		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setHealth doesn't.
     	}
@@ -233,7 +221,9 @@ public class ConsumeHandler extends GenericHandler {
     	if (oxygenChange > 0 && sPlayer.getRemainingAir()<300) {
     		if (oxygenChange+sPlayer.getRemainingAir() > 300) {
     			sPlayer.setRemainingAir(300);
+    			usedItem = true;
     		} else {
+    			usedItem = true;
     			sPlayer.setRemainingAir(sPlayer.getRemainingAir()+oxygenChange);
     		}    		
     	}
@@ -244,6 +234,7 @@ public class ConsumeHandler extends GenericHandler {
     		} else {
     			sPlayer.setRemainingAir(sPlayer.getRemainingAir()-oxygenChange);
     		}
+    		usedItem = true;
     		EntityRegainHealthEvent expEvent = new EntityRegainHealthEvent(sPlayer, 0, RegainReason.CUSTOM);
     		Bukkit.getPluginManager().callEvent(expEvent); // Must call the event since setHealth doesn't.
     	}
@@ -252,7 +243,7 @@ public class ConsumeHandler extends GenericHandler {
         // Player Feedback        
         if (!itemName.equalsIgnoreCase(" ") && playerFeedback) {
         	if (itemType.equalsIgnoreCase("Food")) {
-        		if (consumeItem) {
+        		if (consumeItem && usedItem) {
         			sPlayer.sendMessage("You have consumed " + ChatColor.GOLD + itemName + ChatColor.WHITE + ".");
         		}
         	} else {
@@ -272,7 +263,7 @@ public class ConsumeHandler extends GenericHandler {
     	}
         
         // Modify Item quantity in hand that was just consumed
-        if (consumeItem) {
+        if (consumeItem && usedItem) {
         	if (!(sPlayer.getGameMode() == GameMode.CREATIVE)) {
         		if (sPlayer.getItemInHand().getAmount() > 1) {        			
         			itemToConsume.setAmount(itemToConsume.getAmount()-1);       			
