@@ -71,7 +71,14 @@ public class CustomListener implements Listener {
 			SpoutItemStack stack = new SpoutItemStack(player.getItemInHand());
 			
 			// Check for ItemDropRequired
-			Block block = ((SpoutCraftBlock) event.getBlock()).getBlockType();
+			Object block = null;		 
+			 try {
+				 block = ((SpoutCraftBlock) event.getBlock()).getBlockType();	
+				} catch (Exception exception) {
+					// Catch Chunk Regen Exception and ignore it
+					return;
+				}
+			
 			if (block instanceof GenericCustomBlock) {
 				GenericCustomBlock customBlock = (GenericCustomBlock) block;
 				Object material = this.plugin.getSmpManager().getMaterial(customBlock.getCustomId());
