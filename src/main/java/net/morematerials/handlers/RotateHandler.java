@@ -22,6 +22,7 @@ public class RotateHandler extends GenericHandler {
 	public void shutdown() {
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onActivation(Event event, Map<String, Object> config) {
 		// Setup Player Environment

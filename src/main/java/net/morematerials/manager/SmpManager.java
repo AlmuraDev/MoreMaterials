@@ -257,6 +257,56 @@ public class SmpManager {
 		return null;
 	}
 
+	public Material getMaterial(String matName) {
+			
+		// First check for matching blocks.
+		MMCustomBlock currentBlock;
+		for (Integer i = 0; i < this.blocksList.size(); i++) {
+			currentBlock = this.blocksList.get(i);
+			if (currentBlock.getMaterialName().equals(matName)) {
+				return currentBlock;
+			}
+		}
+		
+		// Then also check for matching items.
+		MMCustomItem currentItem;
+		for (Integer i = 0; i < this.itemsList.size(); i++) {
+			currentItem = this.itemsList.get(i);
+			if (currentItem.getMaterialName().equals(matName)) {
+				return currentItem;
+			}
+		}
+		
+		// Then also check for matching tools.
+		MMCustomTool currentTool;
+		for (Integer i = 0; i < this.toolsList.size(); i++) {
+			currentTool = this.toolsList.get(i);
+			if (currentTool.getMaterialName().equals(matName)) {
+				return currentTool;
+			}
+		}
+		
+		// Then also check for matching armor.
+		MMCustomArmor currentArmor;
+		for (Integer i = 0; i < this.armorList.size(); i++) {
+			currentArmor = this.armorList.get(i);
+			if (currentArmor.getMaterialName().equals(matName)) {
+				return currentArmor;
+			}
+		}
+
+		// Then also check for matching armor.
+		MMCustomFood currentFood;
+		for (Integer i = 0; i < this.foodList.size(); i++) {
+			currentFood = this.foodList.get(i);
+			if (currentFood.getMaterialName().equals(matName)) {
+				return currentFood;
+			}
+		}
+	
+		return null;
+	}
+	
 	public Material getMaterial(Integer materialId) {
 		// First check for matching blocks.
 		MMCustomBlock currentBlock;

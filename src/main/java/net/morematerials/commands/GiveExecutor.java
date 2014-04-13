@@ -72,6 +72,9 @@ public class GiveExecutor implements CommandExecutor {
 			if (matString.length > 1) {
 				material = this.plugin.getSmpManager().getMaterial(matString[0], matString[1]);
 			}
+			if (material == null) {
+				material = this.plugin.getSmpManager().getMaterial(matString[0]);
+			}
 		}
 		
 		if (material == null) {
