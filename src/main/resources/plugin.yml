@@ -26,48 +26,64 @@ permissions:
     children:
       morematerials.admin: true
       morematerials.craft: true
-      morematerials.handlers.consume: true
+      morematerials.handlers.bomb: true
+      morematerials.handlers.chest: true
+      morematerials.handlers.chunkregen: true
+      morematerials.handlers.coin: true
+      morematerials.handlers.consume: true      
       morematerials.handlers.fireball: true
+      morematerials.handlers.heal: true
+      morematerials.handlers.information: true
+      morematerials.handlers.itemreturn: true
       morematerials.handlers.poison: true
       morematerials.handlers.lightning: true
-      morematerials.handlers.heal: true
-      morematerials.handlers.bomb: true
       morematerials.handlers.playsound: true
       morematerials.handlers.rotate: true
-      morematerials.handlers.itemreturn: true
+  morematerials.craft:
+    description: Allows crafting of MoreMaterials blocks and items.
+    default: op
   morematerials.admin:
     description: Access to commands.
     default: op
-  morematerials.handlers.consume:
-    description: allows user to utilize built-in consume handler.
+  morematerials.handlers.bomb:
+    description: allows user to utilize built-in bomb handler.
     default: op
-  morematerials.handlers.give:
+  morematerials.handlers.chest:
+    description: allows user to utilize built-in chest handler.
+    default: op
+  morematerials.handlers.chunkregen:
+    description: allows user to utilize built-in chunkregen handler.
+    default: op
+  morematerials.handlers.coin:
+    description: allows user to utilize built-in coin handler.
+    default: op
+  morematerials.handlers.consume:
     description: allows user to utilize built-in consume handler.
     default: op
   morematerials.handlers.fireball:
     description: allows user to utilize built-in fireball handler.
     default: op
+  morematerials.handlers.heal:
+    description: allows user to utilize built-in heal handler.
+    default: op
+  morematerials.handlers.give:
+    description: allows user to utilize built-in consume handler.
+    default: op
+  morematerials.handlers.information:
+    description: allows user to utilize built-in heal handler.
+    default: op
+  morematerials.handlers.itemreturn:
+    description: allows user to utilize built-in heal handler.
+    default: op  
   morematerials.handlers.poison:
     description: allows user to utilize built-in poison handler.
     default: op
   morematerials.handlers.lightning:
     description: allows user to utilize built-in lightning handler.
     default: op
-  morematerials.handlers.heal:
-    description: allows user to utilize built-in heal handler.
-    default: op
-  morematerials.handlers.bomb:
-    description: allows user to utilize built-in bomb handler.
-    default: op
   morematerials.handlers.playsound:
     description: allows user to utilize built-in play sound handler.
     default: op
   morematerials.handlers.rotate:
     description: allows user to utilize built-in play sound handler.
-    default: op
-  morematerials.handlers.itemreturn:
-    description: allows user to utilize built-in item return handler.
-    default: op
-  morematerials.craft:
-    description: Allows crafting of MoreMaterials blocks and items.
-    default: true
+    default: op  
