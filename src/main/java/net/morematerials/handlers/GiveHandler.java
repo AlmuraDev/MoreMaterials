@@ -97,7 +97,7 @@ public class GiveHandler extends GenericHandler {
 
 		Block block  = (Block) sPlayer.getLocation().getBlock(); 
 
-		if (itemName != null) {
+		if (!itemName.isEmpty()) {
 			final org.getspout.spoutapi.material.Material customMaterial = MaterialData.getCustomItem(itemName);
 			if (customMaterial == null) {
 				final Material material = Material.getMaterial(itemName.toUpperCase());

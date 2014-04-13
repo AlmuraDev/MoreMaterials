@@ -1,5 +1,5 @@
-name: MoreMaterials
-version: 2.4.3
+name: ${project.name}
+version: ${project.version}
 description: Custom blocks and items!
 authors: [AlmuraDev, IceReaper, Znickq]
 website: http://www.morematerials.net
