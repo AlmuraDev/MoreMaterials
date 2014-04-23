@@ -11,5 +11,7 @@ import org.bukkit.World;
 public interface GeneratorObject {
 	public String getIdentifier();
 
-	public void populate(World world, Chunk chunk, int x, int y, int z, Random random);
+	public void populate(World world, int chunkX, int chunkY, Random random);
+
+	public void populate(World world, Chunk chunk, Random random);
 }

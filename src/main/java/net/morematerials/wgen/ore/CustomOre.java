@@ -62,15 +62,20 @@ public class CustomOre implements GeneratorObject {
 	}
 
 	@Override
-	public void populate(World world, Chunk chunk, int x, int y, int z, Random random) {
+	public void populate(World world, int chunkX, int chunkY, Random random) {
+		populate(world, world.getChunkAt(chunkX, chunkY), random);
+	}
+
+	@Override
+	public void populate(World world, Chunk chunk, Random random) {
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (int i = 0; i < veinsPerChunk; i++) {
-			final int xx = random.nextInt(16);
-			final int yy = random.nextInt(maxHeight - minHeight) + minHeight;
-			final int zz = random.nextInt(16);
+			final int x = random.nextInt(16);
+			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
+			final int z = random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
 
-			placeOre(world, chunk, xx, yy, zz, veinSize, random);
+			placeOre(world, chunk, x, y, z, veinSize, random);
 		}
 	}
 
