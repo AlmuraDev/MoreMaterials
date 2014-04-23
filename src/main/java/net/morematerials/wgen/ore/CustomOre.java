@@ -62,8 +62,8 @@ public class CustomOre implements GeneratorObject {
 	}
 
 	@Override
-	public void populate(World world, int chunkX, int chunkY, Random random) {
-		populate(world, world.getChunkAt(chunkX, chunkY), random);
+	public void populate(World world, int chunkX, int chunkZ, Random random) {
+		populate(world, world.getChunkAt(chunkX, chunkZ), random);
 	}
 
 	@Override
