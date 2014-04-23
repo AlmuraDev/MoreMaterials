@@ -93,14 +93,15 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				}
 				//ATTRIBUTES
 				final ConfigurationSection blockSourceSection = reader.getConfigurationSection(nameRaw);
-				final String name = blockSourceSection.getString("identifier");
+				final String[] split = initialBlockSource.split(".");
+				final String identifier = split[split.length - 1];
 				final int minHeight = blockSourceSection.getInt("min-height", 1);
 				final int maxHeight = blockSourceSection.getInt("max-height", 1);
 				final int minVeinSize = blockSourceSection.getInt("min-vein-size", 1);
 				final int maxVeinSize = blockSourceSection.getInt("max-vein-size", 1);
 				final int minVeinsPerChunk = blockSourceSection.getInt("min-veins-per-chunk", 1);
 				final int maxVeinsPerChunk = blockSourceSection.getInt("max-veins-per-chunk", 1);
-				objects.add(new CustomOre(name, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk));
+				objects.add(new CustomOre(identifier, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk));
 			}
 		}
 		return objects;
