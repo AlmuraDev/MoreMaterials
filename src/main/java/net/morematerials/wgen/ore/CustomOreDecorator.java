@@ -68,6 +68,11 @@ public class CustomOreDecorator extends Decorator {
 		return ore;
 	}
 
+	public Decorator replace(Material... materials) {
+		replaceables.addAll(Arrays.asList(materials));
+		return this;
+	}
+
 	public Collection<Material> getReplaceables() {
 		return Collections.unmodifiableCollection(replaceables);
 	}
