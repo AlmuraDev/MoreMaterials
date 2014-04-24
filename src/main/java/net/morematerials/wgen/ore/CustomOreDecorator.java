@@ -1,8 +1,11 @@
 package net.morematerials.wgen.ore;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
-import net.morematerials.wgen.GeneratorObject;
+import net.morematerials.wgen.Decorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -10,16 +13,26 @@ import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.block.SpoutChunk;
 import org.getspout.spoutapi.material.CustomBlock;
 
-public class CustomOre implements GeneratorObject {
-	private final String identifier;
+/**
+ * Decorates notchian {@link org.bukkit.block.Block}s with {@link org.getspout.spoutapi.material.CustomBlock}s.
+ *
+ * This class mimics the behavior of ore veins found in caves.
+ */
+public class CustomOreDecorator extends Decorator {
 	private final CustomBlock ore;
+	private final Collection<Material> replaceables;
 	private final int minHeight, maxHeight;
 	private final int minVeinSize, maxVeinSize;
 	private final int minVeinsPerChunk, maxVeinsPerChunk;
 
-	public CustomOre(String identifier, CustomBlock ore, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
-		this.identifier = identifier;
+	public CustomOreDecorator(String identifier, CustomBlock ore, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
+		this(identifier, ore, Arrays.asList(Material.STONE), minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
+	}
+
+	public CustomOreDecorator(String identifier, CustomBlock ore, Collection<Material> replaceables, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
+		super(identifier);
 		this.ore = ore;
+		this.replaceables = replaceables;
 		this.minHeight = minHeight;
 		this.maxHeight = maxHeight;
 		this.minVeinSize = minVeinSize;
@@ -30,6 +43,10 @@ public class CustomOre implements GeneratorObject {
 
 	public CustomBlock getOre() {
 		return ore;
+	}
+
+	public Collection<Material> getReplaceables() {
+		return Collections.unmodifiableCollection(replaceables);
 	}
 
 	public int getMinHeight() {
@@ -57,17 +74,7 @@ public class CustomOre implements GeneratorObject {
 	}
 
 	@Override
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	@Override
-	public void populate(World world, int chunkX, int chunkZ, Random random) {
-		populate(world, world.getChunkAt(chunkX, chunkZ), random);
-	}
-
-	@Override
-	public void populate(World world, Chunk chunk, Random random) {
+	public void decorate(World world, Chunk chunk, Random random) {
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (int i = 0; i < veinsPerChunk; i++) {
 			final int x = random.nextInt(16);
@@ -116,7 +123,7 @@ public class CustomOre implements GeneratorObject {
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
 									final SpoutBlock block = (SpoutBlock) world.getBlockAt(xx, yy, zz);
-									if (block.getType().equals(Material.STONE) && block.getCustomBlock() != null) {
+									if (replaceables.contains(block.getType()) && block.getCustomBlock() != null) {
 										SpoutChunk spoutChunk = (SpoutChunk) chunk;
 										spoutChunk.setCustomBlock(xx, yy, zz, ore);
 									}

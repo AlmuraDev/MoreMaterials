@@ -2,7 +2,6 @@ package net.morematerials.wgen;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,40 +12,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.morematerials.MoreMaterials;
-import net.morematerials.wgen.ore.CustomOre;
+import net.morematerials.wgen.ore.CustomOreDecorator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
 
 /**
- * Creates {@link net.morematerials.wgen.GeneratorObject}s from a yaml configuration file
+ * Creates {@link Decorator}s from a yaml configuration file
  */
-public class GeneratorReader {
+public class DecoratorLoader {
 	private final MoreMaterials plugin;
-	private File dir;
+	private File folderSrc;
 
-	public GeneratorReader(MoreMaterials plugin) {
+	public DecoratorLoader(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
 
-	public void onEnable(File dir) {
-		this.dir = dir;
+	public void onEnable(File folderSrc) {
+		this.folderSrc = folderSrc;
 		try {
-			Files.createDirectories(dir.toPath());
-			Files.createFile(Paths.get(dir.getPath() + File.separator + "objects.yml"));
-		} catch (FileAlreadyExistsException ignore) {
+			Files.createDirectories(folderSrc.toPath());
+			plugin.saveResource("objects.yml", false);
 		} catch (IOException e) {
-			plugin.getLogger().severe("Could not create " + dir.getPath() + "! Disabling...");
+			plugin.getLogger().severe("Could not create " + folderSrc.getPath() + "! Disabling...");
 			plugin.getServer().getPluginManager().disablePlugin(plugin);
 		}
 	}
 
 	public void load() {
 		try {
-			Files.walkFileTree(Paths.get(dir.getPath() + File.separator + "objects.yml"), new FileLoadingVisitor(plugin));
+			Files.walkFileTree(Paths.get(folderSrc.getPath() + File.separator + "objects.yml"), new FileLoadingVisitor(plugin));
 		} catch (IOException ignore) {
-			plugin.getLogger().severe("Encountered a major issue while attempting to find " + dir.toPath() + ". Disabling...");
+			plugin.getLogger().severe("Encountered a major issue while attempting to find objects.yml in " + folderSrc.toPath() + ". Disabling...");
 			plugin.getServer().getPluginManager().disablePlugin(plugin);
 		}
 	}
@@ -66,18 +64,18 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 
 	@Override
 	public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
-		final List<GeneratorObject> toInject = createObjects(path.toFile());
+		final List<Decorator> toInject = createObjects(path.toFile());
 		if (toInject == null) {
 			plugin.getLogger().severe("Could not load: " + path.getFileName() + ".");
 			return FileVisitResult.TERMINATE;
 		}
-		//TODO Add to Generator object registry
+		plugin.getDecoratorRegistry().addAll(toInject);
 		return FileVisitResult.TERMINATE;
 	}
 
-	private List<GeneratorObject> createObjects(File yml) {
+	private List<Decorator> createObjects(File yml) {
 		final YamlConfiguration reader = YamlConfiguration.loadConfiguration(yml);
-		final List<GeneratorObject> objects = new ArrayList<>();
+		final List<Decorator> objects = new ArrayList<>();
 
 		//We'll do ores first
 		final ConfigurationSection oresSection = reader.getConfigurationSection("ores");
@@ -101,7 +99,7 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				final int maxVeinSize = blockSourceSection.getInt("max-vein-size", 1);
 				final int minVeinsPerChunk = blockSourceSection.getInt("min-veins-per-chunk", 1);
 				final int maxVeinsPerChunk = blockSourceSection.getInt("max-veins-per-chunk", 1);
-				objects.add(new CustomOre(identifier, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk));
+				objects.add(new CustomOreDecorator(identifier, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk));
 			}
 		}
 		return objects;

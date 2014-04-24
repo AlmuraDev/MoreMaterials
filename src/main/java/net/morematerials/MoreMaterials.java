@@ -57,7 +57,9 @@ import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
-
+import net.morematerials.wgen.Decorator;
+import net.morematerials.wgen.DecoratorLoader;
+import net.morematerials.wgen.DecoratorRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -68,6 +70,7 @@ public class MoreMaterials extends JavaPlugin {
 	private AssetManager assetManager;
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
+	private DecoratorRegistry decoratorRegistry;
 
 	@Override
 	public void onEnable() {
@@ -81,7 +84,10 @@ public class MoreMaterials extends JavaPlugin {
 				file.mkdirs();
 			}
 		}
-
+		decoratorRegistry = new DecoratorRegistry();
+		final DecoratorLoader loader = new DecoratorLoader(this);
+		loader.onEnable(getDataFolder());
+		loader.load();
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
 		this.assetManager = new AssetManager(this);
@@ -163,6 +169,10 @@ public class MoreMaterials extends JavaPlugin {
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
 		this.getCommand("mmdebug").setExecutor(new DebugExecutor(this));
 		this.getCommand("mmgive").setExecutor(new GiveExecutor(this));
+	}
+
+	public DecoratorRegistry getDecoratorRegistry() {
+		return decoratorRegistry;
 	}
 
 	public HandlerManager getHandlerManager() {
