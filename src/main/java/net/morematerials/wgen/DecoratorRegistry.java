@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Stores all {@link Decorator}s created on the server.
  */
 public class DecoratorRegistry {
-	private final List<Decorator> decorators = new ArrayList<>();
+	private final List<Decorator> decorators = new LinkedList<>();
 
 	public Decorator add(Decorator decorator) {
 		if (decorator == null) {
