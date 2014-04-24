@@ -7,7 +7,7 @@
 	<!-- Project information -->
 	<groupId>net.morematerials</groupId>
 	<artifactId>morematerials</artifactId>
-	<version>2.4.5-SNAPSHOT</version>
+	<version>2.4.5</version>
 	<name>MoreMaterials</name>
 	<url>http://www.almuradev.com</url>
 
