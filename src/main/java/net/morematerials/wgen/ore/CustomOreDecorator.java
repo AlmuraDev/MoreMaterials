@@ -114,6 +114,12 @@ public class CustomOreDecorator extends Decorator {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "CustomOreDecorator {identifier= " + getIdentifier() + ", ore= " + ore.getFullName() + ", minHeight= " + minHeight + ", maxHeight= " + maxHeight + ", minVeinSize= " + minVeinSize +
+				" maxVeinSize= " + maxVeinSize + ", minVeinsPerChunk= " + minVeinsPerChunk + ", maxVeinsPerChunk= " + maxVeinsPerChunk + "}";
+	}
+
 	private void placeOre(World world, Chunk chunk, int x, int y, int z, int veinSize, Random random) {
 		final double angle = random.nextDouble() * Math.PI;
 		final double x1 = ((x + 8) + Math.sin(angle) * veinSize / 8);

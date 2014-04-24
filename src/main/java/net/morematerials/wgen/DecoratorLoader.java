@@ -58,8 +58,7 @@ public class DecoratorLoader {
 			Files.createDirectories(folderSrc.toPath());
 			plugin.saveResource("objects.yml", false);
 		} catch (IOException e) {
-			plugin.getLogger().severe("Could not create " + folderSrc.getPath() + "! Disabling...");
-			//plugin.getServer().getPluginManager().disablePlugin(plugin);
+			plugin.getLogger().severe("Could not create " + folderSrc.getPath() + "!");
 		}
 	}
 
@@ -67,8 +66,7 @@ public class DecoratorLoader {
 		try {
 			Files.walkFileTree(Paths.get(folderSrc.getPath() + File.separator + "objects.yml"), new FileLoadingVisitor(plugin));
 		} catch (IOException ignore) {
-			plugin.getLogger().severe("Encountered a major issue while attempting to find objects.yml in " + folderSrc.toPath() + ". Disabling...");
-			//plugin.getServer().getPluginManager().disablePlugin(plugin);
+			plugin.getLogger().severe("Encountered a major issue while attempting to find objects.yml in " + folderSrc.toPath() + "!");
 		}
 	}
 }
@@ -87,12 +85,7 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 
 	@Override
 	public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
-		final List<Decorator> toInject = createObjects(path.toFile());
-		if (toInject == null) {
-			plugin.getLogger().severe("Could not load: " + path.getFileName() + ".");
-			return FileVisitResult.TERMINATE;
-		}
-		plugin.getDecoratorRegistry().addAll(toInject);
+		plugin.getDecoratorRegistry().addAll(createObjects(path.toFile()));
 		return FileVisitResult.TERMINATE;
 	}
 
@@ -122,7 +115,9 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				final int maxVeinSize = blockSourceSection.getInt("max-vein-size", 1);
 				final int minVeinsPerChunk = blockSourceSection.getInt("min-veins-per-chunk", 1);
 				final int maxVeinsPerChunk = blockSourceSection.getInt("max-veins-per-chunk", 1);
-				objects.add(new CustomOreDecorator(identifier, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk));
+				final CustomOreDecorator decorator = new CustomOreDecorator(identifier, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
+				objects.add(decorator);
+				plugin.getLogger().info("Loaded Decorator [" + decorator + "]");
 			}
 		}
 		return objects;
