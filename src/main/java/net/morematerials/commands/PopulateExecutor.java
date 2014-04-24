@@ -35,8 +35,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.getspout.spoutapi.inventory.SpoutItemStack;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class PopulateExecutor implements CommandExecutor {
 	
