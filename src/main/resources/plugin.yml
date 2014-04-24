@@ -5,7 +5,7 @@ authors: [AlmuraDev, IceReaper, Znickq]
 website: http://www.morematerials.net
 
 depend: [Spout]
-main: net.morematerials.MoreMaterials
+main: ${mainClass}
 
 commands:
   mm:
