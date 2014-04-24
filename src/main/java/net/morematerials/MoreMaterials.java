@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
+import net.morematerials.commands.PopulateExecutor;
 import net.morematerials.handlers.BombHandler;
 import net.morematerials.handlers.ChestHandler;
 import net.morematerials.handlers.ChunkRegenerateHandler;
@@ -57,6 +58,7 @@ import net.morematerials.metrics.Metrics.Plotter;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -81,10 +83,7 @@ public class MoreMaterials extends JavaPlugin {
 				file.mkdirs();
 			}
 		}
-		decoratorRegistry = new DecoratorRegistry();
-		final DecoratorLoader loader = new DecoratorLoader(this);
-		loader.onEnable(getDataFolder());
-		loader.load();
+		
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
 		this.assetManager = new AssetManager(this);
@@ -162,8 +161,15 @@ public class MoreMaterials extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new CustomListener(this), this);
 
+		// Initialize Decorator
+		decoratorRegistry = new DecoratorRegistry();
+		final DecoratorLoader loader = new DecoratorLoader(this);
+		loader.onEnable(getDataFolder());
+		loader.load();
+		
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
+		this.getCommand("mmpopulate").setExecutor(new PopulateExecutor(this));
 		this.getCommand("mmdebug").setExecutor(new DebugExecutor(this));
 		this.getCommand("mmgive").setExecutor(new GiveExecutor(this));
 	}

@@ -1,8 +1,8 @@
 ores:
-    ore\name\in\pack:
-        min-height: 1
-        max-height: 1
-        min-vein-size: 1
-        max-vein-size: 1
+    MoreMaterials\ingots\ore_c_bronze:
+        min-height: 5
+        max-height: 60
+        min-vein-size: 4
+        max-vein-size: 15
         min-veins-per-chunk: 1
-        max-veins-per-chunk: 1
+        max-veins-per-chunk: 3

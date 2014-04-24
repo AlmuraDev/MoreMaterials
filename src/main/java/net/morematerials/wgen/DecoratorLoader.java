@@ -107,7 +107,7 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				//BLOCK SOURCE
 				final String initialRawBlockSource = replacePeriodWithBackslash(nameRaw);
 				final String initialBlockSource = replacePeriodWithBackslash(initialRawBlockSource);
-				final CustomBlock ore = MaterialData.getCustomBlock(initialBlockSource);
+				final CustomBlock ore = MaterialData.getCustomBlock(initialBlockSource);			
 				if (ore == null) {
 					plugin.getLogger().warning("The block source [" + initialBlockSource + "] is not a SpoutPlugin Custom Block. Skipping...");
 					continue;
