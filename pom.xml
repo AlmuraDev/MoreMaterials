@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<!-- Project information -->
-	<groupId>com.almuradev</groupId>
+	<groupId>net.morematerials</groupId>
 	<artifactId>morematerials</artifactId>
 	<version>2.4.5-SNAPSHOT</version>
 	<name>MoreMaterials</name>
