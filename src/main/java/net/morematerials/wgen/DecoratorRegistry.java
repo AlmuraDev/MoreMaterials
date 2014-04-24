@@ -49,7 +49,7 @@ public class DecoratorRegistry {
 			throw new IllegalArgumentException("Cannot add a Collection of null instances of a Decorator to the registry!");
 		}
 
-		decorators.addAll(decorators);
+		this.decorators.addAll(decorators);
 		return Collections.unmodifiableCollection(decorators);
 	}
 
