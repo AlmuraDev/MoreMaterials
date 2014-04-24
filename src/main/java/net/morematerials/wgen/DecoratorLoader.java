@@ -59,7 +59,7 @@ public class DecoratorLoader {
 			plugin.saveResource("objects.yml", false);
 		} catch (IOException e) {
 			plugin.getLogger().severe("Could not create " + folderSrc.getPath() + "! Disabling...");
-			plugin.getServer().getPluginManager().disablePlugin(plugin);
+			//plugin.getServer().getPluginManager().disablePlugin(plugin);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class DecoratorLoader {
 			Files.walkFileTree(Paths.get(folderSrc.getPath() + File.separator + "objects.yml"), new FileLoadingVisitor(plugin));
 		} catch (IOException ignore) {
 			plugin.getLogger().severe("Encountered a major issue while attempting to find objects.yml in " + folderSrc.toPath() + ". Disabling...");
-			plugin.getServer().getPluginManager().disablePlugin(plugin);
+			//plugin.getServer().getPluginManager().disablePlugin(plugin);
 		}
 	}
 }
@@ -113,9 +113,9 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 					continue;
 				}
 				//ATTRIBUTES
-				final ConfigurationSection blockSourceSection = reader.getConfigurationSection(nameRaw);
-				final String[] split = initialBlockSource.split(".");
-				final String identifier = split[split.length - 1];
+				final ConfigurationSection blockSourceSection = oresSection.getConfigurationSection(nameRaw);
+				final String[] split = initialBlockSource.split("\\.");				
+				final String identifier = split[split.length - 1];				
 				final int minHeight = blockSourceSection.getInt("min-height", 1);
 				final int maxHeight = blockSourceSection.getInt("max-height", 1);
 				final int minVeinSize = blockSourceSection.getInt("min-vein-size", 1);
