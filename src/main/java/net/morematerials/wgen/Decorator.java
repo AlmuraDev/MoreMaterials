@@ -42,6 +42,16 @@ public abstract class Decorator {
 		return identifier;
 	}
 
+	/**
+	 * Returns whether the (@link org.bukkit.Chunk) at the coordinates provided can be decorated.
+	 *
+	 * @param world The world these coordinates belong in
+	 * @param x The chunk coordinate on the x axis
+	 * @param z The chunk coordinate on the z axis
+	 * @return true if can be decorated, false if not
+	 */
+	public abstract boolean canDecorate(World world, int x, int z);
+
 	public void decorate(World world, int chunkX, int chunkZ, Random random) {
 		decorate(world, world.getChunkAt(chunkX, chunkZ), random);
 	}

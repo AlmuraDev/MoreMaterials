@@ -24,19 +24,18 @@
 package net.morematerials.wgen.ore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
+import com.flowpowered.math.TrigMath;
+import com.flowpowered.math.vector.Vector2f;
 import net.morematerials.wgen.Decorator;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.getspout.spoutapi.block.SpoutBlock;
-import org.getspout.spoutapi.block.SpoutChunk;
 import org.getspout.spoutapi.material.CustomBlock;
 
 /**
@@ -72,9 +71,7 @@ public class CustomOreDecorator extends Decorator {
 	}
 
 	public Decorator replace(Material... materials) {
-		for (Material material : materials) {
-			replaceables.add(material);
-		}
+		Collections.addAll(replaceables, materials);
 		return this;
 	}
 
@@ -107,16 +104,22 @@ public class CustomOreDecorator extends Decorator {
 	}
 
 	@Override
-	public void decorate(World world, Chunk chunk, Random random) {
-		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
-		for (int i = 0; i < veinsPerChunk; i++) {			
-			final int x = random.nextInt(16);
-			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
-			final int z = random.nextInt(16);
-			
-			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
+	public boolean canDecorate(World world, int x, int z) {
+		return true;
+	}
 
-			placeOre(world, chunk, x, y, z, veinSize, random);
+	@Override
+	public void decorate(World world, Chunk chunk, Random random) {
+		if (!canDecorate(world, chunk.getX(), chunk.getZ())) {
+			return;
+		}
+		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
+		for (byte i = 0; i < veinsPerChunk; i++) {
+			final int x = (chunk.getX() << 4) + random.nextInt(1 << 4);
+			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
+			final int z = (chunk.getZ() << 4) + random.nextInt(1 << 4);
+			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
+			placeOre(world, x, y, z, veinSize, random);
 		}
 	}
 
@@ -126,20 +129,21 @@ public class CustomOreDecorator extends Decorator {
 				" maxVeinSize= " + maxVeinSize + ", minVeinsPerChunk= " + minVeinsPerChunk + ", maxVeinsPerChunk= " + maxVeinsPerChunk + "}";
 	}
 
-	private void placeOre(World world, Chunk chunk, int x, int y, int z, int veinSize, Random random) {
-		final double angle = random.nextDouble() * Math.PI;
-		final double x1 = ((x + 8) + Math.sin(angle) * veinSize / 8);
-		final double x2 = ((y + 8) - Math.sin(angle) * veinSize / 8);
-		final double z1 = ((z + 8) + Math.cos(angle) * veinSize / 8);
-		final double z2 = ((z + 8) - Math.cos(angle) * veinSize / 8);
-		final double y1 = (y + random.nextInt(3) + 2);
-		final double y2 = (y + random.nextInt(3) + 2);
+	private void placeOre(World world, int originX, int originY, int originZ, int veinSize, Random random) {
+		final float angle = random.nextFloat() * (float) Math.PI;
+		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
+		final float x1 = ((originX + 8) + offset.getX());
+		final float x2 = ((originX + 8) - offset.getX());
+		final float z1 = ((originZ + 8) + offset.getY());
+		final float z2 = ((originZ + 8) - offset.getY());
+		final float y1 = (originY + random.nextInt(3) + 2);
+		final float y2 = (originY + random.nextInt(3) + 2);
 
-		for (int i = 0; i < veinSize; i++) {
-			final double seedX = x1 + (x2 - x1) * i / veinSize;
-			final double seedY = y1 + (y2 - y1) * i / veinSize;
-			final double seedZ = z1 + (z2 - z1) * i / veinSize;
-			final double size = ((Math.sin(i * Math.PI / veinSize) + 1) * random.nextDouble() * veinSize / 16 + 1) / 2;
+		for (int count = 0; count <= veinSize; count++) {
+			final float seedX = x1 + (x2 - x1) * count / veinSize;
+			final float seedY = y1 + (y2 - y1) * count / veinSize;
+			final float seedZ = z1 + (z2 - z1) * count / veinSize;
+			final float size = ((TrigMath.sin(count * (float) Math.PI / veinSize) + 1) * random.nextFloat() * veinSize / 16 + 1) / 2;
 
 			final int startX = (int) (seedX - size);
 			final int startY = (int) (seedY - size);
@@ -148,25 +152,22 @@ public class CustomOreDecorator extends Decorator {
 			final int endY = (int) (seedY + size);
 			final int endZ = (int) (seedZ + size);
 
-			for (int xx = startX; xx <= endX; xx++) {
-				double sizeX = (xx + 0.5 - seedX) / size;
+			for (int x = startX; x <= endX; x++) {
+				float sizeX = (x + 0.5f - seedX) / size;
 				sizeX *= sizeX;
 
 				if (sizeX < 1) {
-					for (int yy = startY; yy <= endY; yy++) {
-						double sizeY = (yy + 0.5 - seedY) / size;
+					for (int y = startY; y <= endY; y++) {
+						float sizeY = (y + 0.5f - seedY) / size;
 						sizeY *= sizeY;
 
 						if (sizeX + sizeY < 1) {
-							for (int zz = startZ; zz <= endZ; zz++) {
-								double sizeZ = (zz + 0.5 - seedZ) / size;
+							for (int z = startZ; z <= endZ; z++) {
+								float sizeZ = (z + 0.5f - seedZ) / size;
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
-									final SpoutBlock block = (SpoutBlock) world.getBlockAt(xx, yy, zz);
+									final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
 									if (replaceables.contains(block.getType()) && block.getCustomBlock() == null) {
-										//SpoutChunk spoutChunk = (SpoutChunk) chunk;
-										//spoutChunk.setCustomBlock(xx, yy, zz, ore);
-										System.out.println("Populate at: x:" + xx + " y: " + yy + " z: " + zz);
 										block.setCustomBlock(ore);
 									}
 								}
