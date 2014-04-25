@@ -109,7 +109,7 @@
 	<!-- Build configuration -->
 	<build>
 		<defaultGoal>clean package</defaultGoal>
-		<finalName>${name}-${version}</finalName>
+		<finalName>${name}-${project.version}</finalName>
 
 		<!-- Resources -->
 		<resources>
