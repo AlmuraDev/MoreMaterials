@@ -46,6 +46,8 @@ import org.getspout.spoutapi.material.CustomBlock;
  */
 public class CustomOreDecorator extends Decorator {
 	private final CustomBlock ore;
+	public int generatedOre = 0;
+	public int chunkCount = 0;
 	private final ArrayList<Material> replaceables;
 	private final int minHeight, maxHeight;
 	private final int minVeinSize, maxVeinSize;
@@ -103,7 +105,7 @@ public class CustomOreDecorator extends Decorator {
 	public int getMaxVeinsPerChunk() {
 		return maxVeinsPerChunk;
 	}
-
+	
 	@Override
 	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
 		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);		
@@ -111,7 +113,7 @@ public class CustomOreDecorator extends Decorator {
 	}
 
 	@Override
-	public void decorate(World world, Chunk chunk, Random random) {
+	public void decorate(World world, Chunk chunk, Random random) {		
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (byte i = 0; i < veinsPerChunk; i++) {
 			final int x = (chunk.getX() << 4) + random.nextInt(1 << 4);
@@ -119,7 +121,8 @@ public class CustomOreDecorator extends Decorator {
 			final int z = (chunk.getZ() << 4) + random.nextInt(1 << 4);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
 			placeOre(world, chunk, x, y, z, veinSize, random);
-		}
+			chunkCount++;
+		}		
 	}
 
 	@Override
@@ -129,6 +132,7 @@ public class CustomOreDecorator extends Decorator {
 	}
 
 	private void placeOre(World world, Chunk chunk, int originX, int originY, int originZ, int veinSize, Random random) {
+		
 		final float angle = random.nextFloat() * (float) Math.PI;
 		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
 		final float x1 = ((originX + 8) + offset.getX());
@@ -165,8 +169,9 @@ public class CustomOreDecorator extends Decorator {
 								float sizeZ = (z + 0.5f - seedZ) / size;
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
-									if (canDecorate(world, chunk, x, y, z)) {
-										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
+									if (canDecorate(world, chunk, x, y, z)) {										
+										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);										
+										generatedOre++;
 									}
 								}
 							}
@@ -174,6 +179,6 @@ public class CustomOreDecorator extends Decorator {
 					}
 				}
 			}
-		}
-	}
+		}		
+	}	
 }

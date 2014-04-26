@@ -75,13 +75,15 @@ public class PopulateExecutor implements CommandExecutor {
 		int chunkX = myLocation.getChunk().getX();
 		int chunkZ = myLocation.getChunk().getZ();
 		int radius = Integer.parseInt(args[0]);	
-		// For Loop for Range
 		
-		Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);
-		if (myOre == null) {
-			sender.sendMessage("Debug 1: myOre is null");
-		}
+		
+		// For Loop for Range		
+		Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
 		if (myOre != null && myOre instanceof CustomOreDecorator) {
+			// Tracking
+			((CustomOreDecorator)myOre).chunkCount = 0;
+			((CustomOreDecorator)myOre).generatedOre = 0;
+
 			//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 			// Set replacement ore type.
 			((CustomOreDecorator)myOre).replace(Material.STONE);
@@ -92,10 +94,10 @@ public class PopulateExecutor implements CommandExecutor {
 					int offsetX = chunkX+x;
 					int offsetZ = chunkZ+j;
 					myOre.decorate(myLocation.getWorld(), offsetX, offsetZ, random);
-					sender.sendMessage("Populated at: x:" + offsetX + "z: " + offsetZ);
+					//sender.sendMessage("Player at: " + myLocation.getChunk().getX() + " / " + myLocation.getChunk().getZ() + " Populated at: x:" + offsetX + "z: " + offsetZ);
 				}
 			}			
-			
+			sender.sendMessage("Generated: " + ((CustomOreDecorator)myOre).generatedOre + " of: " + args[1] + " within: " + ((CustomOreDecorator)myOre).chunkCount + " chunks.");
 		} else {
 			sender.sendMessage("The specified ore could not be located within the ore decorator");
 			sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
