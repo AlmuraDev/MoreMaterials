@@ -36,6 +36,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.getspout.spoutapi.block.SpoutBlock;
+import org.getspout.spoutapi.block.SpoutChunk;
 import org.getspout.spoutapi.material.CustomBlock;
 
 /**
@@ -104,22 +105,20 @@ public class CustomOreDecorator extends Decorator {
 	}
 
 	@Override
-	public boolean canDecorate(World world, int x, int z) {
-		return true;
+	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
+		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);		
+		return replaceables.contains(block.getType()) && block.getCustomBlock() == null;
 	}
 
 	@Override
 	public void decorate(World world, Chunk chunk, Random random) {
-		if (!canDecorate(world, chunk.getX(), chunk.getZ())) {
-			return;
-		}
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (byte i = 0; i < veinsPerChunk; i++) {
 			final int x = (chunk.getX() << 4) + random.nextInt(1 << 4);
 			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
 			final int z = (chunk.getZ() << 4) + random.nextInt(1 << 4);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
-			placeOre(world, x, y, z, veinSize, random);
+			placeOre(world, chunk, x, y, z, veinSize, random);
 		}
 	}
 
@@ -129,7 +128,7 @@ public class CustomOreDecorator extends Decorator {
 				" maxVeinSize= " + maxVeinSize + ", minVeinsPerChunk= " + minVeinsPerChunk + ", maxVeinsPerChunk= " + maxVeinsPerChunk + "}";
 	}
 
-	private void placeOre(World world, int originX, int originY, int originZ, int veinSize, Random random) {
+	private void placeOre(World world, Chunk chunk, int originX, int originY, int originZ, int veinSize, Random random) {
 		final float angle = random.nextFloat() * (float) Math.PI;
 		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
 		final float x1 = ((originX + 8) + offset.getX());
@@ -166,9 +165,8 @@ public class CustomOreDecorator extends Decorator {
 								float sizeZ = (z + 0.5f - seedZ) / size;
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
-									final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-									if (replaceables.contains(block.getType()) && block.getCustomBlock() == null) {
-										block.setCustomBlock(ore);
+									if (canDecorate(world, chunk, x, y, z)) {
+										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
 									}
 								}
 							}
