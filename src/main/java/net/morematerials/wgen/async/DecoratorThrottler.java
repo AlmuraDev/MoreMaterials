@@ -42,6 +42,7 @@ public class DecoratorThrottler extends Thread {
 		timer = new Timer(tps);
 		this.world = world;
 		queue = new LinkedBlockingQueue<>();
+		setDaemon(true);
 	}
 
 	@Override
