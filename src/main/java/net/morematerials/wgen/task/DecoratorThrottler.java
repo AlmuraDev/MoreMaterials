@@ -48,8 +48,8 @@ public class DecoratorThrottler extends BukkitRunnable {
 			final DecorableEntry entry = queue.poll();
 			if (entry != null) {
 				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
-				entry.getDecorator().decorate(world, chunk, entry.getRandom());
-				System.out.println("Decorated: [" + chunk + "]");
+				entry.getDecorator().decorate(world, chunk, entry.getRandom());			
+				//System.out.println("Decorated: [" + chunk + "]");
 			}
 		}
 		steps = 0;
