@@ -91,7 +91,7 @@ public class PopulateExecutor implements CommandExecutor {
 
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
 			if (throttler == null) {
-				throttler = plugin.getDecorationThrotters().start(1, myLocation.getWorld());
+				throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
 			}
 
 			// Should replace the ore in the chunk you are standing in.
