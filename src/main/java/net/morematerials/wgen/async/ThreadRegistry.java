@@ -14,7 +14,8 @@ public class ThreadRegistry {
 
 	public DecoratorThrottler start(int tps, World world) {
 		final DecoratorThrottler throtter = new DecoratorThrottler(tps, world);
-		throttlers.put(world, throtter).start();
+		throttlers.put(world, throtter);
+		throtter.start();
 		return throtter;
 	}
 
