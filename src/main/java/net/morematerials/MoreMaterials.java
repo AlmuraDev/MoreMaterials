@@ -58,7 +58,7 @@ import net.morematerials.metrics.Metrics.Plotter;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
-
+import net.morematerials.wgen.async.ThreadRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -70,7 +70,13 @@ public class MoreMaterials extends JavaPlugin {
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
 	private DecoratorRegistry decoratorRegistry;
+	private ThreadRegistry asyncDecorationThrotters;
 
+	@Override
+	public void onDisable() {
+		asyncDecorationThrotters.stopAll(true);
+	}
+	
 	@Override
 	public void onEnable() {
 		// Try to create the required folders.
@@ -166,6 +172,7 @@ public class MoreMaterials extends JavaPlugin {
 		final DecoratorLoader loader = new DecoratorLoader(this);
 		loader.onEnable(getDataFolder());
 		loader.load();
+		asyncDecorationThrotters = new ThreadRegistry();
 		
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
@@ -176,6 +183,10 @@ public class MoreMaterials extends JavaPlugin {
 
 	public DecoratorRegistry getDecoratorRegistry() {
 		return decoratorRegistry;
+	}
+
+	public ThreadRegistry getAsyncDecorationThrotters() {
+		return asyncDecorationThrotters;
 	}
 
 	public HandlerManager getHandlerManager() {

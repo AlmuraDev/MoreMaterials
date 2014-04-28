@@ -108,7 +108,7 @@ public class CustomOreDecorator extends Decorator {
 	
 	@Override
 	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
-		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);		
+		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
 		return replaceables.contains(block.getType()) && block.getCustomBlock() == null;
 	}
 

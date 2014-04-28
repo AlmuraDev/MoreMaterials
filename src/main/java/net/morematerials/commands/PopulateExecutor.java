@@ -27,6 +27,7 @@ import java.util.Random;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
+import net.morematerials.wgen.async.DecoratorThrottler;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 
 import org.bukkit.Location;
@@ -87,14 +88,21 @@ public class PopulateExecutor implements CommandExecutor {
 			//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 			// Set replacement ore type.
 			((CustomOreDecorator)myOre).replace(Material.STONE);
-			
+
+			DecoratorThrottler throttler = plugin.getAsyncDecorationThrotters().get(myLocation.getWorld());
+			if (throttler == null) {
+				throttler = plugin.getAsyncDecorationThrotters().start(5, myLocation.getWorld());
+			}
+			if (!throttler.isAlive()) {
+				throttler.start();
+			}
+
 			// Should replace the ore in the chunk you are standing in.
 			for (int x = -radius; x < radius; x++) {
 				for (int j = -radius; j < radius; j++) {
 					int offsetX = chunkX+x;
 					int offsetZ = chunkZ+j;
-					myOre.decorate(myLocation.getWorld(), offsetX, offsetZ, random);
-					//sender.sendMessage("Player at: " + myLocation.getChunk().getX() + " / " + myLocation.getChunk().getZ() + " Populated at: x:" + offsetX + "z: " + offsetZ);
+					throttler.offer(myOre, myLocation.getWorld().getChunkAt(offsetX, offsetZ), random);
 				}
 			}			
 			sender.sendMessage("Generated: " + ((CustomOreDecorator)myOre).generatedOre + " of: " + args[1] + " within: " + ((CustomOreDecorator)myOre).chunkCount + " chunks.");
