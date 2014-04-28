@@ -35,6 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class DecoratorThrottler extends BukkitRunnable {
 	private final Queue<DecorableEntry> queue;
 	private final World world;
+	private int steps = 0;
 
 	public DecoratorThrottler(World world) {
 		this.world = world;
@@ -43,12 +44,15 @@ public class DecoratorThrottler extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		final DecorableEntry entry = queue.poll();
-		if (entry != null) {
-			final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
-			entry.getDecorator().decorate(world, chunk, entry.getRandom());
-			System.out.println("Decorated: [" + chunk + "]");
+		while (++steps <= 5) {
+			final DecorableEntry entry = queue.poll();
+			if (entry != null) {
+				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
+				entry.getDecorator().decorate(world, chunk, entry.getRandom());
+				System.out.println("Decorated: [" + chunk + "]");
+			}
 		}
+		steps = 0;
 	}
 
 	public void offer(Decorator decorator, int chunkX, int chunkZ, Random random) {
