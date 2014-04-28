@@ -47,6 +47,7 @@ public class DecoratorThrottler extends Thread {
 
 	@Override
 	public void run() {
+		timer.start();
 		running = true;
 		long lastTime = System.nanoTime() - (long) (1f / timer.getTps() * 1000000000), currentTime;
 		while (running) {
