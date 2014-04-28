@@ -27,7 +27,7 @@ import java.util.Random;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
-import net.morematerials.wgen.async.DecoratorThrottler;
+import net.morematerials.wgen.task.DecoratorThrottler;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 
 import org.bukkit.Location;
@@ -89,12 +89,9 @@ public class PopulateExecutor implements CommandExecutor {
 			// Set replacement ore type.
 			((CustomOreDecorator)myOre).replace(Material.STONE);
 
-			DecoratorThrottler throttler = plugin.getAsyncDecorationThrotters().get(myLocation.getWorld());
+			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
 			if (throttler == null) {
-				throttler = plugin.getAsyncDecorationThrotters().start(5, myLocation.getWorld());
-			}
-			if (!throttler.isAlive()) {
-				throttler.start();
+				throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
 			}
 
 			// Should replace the ore in the chunk you are standing in.

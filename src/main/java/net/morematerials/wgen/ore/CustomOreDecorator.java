@@ -132,7 +132,6 @@ public class CustomOreDecorator extends Decorator {
 	}
 
 	private void placeOre(World world, Chunk chunk, int originX, int originY, int originZ, int veinSize, Random random) {
-		
 		final float angle = random.nextFloat() * (float) Math.PI;
 		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
 		final float x1 = ((originX + 8) + offset.getX());

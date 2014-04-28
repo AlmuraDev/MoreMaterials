@@ -55,10 +55,9 @@ import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
-import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
-import net.morematerials.wgen.async.ThreadRegistry;
+import net.morematerials.wgen.task.TaskRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -70,11 +69,11 @@ public class MoreMaterials extends JavaPlugin {
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
 	private DecoratorRegistry decoratorRegistry;
-	private ThreadRegistry asyncDecorationThrotters;
+	private TaskRegistry decorationThrotters;
 
 	@Override
 	public void onDisable() {
-		asyncDecorationThrotters.stopAll(true);
+		decorationThrotters.stopAll(true);
 	}
 	
 	@Override
@@ -172,7 +171,7 @@ public class MoreMaterials extends JavaPlugin {
 		final DecoratorLoader loader = new DecoratorLoader(this);
 		loader.onEnable(getDataFolder());
 		loader.load();
-		asyncDecorationThrotters = new ThreadRegistry();
+		decorationThrotters = new TaskRegistry(this);
 		
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
@@ -185,8 +184,8 @@ public class MoreMaterials extends JavaPlugin {
 		return decoratorRegistry;
 	}
 
-	public ThreadRegistry getAsyncDecorationThrotters() {
-		return asyncDecorationThrotters;
+	public TaskRegistry getDecorationThrotters() {
+		return decorationThrotters;
 	}
 
 	public HandlerManager getHandlerManager() {

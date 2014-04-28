@@ -21,49 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.morematerials.wgen.async;
+package net.morematerials.wgen.task;
 
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.morematerials.wgen.Decorator;
-import net.morematerials.wgen.Timer;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class DecoratorThrottler extends Thread {
+public class DecoratorThrottler extends BukkitRunnable {
 	private final Queue<DecorableEntry> queue;
-	private final Timer timer;
 	private final World world;
-	private volatile boolean running = false;
 
-	public DecoratorThrottler(int tps, World world) {
-		timer = new Timer(tps);
+	public DecoratorThrottler(World world) {
 		this.world = world;
 		queue = new LinkedBlockingQueue<>();
-		setDaemon(true);
 	}
 
 	@Override
 	public void run() {
-		timer.start();
-		running = true;
-		long lastTime = System.nanoTime() - (long) (1f / timer.getTps() * 1000000000), currentTime;
-		while (running) {
-			currentTime = System.nanoTime() - lastTime;
-			final DecorableEntry entry = queue.poll();
-			if (entry != null) {
-				entry.getDecorator().decorate(world, entry.getChunk(), entry.getRandom());
-				System.out.println("Decorated: [" + entry.getChunk() + "]");
-			}
-			lastTime = currentTime;
-			timer.sync();
+		final DecorableEntry entry = queue.poll();
+		if (entry != null) {
+			entry.getDecorator().decorate(world, entry.getChunk(), entry.getRandom());
+			System.out.println("Decorated: [" + entry.getChunk() + "]");
 		}
-	}
-
-	public void terminate() {
-		running = false;
 	}
 
 	public void offer(Decorator decorator, Chunk chunk, Random random) {
