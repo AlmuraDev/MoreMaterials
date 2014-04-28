@@ -44,8 +44,8 @@ public class TaskRegistry {
 
 	public DecoratorThrottler start(long delay, World world) {
 		final DecoratorThrottler throtter = new DecoratorThrottler(world);
-		throttlers.put(world, throtter);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, throtter, 0L, delay);
+		throttlers.put(world, throtter);
 		return throtter;
 	}
 

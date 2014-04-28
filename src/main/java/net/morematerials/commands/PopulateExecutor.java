@@ -99,7 +99,7 @@ public class PopulateExecutor implements CommandExecutor {
 				for (int j = -radius; j < radius; j++) {
 					int offsetX = chunkX+x;
 					int offsetZ = chunkZ+j;
-					throttler.offer(myOre, myLocation.getWorld().getChunkAt(offsetX, offsetZ), random);
+					throttler.offer(myOre, offsetX, offsetZ, random);
 				}
 			}			
 			sender.sendMessage("Generated: " + ((CustomOreDecorator)myOre).generatedOre + " of: " + args[1] + " within: " + ((CustomOreDecorator)myOre).chunkCount + " chunks.");

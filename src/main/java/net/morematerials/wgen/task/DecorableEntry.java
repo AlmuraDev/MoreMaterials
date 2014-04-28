@@ -30,12 +30,13 @@ import org.bukkit.Chunk;
 
 public class DecorableEntry {
 	private final Decorator decorator;
-	private final Chunk chunk;
+	private final int chunkX, chunkZ;
 	private final Random random;
 
-	public DecorableEntry(Decorator decorator, Chunk chunk, Random random) {
+	public DecorableEntry(Decorator decorator, int chunkX, int chunkZ, Random random) {
 		this.decorator = decorator;
-		this.chunk = chunk;
+		this.chunkX = chunkX;
+		this.chunkZ = chunkZ;
 		this.random = random;
 	}
 
@@ -43,8 +44,12 @@ public class DecorableEntry {
 		return decorator;
 	}
 
-	public Chunk getChunk() {
-		return chunk;
+	public int getChunkX() {
+		return chunkX;
+	}
+
+	public int getChunkZ() {
+		return chunkZ;
 	}
 
 	public Random getRandom() {

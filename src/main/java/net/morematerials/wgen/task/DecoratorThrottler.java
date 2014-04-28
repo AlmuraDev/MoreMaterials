@@ -45,15 +45,13 @@ public class DecoratorThrottler extends BukkitRunnable {
 	public void run() {
 		final DecorableEntry entry = queue.poll();
 		if (entry != null) {
-			entry.getDecorator().decorate(world, entry.getChunk(), entry.getRandom());
-			System.out.println("Decorated: [" + entry.getChunk() + "]");
+			final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
+			entry.getDecorator().decorate(world, chunk, entry.getRandom());
+			System.out.println("Decorated: [" + chunk + "]");
 		}
 	}
 
-	public void offer(Decorator decorator, Chunk chunk, Random random) {
-		if (chunk.getWorld() != world) {
-			throw new RuntimeException("Attempt to throttle decoration of a chunk within another world!");
-		}
-		queue.offer(new DecorableEntry(decorator, chunk, random));
+	public void offer(Decorator decorator, int chunkX, int chunkZ, Random random) {
+		queue.offer(new DecorableEntry(decorator, chunkX, chunkZ, random));
 	}
 }
