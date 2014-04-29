@@ -108,14 +108,15 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				//ATTRIBUTES
 				final ConfigurationSection blockSourceSection = oresSection.getConfigurationSection(nameRaw);
 				final String[] split = initialBlockSource.split("\\.");				
-				final String identifier = split[split.length - 1];				
+				final String identifier = split[split.length - 1];
+				final int decorateChance = blockSourceSection.getInt("decorate-chance", 1);
 				final int minHeight = blockSourceSection.getInt("min-height", 1);
 				final int maxHeight = blockSourceSection.getInt("max-height", 1);
 				final int minVeinSize = blockSourceSection.getInt("min-vein-size", 1);
 				final int maxVeinSize = blockSourceSection.getInt("max-vein-size", 1);
 				final int minVeinsPerChunk = blockSourceSection.getInt("min-veins-per-chunk", 1);
 				final int maxVeinsPerChunk = blockSourceSection.getInt("max-veins-per-chunk", 1);
-				final CustomOreDecorator decorator = new CustomOreDecorator(identifier, ore, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
+				final CustomOreDecorator decorator = new CustomOreDecorator(identifier, ore, decorateChance, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
 				objects.add(decorator);
 				plugin.getLogger().info("Loaded Decorator [" + decorator + "]");
 			}

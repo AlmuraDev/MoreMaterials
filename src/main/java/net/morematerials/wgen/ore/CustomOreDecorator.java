@@ -45,22 +45,25 @@ import org.getspout.spoutapi.material.CustomBlock;
  * This class mimics the behavior of ore veins found in caves.
  */
 public class CustomOreDecorator extends Decorator {
+	private static final Random RANDOM = new Random();
 	private final CustomBlock ore;
 	public int toPopulateCount = 0;
 	public int chunkCount = 0;
 	private final ArrayList<Material> replaceables;
+	private final int decorateChance;
 	private final int minHeight, maxHeight;
 	private final int minVeinSize, maxVeinSize;
 	private final int minVeinsPerChunk, maxVeinsPerChunk;
 
-	public CustomOreDecorator(String identifier, CustomBlock ore, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
-		this(identifier, ore, new ArrayList<Material>(0), minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
+	public CustomOreDecorator(String identifier, CustomBlock ore, int decorateChance, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
+		this(identifier, ore, decorateChance, new ArrayList<Material>(0), minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
 	}
 
-	public CustomOreDecorator(String identifier, CustomBlock ore, ArrayList<Material> replaceables, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
+	public CustomOreDecorator(String identifier, CustomBlock ore, int decorateChance, ArrayList<Material> replaceables, int minHeight, int maxHeight, int minVeinSize, int maxVeinSize, int minVeinsPerChunk, int maxVeinsPerChunk) {
 		super(identifier);
 		this.ore = ore;
 		this.replaceables = replaceables;
+		this.decorateChance = decorateChance;
 		this.minHeight = minHeight;
 		this.maxHeight = maxHeight;
 		this.minVeinSize = minVeinSize;
@@ -80,6 +83,10 @@ public class CustomOreDecorator extends Decorator {
 
 	public Collection<Material> getReplaceables() {
 		return Collections.unmodifiableCollection(replaceables);
+	}
+
+	public int getDecorateChance() {
+		return decorateChance;
 	}
 
 	public int getMinHeight() {
@@ -112,7 +119,7 @@ public class CustomOreDecorator extends Decorator {
 			return false;
 		}
 		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-		return replaceables.contains(block.getType()) && block.getCustomBlock() == null;
+		return (RANDOM.nextInt(decorateChance - 1) + 1 == decorateChance) && replaceables.contains(block.getType()) && block.getCustomBlock() == null;
 	}
 
 	@Override
