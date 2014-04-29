@@ -105,12 +105,14 @@ public class PopulateExecutor implements CommandExecutor {
 						for (int j = -radius; j < radius; j++) {
 							int offsetX = chunkX+x;
 							int offsetZ = chunkZ+j;
-							if (RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 1) + 1 == ((CustomOreDecorator)myOre).getDecorateChance()) {								
+							int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 0) + 1;
+							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
+							if (rand1 == rand2) {								
 								throttler.offer(myOre, offsetX, offsetZ);
 								((CustomOreDecorator)myOre).toPopulateCount++;
 							} else {
 								if (plugin.showDebug) {
-									System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate.");
+									System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate. Chance: " + rand1 + "/" + rand2);
 								}			
 							}
 						}
@@ -144,12 +146,14 @@ public class PopulateExecutor implements CommandExecutor {
 					for (int j = -radius; j < radius; j++) {
 						int offsetX = chunkX+x;
 						int offsetZ = chunkZ+j;
-						if (RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 1) + 1 == ((CustomOreDecorator)myOre).getDecorateChance()) {								
+						int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 0) + 1;
+						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
+						if (rand1 == rand2) {								
 							throttler.offer(myOre, offsetX, offsetZ);
 							((CustomOreDecorator)myOre).toPopulateCount++;
 						} else {
 							if (plugin.showDebug) {
-								System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate.");
+								System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate. Chance: " + rand1 + "/" + rand2);
 							}
 						}
 					}

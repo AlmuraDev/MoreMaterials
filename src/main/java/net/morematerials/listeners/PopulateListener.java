@@ -60,8 +60,10 @@ public class PopulateListener implements Listener {
 
 					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 					// Set replacement ore type.
-					((CustomOreDecorator) myOre).replace(Material.STONE);
-					if (RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 1) + 1 == ((CustomOreDecorator)myOre).getDecorateChance()) {
+					((CustomOreDecorator) myOre).replace(Material.STONE);								
+					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 0) + 1;
+					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
+					if (rand1 == rand2) {
 						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
 							// Count total chunks to populate.
 							((CustomOreDecorator) myOre).toPopulateCount++;
@@ -71,7 +73,7 @@ public class PopulateListener implements Listener {
 						}
 					} else {
 						if (plugin.showDebug) {
-							System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for new chunk populate.");
+							System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for new chunk populate. Chance: " + rand1 + "/" + rand2);
 						}
 					}
 				}
