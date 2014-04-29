@@ -111,7 +111,7 @@ public class PopulateExecutor implements CommandExecutor {
 							((CustomOreDecorator)myOre).toPopulateCount++;
 						}
 					}
-					if (plugin.getConfig().getBoolean("DebugMode", false)) {
+					if (plugin.showDebug) {
 						System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
 					}
 					sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
@@ -146,7 +146,7 @@ public class PopulateExecutor implements CommandExecutor {
 						((CustomOreDecorator)myOre).toPopulateCount++;
 					}
 				}
-				if (plugin.getConfig().getBoolean("DebugMode", false)) {
+				if (plugin.showDebug) {
 					System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
 				}
 				sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
