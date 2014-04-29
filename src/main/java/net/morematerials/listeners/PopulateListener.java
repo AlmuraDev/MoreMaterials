@@ -59,16 +59,14 @@ public class PopulateListener implements Listener {
 					// Set replacement ore type.
 					((CustomOreDecorator) myOre).replace(Material.STONE);
 
-					throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
+					if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
+						// Count total chunks to populate.
+						((CustomOreDecorator) myOre).toPopulateCount++;
 
-					// Count total chunks to populate.
-					((CustomOreDecorator) myOre).toPopulateCount++;
-
-					if (plugin.getConfig().getBoolean("DebugMode")) {
-						System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
+						if (plugin.getConfig().getBoolean("DebugMode")) {
+							System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
+						}
 					}
-				} else {
-					plugin.getLogger().severe("The specified ore: " + myOre.getIdentifier() + " returned an error.");
 				}
 			}
 		}

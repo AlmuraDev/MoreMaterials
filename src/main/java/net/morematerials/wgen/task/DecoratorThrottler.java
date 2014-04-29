@@ -62,8 +62,9 @@ public class DecoratorThrottler extends BukkitRunnable {
 		steps = 0;
 	}
 
-	public void offer(Decorator decorator, int chunkX, int chunkZ) {
-		queue.offer(new DecorableEntry(decorator, chunkX, chunkZ));
+	public boolean offer(Decorator decorator, int chunkX, int chunkZ) {
+		final DecorableEntry entry = new DecorableEntry(decorator, chunkX, chunkZ);
+		return !queue.contains(entry) && queue.offer(new DecorableEntry(decorator, chunkX, chunkZ));
 	}
 
 	public boolean isQueued(Decorator decorator, int chunkX, int chunkZ) {
