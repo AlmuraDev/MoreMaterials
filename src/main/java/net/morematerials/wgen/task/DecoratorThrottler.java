@@ -65,4 +65,20 @@ public class DecoratorThrottler extends BukkitRunnable {
 	public void offer(Decorator decorator, int chunkX, int chunkZ) {
 		queue.offer(new DecorableEntry(decorator, chunkX, chunkZ));
 	}
+
+	public boolean isQueued(Decorator decorator, int chunkX, int chunkZ) {
+		return queue.contains(new DecorableEntry(decorator, chunkX, chunkZ));
+	}
+
+	public boolean hasAnyQueued(int chunkX, int chunkZ) {
+		boolean any = false;
+		for (Decorator decorator : plugin.getDecoratorRegistry().getAll()) {
+			if (isQueued(decorator, chunkX, chunkZ)) {
+				any = true;
+				break;
+			}
+		}
+
+		return any;
+	}
 }

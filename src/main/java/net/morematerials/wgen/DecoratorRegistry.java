@@ -65,6 +65,10 @@ public class DecoratorRegistry {
 		return null;
 	}
 
+	public Collection<Decorator> getAll() {
+		return Collections.unmodifiableCollection(decorators);
+	}
+
 	public Collection<Decorator> getAllByType(Class<? extends Decorator> clazz) {
 		if (clazz == null) {
 			throw new IllegalArgumentException("Cannot get a collection of Decorators based on a null class reference!");
