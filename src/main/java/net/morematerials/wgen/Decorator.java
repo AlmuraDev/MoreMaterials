@@ -50,7 +50,7 @@ public abstract class Decorator {
 	 * @return true if can be decorated, false if not
 	 */
 	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
-		return chunk.getX() == (x >> 4) && chunk.getZ() == (x >> 4);
+		return chunk.getX() == (x >> 4) && (y <= 254 && y >= 1) && chunk.getZ() == (x >> 4);
 	}
 
 	public void decorate(World world, int chunkX, int chunkZ, Random random) {
