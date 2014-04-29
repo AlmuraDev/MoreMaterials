@@ -109,7 +109,7 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				final ConfigurationSection blockSourceSection = oresSection.getConfigurationSection(nameRaw);
 				final String[] split = initialBlockSource.split("\\.");				
 				final String identifier = split[split.length - 1];
-				final int decorateChance = blockSourceSection.getInt("decorate-chance", 1);
+				final int decorateChance = blockSourceSection.getInt("decorate-chance", 0);
 				final int minHeight = blockSourceSection.getInt("min-height", 1);
 				final int maxHeight = blockSourceSection.getInt("max-height", 1);
 				final int minVeinSize = blockSourceSection.getInt("min-vein-size", 1);
