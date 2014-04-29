@@ -23,6 +23,8 @@
  */
 package net.morematerials.commands;
 
+import java.util.Random;
+
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
@@ -38,6 +40,7 @@ import org.bukkit.entity.Player;
 public class PopulateExecutor implements CommandExecutor {
 
 	private MoreMaterials plugin;
+	private static final Random RANDOM = new Random();
 	public PopulateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
@@ -82,7 +85,6 @@ public class PopulateExecutor implements CommandExecutor {
 		int chunkZ = myLocation.getChunk().getZ();
 		int radius = Integer.parseInt(args[0]);	
 
-		// For Loop for Range
 		if (args[1].equalsIgnoreCase("all")) {
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (myOre != null && myOre instanceof CustomOreDecorator) {
@@ -103,9 +105,14 @@ public class PopulateExecutor implements CommandExecutor {
 						for (int j = -radius; j < radius; j++) {
 							int offsetX = chunkX+x;
 							int offsetZ = chunkZ+j;
-							throttler.offer(myOre, offsetX, offsetZ);
-							// Count total chunks to populate.
-							((CustomOreDecorator)myOre).toPopulateCount++;
+							if (RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 1) + 1 == ((CustomOreDecorator)myOre).getDecorateChance()) {								
+								throttler.offer(myOre, offsetX, offsetZ);
+								((CustomOreDecorator)myOre).toPopulateCount++;
+							} else {
+								if (plugin.showDebug) {
+									System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate.");
+								}			
+							}
 						}
 					}
 					if (plugin.showDebug) {
@@ -137,9 +144,14 @@ public class PopulateExecutor implements CommandExecutor {
 					for (int j = -radius; j < radius; j++) {
 						int offsetX = chunkX+x;
 						int offsetZ = chunkZ+j;
-						throttler.offer(myOre, offsetX, offsetZ);
-						// Count total chunks to populate.
-						((CustomOreDecorator)myOre).toPopulateCount++;
+						if (RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 1) + 1 == ((CustomOreDecorator)myOre).getDecorateChance()) {								
+							throttler.offer(myOre, offsetX, offsetZ);
+							((CustomOreDecorator)myOre).toPopulateCount++;
+						} else {
+							if (plugin.showDebug) {
+								System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate.");
+							}
+						}
 					}
 				}
 				if (plugin.showDebug) {

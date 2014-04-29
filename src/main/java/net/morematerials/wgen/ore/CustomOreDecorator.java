@@ -45,10 +45,8 @@ import org.getspout.spoutapi.material.CustomBlock;
  * This class mimics the behavior of ore veins found in caves.
  */
 public class CustomOreDecorator extends Decorator {
-	private static final Random RANDOM = new Random();
 	private final CustomBlock ore;
 	public int toPopulateCount = 0;
-	public int chunkCount = 0;
 	private final ArrayList<Material> replaceables;
 	private final int decorateChance;
 	private final int minHeight, maxHeight;
@@ -119,7 +117,7 @@ public class CustomOreDecorator extends Decorator {
 			return false;
 		}
 		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-		return (RANDOM.nextInt(decorateChance - 1) + 1 == decorateChance) && replaceables.contains(block.getType()) && block.getCustomBlock() == null;
+		return replaceables.contains(block.getType()) && block.getCustomBlock() == null;
 	}
 
 	@Override
@@ -131,7 +129,6 @@ public class CustomOreDecorator extends Decorator {
 			final int z = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
 			placeOre(world, chunk, x, y, z, veinSize, random);
-			chunkCount++;
 		}		
 	}
 

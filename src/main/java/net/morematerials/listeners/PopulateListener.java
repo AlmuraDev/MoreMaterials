@@ -23,10 +23,13 @@
  */
 package net.morematerials.listeners;
 
+import java.util.Random;
+
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
+
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +37,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 
 public class PopulateListener implements Listener {
 	private final MoreMaterials plugin;
+	private static final Random RANDOM = new Random();
 
 	public PopulateListener(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -52,19 +56,22 @@ public class PopulateListener implements Listener {
 				}
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
-					((CustomOreDecorator) myOre).chunkCount = 0;
 					((CustomOreDecorator) myOre).toPopulateCount = 0;
 
 					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 					// Set replacement ore type.
 					((CustomOreDecorator) myOre).replace(Material.STONE);
-
-					if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
-						// Count total chunks to populate.
-						((CustomOreDecorator) myOre).toPopulateCount++;
-
+					if (RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance() - 1) + 1 == ((CustomOreDecorator)myOre).getDecorateChance()) {
+						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
+							// Count total chunks to populate.
+							((CustomOreDecorator) myOre).toPopulateCount++;
+							if (plugin.showDebug) {
+								System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
+							}
+						}
+					} else {
 						if (plugin.showDebug) {
-							System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
+							System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for new chunk populate.");
 						}
 					}
 				}

@@ -1,6 +1,6 @@
 ores:
     MoreMaterials\MM-Ores\ore_blackstone:
-        populate-chance: 5
+        decorate-chance: 5
         min-height: 1
         max-height: 10
         min-vein-size: 1
@@ -8,7 +8,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_bluestone:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 60
         min-vein-size: 4
@@ -16,7 +16,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_bronze:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 60
         min-vein-size: 4
@@ -24,7 +24,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_copper:
-        populate-chance: 3
+        decorate-chance: 3
         min-height: 5
         max-height: 100
         min-vein-size: 7
@@ -32,7 +32,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_dragite:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 100
         min-vein-size: 4
@@ -40,7 +40,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_flarite:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 100
         min-vein-size: 4
@@ -48,7 +48,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_mythian:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 60
         min-vein-size: 4
@@ -56,7 +56,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_purplestone:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 60
         min-vein-size: 4
@@ -64,7 +64,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_ruby:
-        populate-chance: 6
+        decorate-chance: 6
         min-height: 20
         max-height: 40
         min-vein-size: 5
@@ -72,7 +72,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 2
     MoreMaterials\MM-Ores\ore_sapphire:
-        populate-chance: 6
+        decorate-chance: 6
         min-height: 15
         max-height: 50
         min-vein-size: 4
@@ -80,7 +80,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_silvanite:
-        populate-chance: 7
+        decorate-chance: 7
         min-height: 40
         max-height: 60
         min-vein-size: 4
@@ -88,7 +88,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_silver:
-        populate-chance: 3
+        decorate-chance: 3
         min-height: 30
         max-height: 80
         min-vein-size: 4
@@ -96,7 +96,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_steel:
-        populate-chance: 3
+        decorate-chance: 3
         min-height: 1
         max-height: 100
         min-vein-size: 6
@@ -104,7 +104,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_tin:
-        populate-chance: 3
+        decorate-chance: 3
         min-height: 1
         max-height: 100
         min-vein-size: 8
@@ -112,7 +112,7 @@ ores:
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
     MoreMaterials\MM-Ores\ore_titanium:
-        populate-chance: 10
+        decorate-chance: 10
         min-height: 5
         max-height: 15
         min-vein-size: 4
