@@ -28,9 +28,13 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.morematerials.commands.DebugExecutor;
+import net.morematerials.commands.DecorateExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
+<<<<<<< HEAD
 import net.morematerials.commands.DecorateExecutor;
+=======
+>>>>>>> Pushing some cleanup code I had.
 import net.morematerials.handlers.BombHandler;
 import net.morematerials.handlers.ChestHandler;
 import net.morematerials.handlers.ChunkRegenerateHandler;
