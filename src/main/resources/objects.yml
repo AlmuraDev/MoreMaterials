@@ -55,7 +55,7 @@ ores:
         max-vein-size: 15
         min-veins-per-chunk: 1
         max-veins-per-chunk: 3
-    MoreMaterials\MM-Ores\purplestone:
+    MoreMaterials\MM-Ores\ore_purplestone:
         populate-chance: 10
         min-height: 5
         max-height: 60
