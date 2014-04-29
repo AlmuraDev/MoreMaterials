@@ -34,11 +34,14 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DecoratorThrottler extends BukkitRunnable {
+	private static final Random RANDOM = new Random();
 	private final Queue<DecorableEntry> queue;
+	private final MoreMaterials plugin;
 	private final World world;
 	private int steps = 0;
 
-	public DecoratorThrottler(World world) {
+	public DecoratorThrottler(MoreMaterials plugin, World world) {
+		this.plugin = plugin;
 		this.world = world;
 		queue = new LinkedBlockingQueue<>();
 	}
@@ -49,16 +52,17 @@ public class DecoratorThrottler extends BukkitRunnable {
 			final DecorableEntry entry = queue.poll();
 			if (entry != null) {
 				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
-				entry.getDecorator().decorate(world, chunk, entry.getRandom());
+				entry.getDecorator().decorate(world, chunk, RANDOM);
+				//System.out.println("Decorated: [" + chunk + "]");
 			}
 		}
-		if (MoreMaterials.getInstance().getConfig().getBoolean("DebugMode", false)) {
-			System.out.println("[MoreMaterials] -  Queue Remaining: " + queue.size());
+		if (plugin.getConfig().getBoolean("DebugMode", false)) {
+			plugin.getLogger().info("Queue Remaining: " + queue.size());
 		}
 		steps = 0;
 	}
 
-	public void offer(Decorator decorator, int chunkX, int chunkZ, Random random) {
-		queue.offer(new DecorableEntry(decorator, chunkX, chunkZ, random));
+	public void offer(Decorator decorator, int chunkX, int chunkZ) {
+		queue.offer(new DecorableEntry(decorator, chunkX, chunkZ));
 	}
 }

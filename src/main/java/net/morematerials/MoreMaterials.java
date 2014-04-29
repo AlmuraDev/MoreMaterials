@@ -76,10 +76,6 @@ public class MoreMaterials extends JavaPlugin {
 	public void onDisable() {
 		decorationThrotters.stopAll(true);
 	}
-	
-	public static MoreMaterials getInstance() {
-		return instance;
-	}
 
 	@Override
 	public void onEnable() {

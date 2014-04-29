@@ -23,20 +23,16 @@
  */
 package net.morematerials.wgen.task;
 
-import java.util.Random;
-
 import net.morematerials.wgen.Decorator;
 
 public class DecorableEntry {
 	private final Decorator decorator;
 	private final int chunkX, chunkZ;
-	private final Random random;
 
-	public DecorableEntry(Decorator decorator, int chunkX, int chunkZ, Random random) {
+	public DecorableEntry(Decorator decorator, int chunkX, int chunkZ) {
 		this.decorator = decorator;
 		this.chunkX = chunkX;
 		this.chunkZ = chunkZ;
-		this.random = random;
 	}
 
 	public Decorator getDecorator() {
@@ -49,9 +45,5 @@ public class DecorableEntry {
 
 	public int getChunkZ() {
 		return chunkZ;
-	}
-
-	public Random getRandom() {
-		return random;
 	}
 }
