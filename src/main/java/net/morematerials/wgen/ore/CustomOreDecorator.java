@@ -108,6 +108,9 @@ public class CustomOreDecorator extends Decorator {
 	
 	@Override
 	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
+		if (!super.canDecorate(world, chunk, x, y, z)) {
+			return false;
+		}
 		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
 		return replaceables.contains(block.getType()) && block.getCustomBlock() == null;
 	}
@@ -116,9 +119,9 @@ public class CustomOreDecorator extends Decorator {
 	public void decorate(World world, Chunk chunk, Random random) {		
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (byte i = 0; i < veinsPerChunk; i++) {
-			final int x = (chunk.getX() << 4) + random.nextInt(1 << 4);
+			final int x = (chunk.getX() >> 4) + random.nextInt(16);
 			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
-			final int z = (chunk.getZ() << 4) + random.nextInt(1 << 4);
+			final int z = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
 			placeOre(world, chunk, x, y, z, veinSize, random);
 			chunkCount++;
@@ -170,7 +173,6 @@ public class CustomOreDecorator extends Decorator {
 								if (sizeX + sizeY + sizeZ < 1) {
 									if (canDecorate(world, chunk, x, y, z)) {
 										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
-										
 									}
 								}
 							}
