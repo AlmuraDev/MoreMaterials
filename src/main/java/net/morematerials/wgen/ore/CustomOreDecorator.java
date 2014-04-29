@@ -30,6 +30,7 @@ import java.util.Random;
 
 import com.flowpowered.math.TrigMath;
 import com.flowpowered.math.vector.Vector2f;
+
 import net.morematerials.wgen.Decorator;
 
 import org.bukkit.Chunk;
@@ -167,11 +168,10 @@ public class CustomOreDecorator extends Decorator {
 							for (int z = startZ; z <= endZ; z++) {
 								float sizeZ = (z + 0.5f - seedZ) / size;
 								sizeZ *= sizeZ;
-								if (sizeX + sizeY + sizeZ < 1) {
+								if (sizeX + sizeY + sizeZ < 1) {									
 									if (canDecorate(world, chunk, x, y, z)) {
-										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
-										
-									}
+										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);											
+									}	
 								}
 							}
 						}

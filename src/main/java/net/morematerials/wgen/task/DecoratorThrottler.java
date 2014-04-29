@@ -56,7 +56,7 @@ public class DecoratorThrottler extends BukkitRunnable {
 				//System.out.println("Decorated: [" + chunk + "]");
 			}
 		}
-		if (plugin.getConfig().getBoolean("DebugMode", false)) {
+		if (plugin.getConfig().getBoolean("DebugMode", false) && queue.size()>1) {
 			plugin.getLogger().info("Queue Remaining: " + queue.size());
 		}
 		steps = 0;
