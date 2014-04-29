@@ -36,17 +36,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
 
-public class PopulateListener implements Listener {
+public class DecorateListener implements Listener {
 	private final MoreMaterials plugin;
 	private static final Random RANDOM = new Random();
 
-	public PopulateListener(MoreMaterials plugin) {
+	public DecorateListener(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
 
 	@EventHandler
-	public void onChunkPopulate(ChunkPopulateEvent event) {		
-		if (plugin.getConfig().getBoolean("PopulateNewChunks") && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {
+	public void onChunkPopulate(ChunkPopulateEvent event) {
+		if (plugin.getConfig().getBoolean("DecorateNewChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
@@ -57,7 +57,7 @@ public class PopulateListener implements Listener {
 				}
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
-					((CustomOreDecorator) myOre).toPopulateCount = 0;
+					((CustomOreDecorator) myOre).toDecorateCount = 0;
 
 					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 					// Set replacement ore type.
@@ -67,7 +67,7 @@ public class PopulateListener implements Listener {
 					if (rand1 == rand2) {
 						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
 							// Count total chunks to populate.
-							((CustomOreDecorator) myOre).toPopulateCount++;
+							((CustomOreDecorator) myOre).toDecorateCount++;
 							if (plugin.showDebug) {
 								System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
 							}
@@ -79,6 +79,13 @@ public class PopulateListener implements Listener {
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onChunkLoad(ChunkLoadEvent event) {		
+		if (plugin.getConfig().getBoolean("DecorateExistingChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
+		// TODO:
 		}
 	}
 }

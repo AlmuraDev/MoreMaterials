@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
-import net.morematerials.commands.PopulateExecutor;
+import net.morematerials.commands.DecorateExecutor;
 import net.morematerials.handlers.BombHandler;
 import net.morematerials.handlers.ChestHandler;
 import net.morematerials.handlers.ChunkRegenerateHandler;
@@ -47,7 +47,7 @@ import net.morematerials.handlers.PoisonHandler;
 import net.morematerials.handlers.RotateHandler;
 import net.morematerials.listeners.CustomListener;
 import net.morematerials.listeners.MMListener;
-import net.morematerials.listeners.PopulateListener;
+import net.morematerials.listeners.DecorateListener;
 import net.morematerials.manager.FurnaceRecipeManager;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
@@ -73,7 +73,7 @@ public class MoreMaterials extends JavaPlugin {
 	private FurnaceRecipeManager furnaceRecipeManager;
 	private DecoratorRegistry decoratorRegistry;
 	private TaskRegistry decorationThrotters;
-	private List<String> populateWorldList;
+	private List<String> decorateWorldList;
 	public boolean showDebug = false;
 
 	@Override
@@ -95,7 +95,7 @@ public class MoreMaterials extends JavaPlugin {
 		}
 		
 		// Configuration
-		populateWorldList = this.getConfig().getStringList("PopulateWorlds");
+		decorateWorldList = this.getConfig().getStringList("DecorateWorlds");
 						
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
@@ -173,7 +173,7 @@ public class MoreMaterials extends JavaPlugin {
 		// Registered events.
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new CustomListener(this), this);
-		this.getServer().getPluginManager().registerEvents(new PopulateListener(this), this);
+		this.getServer().getPluginManager().registerEvents(new DecorateListener(this), this);
 
 		// Initialize Decorator
 		decoratorRegistry = new DecoratorRegistry();
@@ -184,7 +184,7 @@ public class MoreMaterials extends JavaPlugin {
 		
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
-		this.getCommand("mmpopulate").setExecutor(new PopulateExecutor(this));
+		this.getCommand("mmdecorate").setExecutor(new DecorateExecutor(this));
 		this.getCommand("mmdebug").setExecutor(new DebugExecutor(this));
 		this.getCommand("mmgive").setExecutor(new GiveExecutor(this));
 	}
@@ -221,8 +221,8 @@ public class MoreMaterials extends JavaPlugin {
 		return this.furnaceRecipeManager;
 	}
 	
-	public List<String> getPopulateWorldList() {
-		return populateWorldList;
+	public List<String> getDecorateWorldList() {
+		return decorateWorldList;
 	}
 
 }

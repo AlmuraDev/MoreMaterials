@@ -1,0 +1,7 @@
+Metrics: true
+DecorateExistingChunks: false
+DecorateNewChunks: false
+DebugMode: false
+PopulateWorlds:
+    - world
+    - otherworld

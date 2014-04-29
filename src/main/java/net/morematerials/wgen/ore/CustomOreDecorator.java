@@ -46,7 +46,7 @@ import org.getspout.spoutapi.material.CustomBlock;
  */
 public class CustomOreDecorator extends Decorator {
 	private final CustomBlock ore;
-	public int toPopulateCount = 0;
+	public int toDecorateCount = 0;
 	private final ArrayList<Material> replaceables;
 	private final int decorateChance;
 	private final int minHeight, maxHeight;

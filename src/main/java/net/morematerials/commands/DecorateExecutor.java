@@ -37,17 +37,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class PopulateExecutor implements CommandExecutor {
+public class DecorateExecutor implements CommandExecutor {
 
 	private MoreMaterials plugin;
 	private static final Random RANDOM = new Random();
-	public PopulateExecutor(MoreMaterials plugin) {
+	public DecorateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// Command Structure
-		// /mmpopulate intRadius CustomOreName ReplaceBlock
+		// /mmdecorate intRadius CustomOreName ReplaceBlock
 		// This command is only for players
 		if (!(sender instanceof Player)) {
 			return false;
@@ -89,7 +89,7 @@ public class PopulateExecutor implements CommandExecutor {
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (myOre != null && myOre instanceof CustomOreDecorator) {
 					// Tracking
-					((CustomOreDecorator)myOre).toPopulateCount = 0;
+					((CustomOreDecorator)myOre).toDecorateCount = 0;
 
 					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 					// Set replacement ore type.
@@ -109,18 +109,18 @@ public class PopulateExecutor implements CommandExecutor {
 							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 							if (rand1 == rand2) {								
 								throttler.offer(myOre, offsetX, offsetZ);
-								((CustomOreDecorator)myOre).toPopulateCount++;
+								((CustomOreDecorator)myOre).toDecorateCount++;
 							} else {
 								if (plugin.showDebug) {
-									System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate. Chance: " + rand1 + "/" + rand2);
+									System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual decorate. Chance: " + rand1 + "/" + rand2);
 								}			
 							}
 						}
 					}
 					if (plugin.showDebug) {
-						System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+						System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toDecorateCount + " of: " + args[1]);
 					}
-					sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+					sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toDecorateCount + " of: " + args[1]);
 				} else {
 					sender.sendMessage("The specified ore could not be located within the ore decorator");
 					sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
@@ -130,7 +130,7 @@ public class PopulateExecutor implements CommandExecutor {
 			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
 			if (myOre != null && myOre instanceof CustomOreDecorator) {
 				// Tracking
-				((CustomOreDecorator)myOre).toPopulateCount = 0;
+				((CustomOreDecorator)myOre).toDecorateCount = 0;
 
 				//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 				// Set replacement ore type.
@@ -150,7 +150,7 @@ public class PopulateExecutor implements CommandExecutor {
 						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 						if (rand1 == rand2) {								
 							throttler.offer(myOre, offsetX, offsetZ);
-							((CustomOreDecorator)myOre).toPopulateCount++;
+							((CustomOreDecorator)myOre).toDecorateCount++;
 						} else {
 							if (plugin.showDebug) {
 								System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate. Chance: " + rand1 + "/" + rand2);
@@ -159,9 +159,9 @@ public class PopulateExecutor implements CommandExecutor {
 					}
 				}
 				if (plugin.showDebug) {
-					System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+					System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toDecorateCount + " of: " + args[1]);
 				}
-				sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+				sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toDecorateCount + " of: " + args[1]);
 			} else {
 				sender.sendMessage("The specified ore could not be located within the ore decorator");
 				sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
