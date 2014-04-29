@@ -79,6 +79,7 @@ public class MoreMaterials extends JavaPlugin {
 	private DecoratorRegistry decoratorRegistry;
 	private TaskRegistry decorationThrotters;
 	private List<String> populateWorldList;
+	public boolean showDebug = false;
 
 	@Override
 	public void onDisable() {

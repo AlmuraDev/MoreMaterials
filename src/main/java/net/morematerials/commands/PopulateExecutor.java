@@ -56,6 +56,16 @@ public class PopulateExecutor implements CommandExecutor {
 
 		// Material Verification
 		org.getspout.spoutapi.material.Material material = null;
+		
+		String myDebug = args[0];
+		if (myDebug.equalsIgnoreCase("debug")) {
+			if (!plugin.showDebug) {
+				plugin.showDebug = true;
+			} else {
+				plugin.showDebug = false;
+			}
+			return true;
+		}
 		if (args[1].matches("^[0-9]+$")) {
 			// Invalid CustomBlock ID, cannot be numeric
 			//material = this.plugin.getSmpManager().getMaterial(Integer.parseInt(args[0]));

@@ -41,6 +41,11 @@ public class PopulateListener implements Listener {
 
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event) {
+		if (event.isNewChunk()) {
+			if (plugin.showDebug) {
+				Thread.dumpStack();
+			}
+		}
 		if (plugin.getConfig().getBoolean("PopulateNewChunks") && event.isNewChunk() && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
