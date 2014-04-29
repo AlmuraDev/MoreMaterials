@@ -24,9 +24,7 @@
 package net.morematerials;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import net.morematerials.commands.DebugExecutor;
@@ -63,13 +61,10 @@ import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
 import net.morematerials.wgen.task.TaskRegistry;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
 	
-	private FileConfiguration config;
 	private HandlerManager handlerManager;
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;

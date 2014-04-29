@@ -23,8 +23,6 @@
  */
 package net.morematerials.commands;
 
-import java.util.Random;
-
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
@@ -40,8 +38,6 @@ import org.bukkit.entity.Player;
 public class PopulateExecutor implements CommandExecutor {
 
 	private MoreMaterials plugin;
-	private static final Random random = new Random();
-
 	public PopulateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
@@ -60,9 +56,11 @@ public class PopulateExecutor implements CommandExecutor {
 		String myDebug = args[0];
 		if (myDebug.equalsIgnoreCase("debug")) {
 			if (!plugin.showDebug) {
+				sender.sendMessage("[MoreMaterials] - Populator Debug On");
 				plugin.showDebug = true;
 			} else {
 				plugin.showDebug = false;
+				sender.sendMessage("[MoreMaterials] - Populator Debug Off");
 			}
 			return true;
 		}
@@ -89,7 +87,6 @@ public class PopulateExecutor implements CommandExecutor {
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (myOre != null && myOre instanceof CustomOreDecorator) {
 					// Tracking
-					((CustomOreDecorator)myOre).chunkCount = 0;
 					((CustomOreDecorator)myOre).toPopulateCount = 0;
 
 					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
@@ -124,7 +121,6 @@ public class PopulateExecutor implements CommandExecutor {
 			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
 			if (myOre != null && myOre instanceof CustomOreDecorator) {
 				// Tracking
-				((CustomOreDecorator)myOre).chunkCount = 0;
 				((CustomOreDecorator)myOre).toPopulateCount = 0;
 
 				//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
