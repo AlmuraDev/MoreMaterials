@@ -83,8 +83,8 @@ public class DecorateListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent event) {		
-		if (plugin.getConfig().getBoolean("DecorateExistingChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
+	public void onChunkLoad(ChunkLoadEvent event) {	 // Don't try and decorate new chunks here.	
+		if (plugin.getConfig().getBoolean("DecorateExistingChunks") && !event.isNewChunk() && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
 		// TODO:
 		}
 	}
