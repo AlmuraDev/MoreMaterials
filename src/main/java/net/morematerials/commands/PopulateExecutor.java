@@ -38,10 +38,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PopulateExecutor implements CommandExecutor {
-	
+
 	private MoreMaterials plugin;
 	private static final Random random = new Random();
-	
+
 	public PopulateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
@@ -49,14 +49,14 @@ public class PopulateExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// Command Structure
 		// /mmpopulate intRadius CustomOreName ReplaceBlock
-		
-		
-		
+
+
+
 		// This command is only for players
 		if (!(sender instanceof Player)) {
 			return false;
 		}
-		
+
 		// Material Verification
 		org.getspout.spoutapi.material.Material material = null;
 		if (args[1].matches("^[0-9]+$")) {
@@ -71,55 +71,92 @@ public class PopulateExecutor implements CommandExecutor {
 				// Send Player Feedback
 			}
 		}
-		
+
 		Location myLocation = ((Player)sender).getLocation();
 		int chunkX = myLocation.getChunk().getX();
 		int chunkZ = myLocation.getChunk().getZ();
 		int radius = Integer.parseInt(args[0]);	
-		
-		
-		// For Loop for Range		
-		Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
-		if (myOre != null && myOre instanceof CustomOreDecorator) {
-			// Tracking
-			((CustomOreDecorator)myOre).chunkCount = 0;
-			((CustomOreDecorator)myOre).toPopulateCount = 0;
 
-			//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
-			// Set replacement ore type.
-			((CustomOreDecorator)myOre).replace(Material.STONE);
 
-			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
-			if (throttler == null) {
-				throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
-			}
+		// For Loop for Range
+		if (args[1].equalsIgnoreCase("all")) {
+			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
+				if (myOre != null && myOre instanceof CustomOreDecorator) {
+					// Tracking
+					((CustomOreDecorator)myOre).chunkCount = 0;
+					((CustomOreDecorator)myOre).toPopulateCount = 0;
 
-			// Should replace the ore in the chunk you are standing in.
-			for (int x = -radius; x < radius; x++) {
-				for (int j = -radius; j < radius; j++) {
-					int offsetX = chunkX+x;
-					int offsetZ = chunkZ+j;
-					throttler.offer(myOre, offsetX, offsetZ);
-					// Count total chunks to populate.
-					((CustomOreDecorator)myOre).toPopulateCount++;
+					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
+					// Set replacement ore type.
+					((CustomOreDecorator)myOre).replace(Material.STONE);
+
+					DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
+					if (throttler == null) {
+						throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
+					}
+
+					// Should replace the ore in the chunk you are standing in.
+					for (int x = -radius; x < radius; x++) {
+						for (int j = -radius; j < radius; j++) {
+							int offsetX = chunkX+x;
+							int offsetZ = chunkZ+j;
+							throttler.offer(myOre, offsetX, offsetZ);
+							// Count total chunks to populate.
+							((CustomOreDecorator)myOre).toPopulateCount++;
+						}
+					}
+					if (plugin.getConfig().getBoolean("DebugMode", false)) {
+						System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+					}
+					sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+				} else {
+					sender.sendMessage("The specified ore could not be located within the ore decorator");
+					sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
 				}
 			}
-			if (plugin.getConfig().getBoolean("DebugMode", false)) {
-				System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
-			}
-			sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
 		} else {
-			sender.sendMessage("The specified ore could not be located within the ore decorator");
-			sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
+			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
+			if (myOre != null && myOre instanceof CustomOreDecorator) {
+				// Tracking
+				((CustomOreDecorator)myOre).chunkCount = 0;
+				((CustomOreDecorator)myOre).toPopulateCount = 0;
+
+				//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
+				// Set replacement ore type.
+				((CustomOreDecorator)myOre).replace(Material.STONE);
+
+				DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
+				if (throttler == null) {
+					throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
+				}
+
+				// Should replace the ore in the chunk you are standing in.
+				for (int x = -radius; x < radius; x++) {
+					for (int j = -radius; j < radius; j++) {
+						int offsetX = chunkX+x;
+						int offsetZ = chunkZ+j;
+						throttler.offer(myOre, offsetX, offsetZ);
+						// Count total chunks to populate.
+						((CustomOreDecorator)myOre).toPopulateCount++;
+					}
+				}
+				if (plugin.getConfig().getBoolean("DebugMode", false)) {
+					System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+				}
+				sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+			} else {
+				sender.sendMessage("The specified ore could not be located within the ore decorator");
+				sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
+			}
 		}
-		
+
 		// Also this command is only useable by players with permission
 		if (!this.plugin.getUtilsManager().hasPermission(sender, "morematerials.admin")) {
 			return false;
 		}
-			
-		
-		
+
+
+
 		//myOre.de
 		return true;
 	}

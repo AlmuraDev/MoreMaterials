@@ -25,8 +25,10 @@ package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
+import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
 
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -40,15 +42,34 @@ public class GeneratorListener implements Listener {
 
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event) {		
-		if (plugin.getConfig().getBoolean("PopulateNewChunks", false) && event.isNewChunk()) {
-			
-			Decorator myOre = this.plugin.getDecoratorRegistry().get("ore_o_bluestone");
+		if (plugin.getConfig().getBoolean("PopulateNewChunks", false) && event.isNewChunk()) {		
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
 			}
 			if (!throttler.hasAnyQueued(event.getChunk().getX(), event.getChunk().getZ())) {
-				throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
+				for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
+					if (myOre != null && myOre instanceof CustomOreDecorator) {
+						// Tracking
+						((CustomOreDecorator)myOre).chunkCount = 0;
+						((CustomOreDecorator)myOre).toPopulateCount = 0;
+
+						//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
+						// Set replacement ore type.
+						((CustomOreDecorator)myOre).replace(Material.STONE);
+
+						throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
+						
+						// Count total chunks to populate.
+						((CustomOreDecorator)myOre).toPopulateCount++;
+						
+						if (plugin.getConfig().getBoolean("DebugMode", false)) {
+							System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier() );
+						}						
+					} else {
+						plugin.getLogger().severe("The specified ore: " + myOre.getIdentifier() + " returned an error.");						
+					}
+				}				
 			}
 		}
 	}
