@@ -34,6 +34,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkPopulateEvent;
 
 public class PopulateListener implements Listener {
 	private final MoreMaterials plugin;
@@ -44,8 +45,8 @@ public class PopulateListener implements Listener {
 	}
 
 	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent event) {
-		if (plugin.getConfig().getBoolean("PopulateNewChunks") && event.isNewChunk() && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {
+	public void onChunkPopulate(ChunkPopulateEvent event) {		
+		if (plugin.getConfig().getBoolean("PopulateNewChunks") && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
