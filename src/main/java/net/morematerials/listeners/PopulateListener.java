@@ -27,7 +27,6 @@ import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
-
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,35 +40,36 @@ public class PopulateListener implements Listener {
 	}
 
 	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent event) {		
-		if (plugin.getConfig().getBoolean("PopulateNewChunks") && event.isNewChunk() && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {		
+	public void onChunkLoad(ChunkLoadEvent event) {
+		if (plugin.getConfig().getBoolean("PopulateNewChunks") && event.isNewChunk() && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
 			}
-			if (!throttler.hasAnyQueued(event.getChunk().getX(), event.getChunk().getZ())) {
-				for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
-					if (myOre != null && myOre instanceof CustomOreDecorator) {
-						// Tracking
-						((CustomOreDecorator)myOre).chunkCount = 0;
-						((CustomOreDecorator)myOre).toPopulateCount = 0;
+			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
+				if (throttler.isQueued(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
+					continue;
+				}
+				if (myOre instanceof CustomOreDecorator) {
+					// Tracking
+					((CustomOreDecorator) myOre).chunkCount = 0;
+					((CustomOreDecorator) myOre).toPopulateCount = 0;
 
-						//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
-						// Set replacement ore type.
-						((CustomOreDecorator)myOre).replace(Material.STONE);
+					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
+					// Set replacement ore type.
+					((CustomOreDecorator) myOre).replace(Material.STONE);
 
-						throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
-						
-						// Count total chunks to populate.
-						((CustomOreDecorator)myOre).toPopulateCount++;
-						
-						if (plugin.getConfig().getBoolean("DebugMode")) {
-							System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier() );
-						}						
-					} else {
-						plugin.getLogger().severe("The specified ore: " + myOre.getIdentifier() + " returned an error.");						
+					throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
+
+					// Count total chunks to populate.
+					((CustomOreDecorator) myOre).toPopulateCount++;
+
+					if (plugin.getConfig().getBoolean("DebugMode")) {
+						System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
 					}
-				}				
+				} else {
+					plugin.getLogger().severe("The specified ore: " + myOre.getIdentifier() + " returned an error.");
+				}
 			}
 		}
 	}

@@ -58,7 +58,7 @@ public abstract class Decorator {
 	public abstract void decorate(World world, Chunk chunk, Random random);
 
 	@Override
-	public boolean equals(Object o) {
+	public final boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -73,7 +73,7 @@ public abstract class Decorator {
 	}
 
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return identifier.hashCode();
 	}
 }

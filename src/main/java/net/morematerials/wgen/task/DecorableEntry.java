@@ -29,6 +29,28 @@ public class DecorableEntry {
 	private final Decorator decorator;
 	private final int chunkX, chunkZ;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		final DecorableEntry that = (DecorableEntry) o;
+
+		return chunkX == that.chunkX && chunkZ == that.chunkZ && decorator.equals(that.decorator);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = decorator.hashCode();
+		result = 31 * result + chunkX;
+		result = 31 * result + chunkZ;
+		return result;
+	}
+
 	public DecorableEntry(Decorator decorator, int chunkX, int chunkZ) {
 		this.decorator = decorator;
 		this.chunkX = chunkX;
