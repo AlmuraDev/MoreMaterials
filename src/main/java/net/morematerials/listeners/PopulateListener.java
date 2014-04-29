@@ -33,10 +33,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 
-public class GeneratorListener implements Listener {
+public class PopulateListener implements Listener {
 	private final MoreMaterials plugin;
 
-	public GeneratorListener(MoreMaterials plugin) {
+	public PopulateListener(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
 

@@ -46,6 +46,7 @@ import net.morematerials.handlers.PoisonHandler;
 import net.morematerials.handlers.RotateHandler;
 import net.morematerials.listeners.CustomListener;
 import net.morematerials.listeners.MMListener;
+import net.morematerials.listeners.PopulateListener;
 import net.morematerials.manager.FurnaceRecipeManager;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
@@ -58,6 +59,7 @@ import net.morematerials.metrics.Metrics.Plotter;
 import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
 import net.morematerials.wgen.task.TaskRegistry;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -166,6 +168,7 @@ public class MoreMaterials extends JavaPlugin {
 		// Registered events.
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new CustomListener(this), this);
+		this.getServer().getPluginManager().registerEvents(new PopulateListener(this), this);
 
 		// Initialize Decorator
 		decoratorRegistry = new DecoratorRegistry();

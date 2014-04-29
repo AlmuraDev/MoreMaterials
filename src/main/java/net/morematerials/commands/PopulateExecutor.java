@@ -49,9 +49,6 @@ public class PopulateExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// Command Structure
 		// /mmpopulate intRadius CustomOreName ReplaceBlock
-
-
-
 		// This command is only for players
 		if (!(sender instanceof Player)) {
 			return false;
@@ -76,7 +73,6 @@ public class PopulateExecutor implements CommandExecutor {
 		int chunkX = myLocation.getChunk().getX();
 		int chunkZ = myLocation.getChunk().getZ();
 		int radius = Integer.parseInt(args[0]);	
-
 
 		// For Loop for Range
 		if (args[1].equalsIgnoreCase("all")) {
@@ -154,11 +150,6 @@ public class PopulateExecutor implements CommandExecutor {
 		if (!this.plugin.getUtilsManager().hasPermission(sender, "morematerials.admin")) {
 			return false;
 		}
-
-
-
-		//myOre.de
 		return true;
 	}
-
 }
