@@ -41,11 +41,6 @@ public class PopulateListener implements Listener {
 
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event) {
-		if (event.isNewChunk()) {
-			if (plugin.showDebug) {
-				Thread.dumpStack();
-			}
-		}
 		if (plugin.getConfig().getBoolean("PopulateNewChunks") && event.isNewChunk() && plugin.getPopulateWorldList().contains(event.getWorld().getName())) {
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
@@ -68,7 +63,7 @@ public class PopulateListener implements Listener {
 						// Count total chunks to populate.
 						((CustomOreDecorator) myOre).toPopulateCount++;
 
-						if (plugin.getConfig().getBoolean("DebugMode")) {
+						if (plugin.showDebug) {
 							System.out.println("[MoreMaterials] -  Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
 						}
 					}
