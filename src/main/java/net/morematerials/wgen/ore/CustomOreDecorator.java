@@ -113,11 +113,15 @@ public class CustomOreDecorator extends Decorator {
 	
 	@Override
 	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
-		if (!super.canDecorate(world, chunk, x, y, z)) {
+		if (!super.canDecorate(world, chunk, x, y, z)) {			
 			return false;
 		}
 		final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-		return replaceables.contains(block.getType()) && block.getCustomBlock() == null;
+		boolean myValue = replaceables.contains(block.getType()) && block.getCustomBlock() == null;
+		if (!myValue) {			 
+			//System.out.println("Could not populate: " + x + "/" + y + "/" + z + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
+		}
+		return myValue;
 	}
 
 	@Override
@@ -176,7 +180,10 @@ public class CustomOreDecorator extends Decorator {
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
 									if (canDecorate(world, chunk, x, y, z)) {
-										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
+										final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
+										block.setCustomBlock(ore);
+										//((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
+										//System.out.println("Decorated location: " + x + "/" + y + "/" + z + " with ore: " + ore.getName());
 									}
 								}
 							}

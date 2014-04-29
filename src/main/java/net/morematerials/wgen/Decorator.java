@@ -50,7 +50,13 @@ public abstract class Decorator {
 	 * @return true if can be decorated, false if not
 	 */
 	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
-		return chunk.getX() == (x >> 4) && (y <= 254 && y >= 1) && chunk.getZ() == (x >> 4);
+		boolean check = chunk.getX() == (x >> 4) && (y <= 254 && y >= 1) && chunk.getZ() == (z >> 4);
+		if (!check) {
+			//System.out.println("BAD Coords: " + chunk.getX() + "/" + (x >> 4) + " // " + y + " // " + chunk.getZ() + "/" + (z >> 4));
+		} else {
+			//System.out.println("Good Coords: " + chunk.getX() + "/" + (x >> 4) + " // " + y + " // " + chunk.getZ() + "/" + (z >> 4));
+		}
+		return check;
 	}
 
 	public void decorate(World world, int chunkX, int chunkZ, Random random) {

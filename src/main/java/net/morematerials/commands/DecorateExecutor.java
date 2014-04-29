@@ -70,7 +70,7 @@ public class DecorateExecutor implements CommandExecutor {
 		final int chunkZ = myLocation.getChunk().getZ();
 		final int radius = Integer.parseInt(args[0]);
 
-		if (args[1].equalsIgnoreCase("all")) {
+		if (args[1].equalsIgnoreCase("all") && radius >= 1) {
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
@@ -78,7 +78,7 @@ public class DecorateExecutor implements CommandExecutor {
 
 					// ((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 					// Set replacement ore type.
-					((CustomOreDecorator) myOre).replace(Material.STONE);
+					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 
 					DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
 					if (throttler == null) {
@@ -108,7 +108,7 @@ public class DecorateExecutor implements CommandExecutor {
 					sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toDecorateCount + " of: " + args[1]);
 				}
 			}
-		} else {
+		} else if (radius >= 1){
 			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
 			if (myOre instanceof CustomOreDecorator) {
 				// Tracking
@@ -116,7 +116,7 @@ public class DecorateExecutor implements CommandExecutor {
 
 				// ((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 				// Set replacement ore type.
-				((CustomOreDecorator) myOre).replace(Material.STONE);
+				((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 
 				DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
 				if (throttler == null) {
@@ -146,6 +146,40 @@ public class DecorateExecutor implements CommandExecutor {
 			} else {
 				sender.sendMessage("The specified ore could not be located within the ore decorator");
 				sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
+			}
+		} else if (radius == 0){
+			System.out.println("Zero Radius Detected");
+			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {	
+				if (myOre instanceof CustomOreDecorator) {
+					// Tracking
+					((CustomOreDecorator)myOre).toDecorateCount = 0;
+					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
+
+					DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
+					if (throttler == null) {
+						throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
+					}
+
+					// Should replace the ore in the chunk you are standing in.
+					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
+					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
+					if (rand1 == rand2) {								
+						throttler.offer(myOre, chunkX, chunkZ);
+						((CustomOreDecorator)myOre).toDecorateCount++;
+					} else {
+						if (plugin.showDebug) {
+							plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for manual decorate. Chance: " + rand1 + "/" + rand2);
+						}
+					}
+
+
+					if (plugin.showDebug) {
+						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + args[1]);
+					}
+				} else {
+					sender.sendMessage("The specified ore could not be located within the ore decorator");
+					sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);
+				}
 			}
 		}
 		return true;

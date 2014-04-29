@@ -45,7 +45,7 @@ public class DecorateListener implements Listener {
 	}
 
 	@EventHandler
-	public void onChunkPopulate(ChunkPopulateEvent event) {
+	public void onChunkPopulate(ChunkPopulateEvent event) {		
 		if (plugin.getConfig().getBoolean("DecorateNewChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
@@ -61,7 +61,7 @@ public class DecorateListener implements Listener {
 
 					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 					// Set replacement ore type.
-					((CustomOreDecorator) myOre).replace(Material.STONE);
+					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 					//Normally the formula for inclusive low/high is nextInt(high - (low - 1) + 1 but seeing as low is always 1 and 1-1 is 0, we can omit that.
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
@@ -70,17 +70,18 @@ public class DecorateListener implements Listener {
 							// Count total chunks to populate.
 							((CustomOreDecorator) myOre).toDecorateCount++;
 							if (plugin.showDebug) {
-								plugin.getLogger().info("Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
+								//plugin.getLogger().info("Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
 							}
 						}
 					} else {
 						if (plugin.showDebug) {
-							plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for new chunk populate. Chance: " + rand1 + "/" + rand2);
+							// Spam
+							//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for new chunk populate. Chance: " + rand1 + "/" + rand2);
 						}
 					}
 				}
 			}
-		}
+		} 
 	}
 	
 	@EventHandler
