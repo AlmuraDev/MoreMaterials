@@ -41,12 +41,15 @@ public class GeneratorListener implements Listener {
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event) {		
 		if (plugin.getConfig().getBoolean("PopulateNewChunks", false) && event.isNewChunk()) {
+			
 			Decorator myOre = this.plugin.getDecoratorRegistry().get("ore_o_bluestone");
 			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
 			}
-			throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
+			if (!throttler.hasAnyQueued(event.getChunk().getX(), event.getChunk().getZ())) {
+				throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ());
+			}
 		}
 	}
 }
