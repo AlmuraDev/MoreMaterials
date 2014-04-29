@@ -46,7 +46,7 @@ import org.getspout.spoutapi.material.CustomBlock;
  */
 public class CustomOreDecorator extends Decorator {
 	private final CustomBlock ore;
-	public int generatedOre = 0;
+	public int toPopulateCount = 0;
 	public int chunkCount = 0;
 	private final ArrayList<Material> replaceables;
 	private final int minHeight, maxHeight;
@@ -168,9 +168,9 @@ public class CustomOreDecorator extends Decorator {
 								float sizeZ = (z + 0.5f - seedZ) / size;
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
-									if (canDecorate(world, chunk, x, y, z)) {										
-										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);										
-										generatedOre++;
+									if (canDecorate(world, chunk, x, y, z)) {
+										((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
+										
 									}
 								}
 							}

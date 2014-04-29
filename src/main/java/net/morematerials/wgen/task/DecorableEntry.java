@@ -26,7 +26,6 @@ package net.morematerials.wgen.task;
 import java.util.Random;
 
 import net.morematerials.wgen.Decorator;
-import org.bukkit.Chunk;
 
 public class DecorableEntry {
 	private final Decorator decorator;

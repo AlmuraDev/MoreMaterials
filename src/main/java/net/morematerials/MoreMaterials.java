@@ -62,6 +62,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
 
+	public static MoreMaterials instance;
 	private HandlerManager handlerManager;
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;
@@ -76,6 +77,10 @@ public class MoreMaterials extends JavaPlugin {
 		decorationThrotters.stopAll(true);
 	}
 	
+	public static MoreMaterials getInstance() {
+		return instance;
+	}
+
 	@Override
 	public void onEnable() {
 		// Try to create the required folders.

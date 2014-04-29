@@ -83,7 +83,7 @@ public class PopulateExecutor implements CommandExecutor {
 		if (myOre != null && myOre instanceof CustomOreDecorator) {
 			// Tracking
 			((CustomOreDecorator)myOre).chunkCount = 0;
-			((CustomOreDecorator)myOre).generatedOre = 0;
+			((CustomOreDecorator)myOre).toPopulateCount = 0;
 
 			//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
 			// Set replacement ore type.
@@ -100,9 +100,14 @@ public class PopulateExecutor implements CommandExecutor {
 					int offsetX = chunkX+x;
 					int offsetZ = chunkZ+j;
 					throttler.offer(myOre, offsetX, offsetZ, random);
+					// Count total chunks to populate.
+					((CustomOreDecorator)myOre).toPopulateCount++;
 				}
-			}			
-			sender.sendMessage("Generated: " + ((CustomOreDecorator)myOre).generatedOre + " of: " + args[1] + " within: " + ((CustomOreDecorator)myOre).chunkCount + " chunks.");
+			}
+			if (plugin.getConfig().getBoolean("DebugMode", false)) {
+				System.out.println("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
+			}
+			sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator)myOre).toPopulateCount + " of: " + args[1]);
 		} else {
 			sender.sendMessage("The specified ore could not be located within the ore decorator");
 			sender.sendMessage("[0] = " + args[0] + " [1] = " + args[1] + " [2] = " + args[2]);

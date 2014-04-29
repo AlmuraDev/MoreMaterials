@@ -27,6 +27,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -48,9 +49,11 @@ public class DecoratorThrottler extends BukkitRunnable {
 			final DecorableEntry entry = queue.poll();
 			if (entry != null) {
 				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
-				entry.getDecorator().decorate(world, chunk, entry.getRandom());			
-				//System.out.println("Decorated: [" + chunk + "]");
+				entry.getDecorator().decorate(world, chunk, entry.getRandom());
 			}
+		}
+		if (MoreMaterials.getInstance().getConfig().getBoolean("DebugMode", false)) {
+			System.out.println("[MoreMaterials] -  Queue Remaining: " + queue.size());
 		}
 		steps = 0;
 	}
