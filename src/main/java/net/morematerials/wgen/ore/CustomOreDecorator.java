@@ -119,7 +119,7 @@ public class CustomOreDecorator extends Decorator {
 	public void decorate(World world, Chunk chunk, Random random) {		
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (byte i = 0; i < veinsPerChunk; i++) {
-			final int x = (chunk.getX() >> 4) + random.nextInt(16);
+			final int x = (chunk.getX() << 4) + random.nextInt(16);
 			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
 			final int z = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
