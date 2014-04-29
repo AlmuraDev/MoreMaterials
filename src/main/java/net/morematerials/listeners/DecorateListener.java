@@ -74,7 +74,7 @@ public class DecorateListener implements Listener {
 						}
 					} else {
 						if (plugin.showDebug) {
-							System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for new chunk populate. Chance: " + rand1 + "/" + rand2);
+							System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for new chunk decorate. Chance: " + rand1 + "/" + rand2);
 						}
 					}
 				}

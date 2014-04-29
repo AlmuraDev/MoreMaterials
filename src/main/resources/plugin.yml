@@ -11,8 +11,8 @@ commands:
   mm:
     description: Some basic commands!
     usage: /<command> [?]
-  mmpopulate:
-    description: Some basic commands!
+  mmdecorate:
+    description: Decorate Chunk base command.
     usage: /<command> [radius] [customOre] [replaceOre]
   mmdebug:
     description: Show information about current material.

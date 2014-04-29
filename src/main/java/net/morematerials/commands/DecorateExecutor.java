@@ -153,7 +153,7 @@ public class DecorateExecutor implements CommandExecutor {
 							((CustomOreDecorator)myOre).toDecorateCount++;
 						} else {
 							if (plugin.showDebug) {
-								System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual populate. Chance: " + rand1 + "/" + rand2);
+								System.out.println("[MoreMaterials] -  Offer to Queue: " + ((CustomOreDecorator)myOre).getIdentifier() + " failed chance caluclation for manual decorate. Chance: " + rand1 + "/" + rand2);
 							}
 						}
 					}
