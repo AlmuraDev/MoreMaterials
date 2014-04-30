@@ -136,8 +136,8 @@ public class CustomOreDecorator extends Decorator {
 			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
 			final int z = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
-			//placeOre(world, chunk, x, y, z, veinSize, random);
-			vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
+			placeOre(world, chunk, x, y, z, veinSize, random);
+			//vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
 		}		
 	}
 

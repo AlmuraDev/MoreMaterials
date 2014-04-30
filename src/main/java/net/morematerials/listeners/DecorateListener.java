@@ -51,6 +51,9 @@ public class DecorateListener implements Listener {
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
 			}
+			// Slow down Trottler thread.
+			throttler.setSpeed(10);
+			
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (throttler.isQueued(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
 					continue;
@@ -58,8 +61,7 @@ public class DecorateListener implements Listener {
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
 					((CustomOreDecorator) myOre).toDecorateCount = 0;
-
-					//((CustomOreDecorator)myOre).replace(Material.STONE, Material.AIR);
+				
 					// Set replacement ore type.
 					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 					//Normally the formula for inclusive low/high is nextInt(high - (low - 1) + 1 but seeing as low is always 1 and 1-1 is 0, we can omit that.

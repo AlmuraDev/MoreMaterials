@@ -39,6 +39,8 @@ public class DecoratorThrottler extends BukkitRunnable {
 	private final MoreMaterials plugin;
 	private final World world;
 	private int steps = 0;
+	public int speed = 15;
+	private boolean done, finished = false;
 
 	public DecoratorThrottler(MoreMaterials plugin, World world) {
 		this.plugin = plugin;
@@ -48,15 +50,25 @@ public class DecoratorThrottler extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		while (++steps <= 25) {
+		while (++steps <= speed) {
 			final DecorableEntry entry = queue.poll();
 			if (entry != null) {
-				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
-				entry.getDecorator().decorate(world, chunk, RANDOM);				
+				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());				
+				entry.getDecorator().decorate(world, chunk, RANDOM);
 			}
 		}
-		if (plugin.showDebug && queue.size()>1) {
-			plugin.getLogger().info("Queue Remaining: " + queue.size());
+		if (plugin.showDebug) {
+			if (queue.size()>1) {
+				plugin.getLogger().info("Queue Remaining: " + queue.size());
+				done = false;
+				finished = false;
+			} else {
+				done = true;
+				if (done && !finished) {
+					plugin.getLogger().info("Decorate Task has completed.");
+					finished = true;
+				}
+			}
 		}
 		steps = 0;
 	}
@@ -78,7 +90,14 @@ public class DecoratorThrottler extends BukkitRunnable {
 				break;
 			}
 		}
-
 		return any;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
+	public void setSpeed(int newSpeed) {
+		speed = newSpeed;
 	}
 }
