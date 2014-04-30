@@ -136,8 +136,8 @@ public class CustomOreDecorator extends Decorator {
 			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
 			final int z = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
-			placeOre(world, chunk, x, y, z, veinSize, random);
-			//vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
+			//placeOre(world, chunk, x, y, z, veinSize, random);
+			vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
 		}		
 	}
 
@@ -153,8 +153,9 @@ public class CustomOreDecorator extends Decorator {
         final float angle = random.nextFloat() * (float) TrigMath.PI;
         final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
         // Generate box min and max corner coordinates
-        final Vector3f min = origin.sub(offset.getX(), random.nextInt(3) + 2, offset.getY());
-        final Vector3f max = origin.add(offset.getX(), random.nextInt(3) + 2, offset.getY());
+        final Vector3f min = origin.sub(offset.getX() + 8, random.nextInt(3) + 2, offset.getY() + 8);
+        //final Vector3f min = origin.sub(offset.getX(), random.nextInt(3) + 2, offset.getY());  // Old Line
+        final Vector3f max = origin.add(offset.getX() + 8, random.nextInt(3) + 2, offset.getY() + 8);
         // Generate an ore sphere on each block on the diagonal from min to max
         for (int count = 0; count <= veinSize; count++) {
             // Calculate the percent of the count so far
