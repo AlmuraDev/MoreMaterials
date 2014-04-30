@@ -30,6 +30,7 @@ import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -71,7 +72,7 @@ public class DecorateExecutor implements CommandExecutor {
 		final int chunkX = myLocation.getChunk().getX();
 		final int chunkZ = myLocation.getChunk().getZ();
 		final int radius = Integer.parseInt(args[0]);
-
+		
 		// Startup Throttler Thread.
 		DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
 		if (throttler == null) {
@@ -91,7 +92,7 @@ public class DecorateExecutor implements CommandExecutor {
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {								
-						throttler.offer(myOre, chunkX, chunkZ);
+						throttler.offer(myOre, chunkX, chunkZ, false);
 						((CustomOreDecorator)myOre).toDecorateCount++;
 					} else {
 						if (plugin.showDebug) {
@@ -119,7 +120,7 @@ public class DecorateExecutor implements CommandExecutor {
 				int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 				int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 				if (rand1 == rand2) {								
-					throttler.offer(myOre, chunkX, chunkZ);
+					throttler.offer(myOre, chunkX, chunkZ, false);
 					((CustomOreDecorator)myOre).toDecorateCount++;
 				} else {
 					if (plugin.showDebug) {
@@ -152,7 +153,7 @@ public class DecorateExecutor implements CommandExecutor {
 							int rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
 							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 							if (rand1 == rand2) {								
-								throttler.offer(myOre, offsetX, offsetZ);
+								throttler.offer(myOre, offsetX, offsetZ, false);
 								((CustomOreDecorator)myOre).toDecorateCount++;
 							} else {
 								if (plugin.showDebug) {
@@ -186,7 +187,7 @@ public class DecorateExecutor implements CommandExecutor {
 						int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 						if (rand1 == rand2) {								
-							throttler.offer(myOre, offsetX, offsetZ);
+							throttler.offer(myOre, offsetX, offsetZ, false);
 							((CustomOreDecorator)myOre).toDecorateCount++;
 						} else {
 							if (plugin.showDebug) {

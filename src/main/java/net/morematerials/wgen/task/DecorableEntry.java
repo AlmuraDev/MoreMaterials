@@ -28,6 +28,7 @@ import net.morematerials.wgen.Decorator;
 public class DecorableEntry {
 	private final Decorator decorator;
 	private final int chunkX, chunkZ;
+	private final boolean create;
 
 	@Override
 	public boolean equals(Object o) {
@@ -51,10 +52,11 @@ public class DecorableEntry {
 		return result;
 	}
 
-	public DecorableEntry(Decorator decorator, int chunkX, int chunkZ) {
+	public DecorableEntry(Decorator decorator, int chunkX, int chunkZ, boolean create) {
 		this.decorator = decorator;
 		this.chunkX = chunkX;
 		this.chunkZ = chunkZ;
+		this.create = create;
 	}
 
 	public Decorator getDecorator() {
@@ -67,5 +69,9 @@ public class DecorableEntry {
 
 	public int getChunkZ() {
 		return chunkZ;
+	}
+	
+	public boolean willCreate() {
+		return create;
 	}
 }

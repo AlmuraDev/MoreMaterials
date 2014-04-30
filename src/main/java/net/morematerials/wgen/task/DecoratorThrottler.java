@@ -52,7 +52,12 @@ public class DecoratorThrottler extends BukkitRunnable {
 	public void run() {
 		while (++steps <= speed) {
 			final DecorableEntry entry = queue.poll();
-			if (entry != null) {
+			if (entry != null) {				
+				final boolean exists = world.loadChunk(entry.getChunkX(), entry.getChunkZ(), false);
+				if (!exists && !entry.willCreate()) {
+					//System.out.println("Skipped decoration because the chunk: " + entry.getChunkX() + " / " + entry.getChunkZ() + " doesn't exist.");
+					continue;
+				}
 				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());				
 				entry.getDecorator().decorate(world, chunk, RANDOM);
 			}
@@ -73,19 +78,19 @@ public class DecoratorThrottler extends BukkitRunnable {
 		steps = 0;
 	}
 
-	public boolean offer(Decorator decorator, int chunkX, int chunkZ) {
-		final DecorableEntry entry = new DecorableEntry(decorator, chunkX, chunkZ);
-		return !queue.contains(entry) && queue.offer(new DecorableEntry(decorator, chunkX, chunkZ));
+	public boolean offer(Decorator decorator, int chunkX, int chunkZ, boolean create) {
+		final DecorableEntry entry = new DecorableEntry(decorator, chunkX, chunkZ, create);
+		return !queue.contains(entry) && queue.offer(new DecorableEntry(decorator, chunkX, chunkZ, create));
 	}
 
-	public boolean isQueued(Decorator decorator, int chunkX, int chunkZ) {
-		return queue.contains(new DecorableEntry(decorator, chunkX, chunkZ));
+	public boolean isQueued(Decorator decorator, int chunkX, int chunkZ, boolean create) {
+		return queue.contains(new DecorableEntry(decorator, chunkX, chunkZ, create));
 	}
 
 	public boolean hasAnyQueued(int chunkX, int chunkZ) {
 		boolean any = false;
 		for (Decorator decorator : plugin.getDecoratorRegistry().getAll()) {
-			if (isQueued(decorator, chunkX, chunkZ)) {
+			if (isQueued(decorator, chunkX, chunkZ, false) || isQueued(decorator, chunkX, chunkZ, true)) {
 				any = true;
 				break;
 			}
