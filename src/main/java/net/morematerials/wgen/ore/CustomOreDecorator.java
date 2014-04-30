@@ -28,8 +28,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
+import com.flowpowered.math.GenericMath;
 import com.flowpowered.math.TrigMath;
 import com.flowpowered.math.vector.Vector2f;
+import com.flowpowered.math.vector.Vector3f;
+import com.flowpowered.math.vector.Vector3i;
+
 import net.morematerials.wgen.Decorator;
 
 import org.bukkit.Chunk;
@@ -133,6 +137,7 @@ public class CustomOreDecorator extends Decorator {
 			final int z = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
 			placeOre(world, chunk, x, y, z, veinSize, random);
+			//vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
 		}		
 	}
 
@@ -142,6 +147,56 @@ public class CustomOreDecorator extends Decorator {
 				" maxVeinSize= " + maxVeinSize + ", minVeinsPerChunk= " + minVeinsPerChunk + ", maxVeinsPerChunk= " + maxVeinsPerChunk + "}";
 	}
 
+	
+	private void vectorPlaceOre(World world, Chunk chunk, Vector3f origin, int veinSize, Random random) {
+        // Generate dimensions of box
+        final float angle = random.nextFloat() * (float) TrigMath.PI;
+        final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
+        // Generate box min and max corner coordinates
+        final Vector3f min = origin.sub(offset.getX(), random.nextInt(3) + 2, offset.getY());
+        final Vector3f max = origin.add(offset.getX(), random.nextInt(3) + 2, offset.getY());
+        // Generate an ore sphere on each block on the diagonal from min to max
+        for (int count = 0; count <= veinSize; count++) {
+            // Calculate the percent of the count so far
+            final int percent = count / veinSize;
+            // Get the center point, which is on the diagonal in between the min and max corners
+            final Vector3f center = GenericMath.lerp(min, max, percent);
+            // Calculate the size of the ore sphere so that it increases as we approach the middle
+            final float size = ((TrigMath.sin(percent * TrigMath.PI) + 1) * random.nextFloat() * veinSize / 16 + 1) / 2;
+            // Compute the start and end point of the ore sphere
+            final Vector3i start = center.sub(size, size, size).toInt();
+            final Vector3i end = center.add(size, size, size).toInt();
+            // Iterate inside the volume we just defined
+            for (int x = start.getX(); x <= end.getX(); x++) {
+                // Get the distance from the center on x, normalized
+                float dx = (x + 0.5f - center.getX()) / size;
+                dx *= dx;
+                if (dx < 1) {
+                    // Get the distance from the center on y, normalized
+                    for (int y = start.getY(); y <= end.getY(); y++) {
+                        float dy = (y + 0.5f - center.getY()) / size;
+                        dy *= dy;
+                        if (dx + dy < 1) {
+                            // Get the distance from the center on z, normalized
+                            for (int z = start.getZ(); z <= end.getZ(); z++) {
+                                float dz = (z + 0.5f - center.getZ()) / size;
+                                dz *= dz;
+                                // Check if we are in the ore sphere
+                                if (dx + dy + dz < 1) {
+                                    // If so, generate the ore block
+                                    if (canDecorate(world, chunk, x, y, z)) {
+                                    	final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
+										block.setCustomBlock(ore);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+	
 	private void placeOre(World world, Chunk chunk, int originX, int originY, int originZ, int veinSize, Random random) {
 		final float angle = random.nextFloat() * (float) Math.PI;
 		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
@@ -181,9 +236,7 @@ public class CustomOreDecorator extends Decorator {
 								if (sizeX + sizeY + sizeZ < 1) {
 									if (canDecorate(world, chunk, x, y, z)) {
 										final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-										block.setCustomBlock(ore);
-										//((SpoutChunk) chunk).setCustomBlock(x, y, z, ore);
-										//System.out.println("Decorated location: " + x + "/" + y + "/" + z + " with ore: " + ore.getName());
+										block.setCustomBlock(ore);										
 									}
 								}
 							}
@@ -191,6 +244,6 @@ public class CustomOreDecorator extends Decorator {
 					}
 				}
 			}
-		}		
-	}	
+		}
+	}
 }
