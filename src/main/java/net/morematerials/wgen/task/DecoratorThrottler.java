@@ -66,6 +66,7 @@ public class DecoratorThrottler extends BukkitRunnable {
 				done = true;
 				if (done && !finished) {
 					plugin.getLogger().info("Decorate Task has completed.");
+					plugin.save();
 					finished = true;
 				}
 			}

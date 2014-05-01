@@ -30,7 +30,6 @@ import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.task.DecoratorThrottler;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -92,8 +91,15 @@ public class DecorateExecutor implements CommandExecutor {
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {								
-						throttler.offer(myOre, chunkX, chunkZ);
-						((CustomOreDecorator)myOre).toDecorateCount++;
+						if (!plugin.contains(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier())) {
+							throttler.offer(myOre, chunkX, chunkZ);
+							plugin.put(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
+							((CustomOreDecorator)myOre).toDecorateCount++;
+						} else {
+							if (plugin.showDebug) {
+								plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + chunkX + " / " + chunkZ + " is already decorated.");
+							}
+						}
 					} else {
 						if (plugin.showDebug) {
 							//plugin.getLogger().info("Offer to Queue: [" + myOre.getIdentifier() + "] failed chance calculation for manual decorate. Chance: " + rand1 + "/" + rand2);
@@ -118,10 +124,17 @@ public class DecorateExecutor implements CommandExecutor {
 
 				// Calculate chance of decorate for this specific chunk and specific ore type.
 				int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
-				int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
-				if (rand1 == rand2) {								
-					throttler.offer(myOre, chunkX, chunkZ);
-					((CustomOreDecorator)myOre).toDecorateCount++;
+				int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
+				if (rand1 == rand2) {
+					if (!plugin.contains(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier())) {
+						throttler.offer(myOre, chunkX, chunkZ);
+						plugin.put(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
+						((CustomOreDecorator)myOre).toDecorateCount++;
+					} else {
+						if (plugin.showDebug) {
+							plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + chunkX + " / " + chunkZ + " is already decorated.");
+						}
+					}
 				} else {
 					if (plugin.showDebug) {
 						//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for manual decorate. Chance: " + rand1 + "/" + rand2);
@@ -151,14 +164,21 @@ public class DecorateExecutor implements CommandExecutor {
 
 							// Calculate chance of decorate for this specific chunk and specific ore type.
 							int rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
-							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
-							if (rand1 == rand2) {								
-								throttler.offer(myOre, offsetX, offsetZ);
-								((CustomOreDecorator)myOre).toDecorateCount++;
+							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
+							if (rand1 == rand2) {
+								if (!plugin.contains(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier())) {
+									throttler.offer(myOre, offsetX, offsetZ);
+									plugin.put(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
+									((CustomOreDecorator)myOre).toDecorateCount++;
+								} else {
+									if (plugin.showDebug) {
+										plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + offsetX + " / " + offsetZ + " is already decorated.");
+									}
+								}
 							} else {
 								if (plugin.showDebug) {
 									//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for manual populate. Chance: " + rand1 + "/" + rand2);
-								}			
+								}
 							}
 						}
 					}
@@ -172,10 +192,10 @@ public class DecorateExecutor implements CommandExecutor {
 
 		// Multi-Chunk Generation using specified args[1] ore.
 		if (!args[1].equalsIgnoreCase("all") && radius >= 1) {
-			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);		
+			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);
 			if (myOre instanceof CustomOreDecorator) {
 				// Tracking
-				((CustomOreDecorator)myOre).toDecorateCount = 0;				
+				((CustomOreDecorator)myOre).toDecorateCount = 0;
 				// Set replacement ore type.
 				((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 
@@ -185,10 +205,17 @@ public class DecorateExecutor implements CommandExecutor {
 						int offsetX = chunkX+x;
 						int offsetZ = chunkZ+j;
 						int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
-						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
-						if (rand1 == rand2) {								
-							throttler.offer(myOre, offsetX, offsetZ);
+						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
+						if (rand1 == rand2) {
+							if (!plugin.contains(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier())) {
+								throttler.offer(myOre, offsetX, offsetZ);
+								plugin.put(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
 							((CustomOreDecorator)myOre).toDecorateCount++;
+							} else {
+								if (plugin.showDebug) {
+									plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + offsetX + " / " + offsetZ + " is already decorated.");
+								}
+							}
 						} else {
 							if (plugin.showDebug) {
 								//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for manual decorate. Chance: " + rand1 + "/" + rand2);

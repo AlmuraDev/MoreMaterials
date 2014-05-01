@@ -237,7 +237,7 @@ public class CustomOreDecorator extends Decorator {
 								if (sizeX + sizeY + sizeZ < 1) {
 									if (canDecorate(world, chunk, x, y, z)) {
 										final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-										block.setCustomBlock(ore);										
+										block.setCustomBlock(ore);
 									}
 								}
 							}

@@ -23,8 +23,15 @@
  */
 package net.morematerials;
 
+import gnu.trove.map.hash.TLongObjectHashMap;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import net.morematerials.commands.DebugExecutor;
@@ -57,10 +64,13 @@ import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
+import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
 import net.morematerials.wgen.task.TaskRegistry;
 
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
@@ -75,9 +85,11 @@ public class MoreMaterials extends JavaPlugin {
 	private TaskRegistry decorationThrotters;
 	private List<String> decorateWorldList;
 	public boolean showDebug = false;
+	private Map<UUID, TLongObjectHashMap<List<String>>> worldsDecorated = new HashMap<>();
 
 	@Override
 	public void onDisable() {
+		save();
 		decorationThrotters.stopAll(true);
 	}
 
@@ -95,6 +107,7 @@ public class MoreMaterials extends JavaPlugin {
 		}
 		
 		// Configuration
+		load();
 		decorateWorldList = this.getConfig().getStringList("DecorateWorlds");
 						
 		// Initialize all managers.
@@ -124,11 +137,6 @@ public class MoreMaterials extends JavaPlugin {
 		this.updateManager = new UpdateManager(this);
 		this.smpManager.init();
 
-		// Debug
-		if (this.getConfig().getBoolean("DebugMode")) {
-			showDebug = true;
-		}
-		
 		// Metrics.
 		if (this.getConfig().getBoolean("Metrics", true)) {
 			try {
@@ -230,4 +238,82 @@ public class MoreMaterials extends JavaPlugin {
 		return decorateWorldList;
 	}
 
+	public void put(World world, int cx, int cz, String decoratorID) {
+		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
+		if (chunksDecorated == null) {
+			chunksDecorated = new TLongObjectHashMap<>();
+			worldsDecorated.put(world.getUID(), chunksDecorated);			
+		}
+		final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
+		List<String> decorators = chunksDecorated.get(key);
+		if (decorators == null) {
+			decorators = new ArrayList<>();
+			chunksDecorated.put(key, decorators);
+		}
+		decorators.add(decoratorID);
+	}
+	
+	public void remove(World world, int cx, int cz, String decoratorID) {
+		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
+		if (chunksDecorated != null) {
+			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
+			List<String> decorators = chunksDecorated.get(key);
+			if (decorators != null) {
+				decorators.remove(decoratorID);
+				if (decorators.isEmpty()) {
+					chunksDecorated.remove(key);
+					if (chunksDecorated.isEmpty()) {
+						worldsDecorated.remove(world.getUID());
+					}
+				}
+			}
+		}
+	}
+	
+	public boolean containsAny(World world, int cx, int cz) {
+		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
+		if (chunksDecorated != null) {
+			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
+			return chunksDecorated.get(key) != null;
+		}
+		return false;
+	}
+
+	public boolean contains(World world, int cx, int cz, String decoratorID) {
+		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
+		if (chunksDecorated != null) {
+			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
+			final List<String> decorators = chunksDecorated.get(key);
+			if (decorators != null) {
+				return decorators.contains(decoratorID);
+			}
+		}
+		return false;
+	}
+	
+	private void load() {
+		try {
+			worldsDecorated = SaveAndLoad.load("plugins/MoreMaterials/Wgen/Chunks.dat");
+		} catch (Exception e) {
+			worldsDecorated = new HashMap<>();
+		}
+	}
+
+	public void save() {
+		try {
+			SaveAndLoad.save(worldsDecorated, ("plugins/MoreMaterials/Wgen/Chunks.dat"));
+		} catch (Exception e) {
+			String path = this.getDataFolder() + "/Wgen/";
+			new File(path).mkdirs();
+			File file = new File(path, "Chunks.dat");
+			try {
+				file.createNewFile();
+			} catch (IOException f) {
+			}
+			try {
+				SaveAndLoad.save(worldsDecorated, ("plugins/MoreMaterials/Wgen/Chunks.dat"));
+			} catch (Exception g) {
+			}
+		}
+	}
 }

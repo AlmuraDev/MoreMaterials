@@ -61,7 +61,7 @@ public class DecorateListener implements Listener {
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
 					((CustomOreDecorator) myOre).toDecorateCount = 0;
-				
+
 					// Set replacement ore type.
 					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 					//Normally the formula for inclusive low/high is nextInt(high - (low - 1) + 1 but seeing as low is always 1 and 1-1 is 0, we can omit that.
@@ -69,6 +69,9 @@ public class DecorateListener implements Listener {
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {
 						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
+							// Save Information about placement
+							plugin.put(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre.getIdentifier());
+							
 							// Count total chunks to populate.
 							((CustomOreDecorator) myOre).toDecorateCount++;
 							if (plugin.showDebug) {
