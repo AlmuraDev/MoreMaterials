@@ -51,6 +51,11 @@ public class DecorateListener implements Listener {
 			if (throttler == null) {
 				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
 			}
+			
+			if (plugin.containsAny(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ())) {
+				throttler.setSpeed(10); // Sets speed to 10 because this indicates a command is running creating new chunks.
+				return;
+			}
 			// Slow down Trottler thread.
 			throttler.setSpeed(10);
 			
