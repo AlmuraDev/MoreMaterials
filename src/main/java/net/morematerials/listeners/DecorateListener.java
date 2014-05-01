@@ -55,7 +55,7 @@ public class DecorateListener implements Listener {
 			throttler.setSpeed(10);
 			
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
-				if (throttler.isQueued(myOre, event.getChunk().getX(), event.getChunk().getZ(), true) || throttler.isQueued(myOre, event.getChunk().getX(), event.getChunk().getZ(), false)) {
+				if (throttler.isQueued(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
 					continue;
 				}
 				if (myOre instanceof CustomOreDecorator) {
@@ -68,7 +68,7 @@ public class DecorateListener implements Listener {
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {
-						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ(), true)) {
+						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
 							// Count total chunks to populate.
 							((CustomOreDecorator) myOre).toDecorateCount++;
 							if (plugin.showDebug) {

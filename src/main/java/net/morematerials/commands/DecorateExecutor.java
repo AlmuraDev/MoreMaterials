@@ -92,7 +92,7 @@ public class DecorateExecutor implements CommandExecutor {
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {								
-						throttler.offer(myOre, chunkX, chunkZ, false);
+						throttler.offer(myOre, chunkX, chunkZ);
 						((CustomOreDecorator)myOre).toDecorateCount++;
 					} else {
 						if (plugin.showDebug) {
@@ -120,7 +120,7 @@ public class DecorateExecutor implements CommandExecutor {
 				int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 				int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 				if (rand1 == rand2) {								
-					throttler.offer(myOre, chunkX, chunkZ, false);
+					throttler.offer(myOre, chunkX, chunkZ);
 					((CustomOreDecorator)myOre).toDecorateCount++;
 				} else {
 					if (plugin.showDebug) {
@@ -153,7 +153,7 @@ public class DecorateExecutor implements CommandExecutor {
 							int rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
 							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 							if (rand1 == rand2) {								
-								throttler.offer(myOre, offsetX, offsetZ, false);
+								throttler.offer(myOre, offsetX, offsetZ);
 								((CustomOreDecorator)myOre).toDecorateCount++;
 							} else {
 								if (plugin.showDebug) {
@@ -187,7 +187,7 @@ public class DecorateExecutor implements CommandExecutor {
 						int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 						if (rand1 == rand2) {								
-							throttler.offer(myOre, offsetX, offsetZ, false);
+							throttler.offer(myOre, offsetX, offsetZ);
 							((CustomOreDecorator)myOre).toDecorateCount++;
 						} else {
 							if (plugin.showDebug) {
