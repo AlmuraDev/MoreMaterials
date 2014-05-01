@@ -118,7 +118,7 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				final int maxVeinsPerChunk = blockSourceSection.getInt("max-veins-per-chunk", 1);
 				final CustomOreDecorator decorator = new CustomOreDecorator(identifier, ore, decorateChance, minHeight, maxHeight, minVeinSize, maxVeinSize, minVeinsPerChunk, maxVeinsPerChunk);
 				objects.add(decorator);
-				plugin.getLogger().info("Loaded Decorator [" + decorator + "]");
+				plugin.getLogger().info("Loaded Decorator [" + decorator.getIdentifier() + "]");
 			}
 		}
 		return objects;

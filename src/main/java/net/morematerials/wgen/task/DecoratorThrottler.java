@@ -52,13 +52,15 @@ public class DecoratorThrottler extends BukkitRunnable {
 	public void run() {
 		while (++steps <= speed) {
 			final DecorableEntry entry = queue.poll();
-			if (entry != null) {				
-				final boolean exists = world.loadChunk(entry.getChunkX(), entry.getChunkZ(), false);
-				if (!exists && !entry.willCreate()) {
-					//System.out.println("Skipped decoration because the chunk: " + entry.getChunkX() + " / " + entry.getChunkZ() + " doesn't exist.");
-					continue;
+			if (entry != null) {
+				if (!entry.willCreate()) {
+					final boolean exists = world.loadChunk(entry.getChunkX(), entry.getChunkZ(), false);
+					if (!exists) {
+						//System.out.println("Skipped decoration because the chunk: " + entry.getChunkX() + " / " + entry.getChunkZ() + " doesn't exist.");
+						continue;
+					}
 				}
-				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());				
+				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
 				entry.getDecorator().decorate(world, chunk, RANDOM);
 			}
 		}
@@ -97,11 +99,11 @@ public class DecoratorThrottler extends BukkitRunnable {
 		}
 		return any;
 	}
-	
+
 	public int getSpeed() {
 		return speed;
 	}
-	
+
 	public void setSpeed(int newSpeed) {
 		speed = newSpeed;
 	}

@@ -124,6 +124,11 @@ public class MoreMaterials extends JavaPlugin {
 		this.updateManager = new UpdateManager(this);
 		this.smpManager.init();
 
+		// Debug
+		if (this.getConfig().getBoolean("DebugMode")) {
+			showDebug = true;
+		}
+		
 		// Metrics.
 		if (this.getConfig().getBoolean("Metrics", true)) {
 			try {
