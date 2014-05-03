@@ -24,10 +24,11 @@
 package net.morematerials.wgen.thread;
 
 import com.flowpowered.math.vector.Vector3f;
+import com.flowpowered.math.vector.Vector3i;
 import net.morematerials.wgen.Decorator;
 import org.bukkit.World;
 
-public class DecorablePoint extends Vector3f {
+public class DecorablePoint extends Vector3i {
 	private final World world;
 	private final int cx, cz;
 	private final Decorator decorator;
