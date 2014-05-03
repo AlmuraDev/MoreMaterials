@@ -27,44 +27,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.morematerials.MoreMaterials;
-import org.bukkit.Bukkit;
+import net.morematerials.wgen.thread.MaffThread;
 import org.bukkit.World;
 
-public class TaskRegistry {
+public class ThreadRegistry {
 	private final MoreMaterials plugin;
-	private final Map<World, DecoratorThrottler> throttlers = new HashMap<>();
+    private final BlockPlacer placer;
+	private final Map<World, MaffThread> threads = new HashMap<>();
 
-	public TaskRegistry(MoreMaterials plugin) {
+	public ThreadRegistry(MoreMaterials plugin, BlockPlacer placer) {
 		this.plugin = plugin;
+        this.placer = placer;
 	}
 
-	public DecoratorThrottler get(World world) {
-		return throttlers.get(world);
+	public MaffThread get(World world) {
+		return threads.get(world);
 	}
 
-	public DecoratorThrottler start(long delay, World world) {
-		final DecoratorThrottler throtter = new DecoratorThrottler(plugin, world);
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, throtter, 0L, delay);
-		throttlers.put(world, throtter);
-		return throtter;
+	public MaffThread start(int tps, World world) {
+		final MaffThread thread = new MaffThread(plugin, placer, tps);
+        threads.put(world, thread);
+		return thread;
 	}
 
 	public void stop(World world, boolean clear) {
-		final DecoratorThrottler task = clear ? throttlers.remove(world) : throttlers.get(world);
+		final MaffThread thread = clear ? threads.remove(world) : threads.get(world);
 
-		if (task == null) {
+		if (thread == null) {
 			return;
 		}
 
-		task.cancel();
+        thread.terminate();
 	}
 
 	public void stopAll(boolean clear) {
-		for (DecoratorThrottler throttler : throttlers.values()) {
-			throttler.cancel();
+		for (MaffThread thread : threads.values()) {
+			thread.terminate();
 		}
 		if (clear) {
-			throttlers.clear();
+			threads.clear();
 		}
 	}
 }

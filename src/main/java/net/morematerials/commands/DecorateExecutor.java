@@ -27,9 +27,9 @@ import java.util.Random;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
-import net.morematerials.wgen.task.DecoratorThrottler;
+import net.morematerials.wgen.task.BlockPlacer;
 import net.morematerials.wgen.ore.CustomOreDecorator;
-
+import net.morematerials.wgen.thread.MaffThread;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -72,10 +72,10 @@ public class DecorateExecutor implements CommandExecutor {
 		final int chunkZ = myLocation.getChunk().getZ();
 		final int radius = Integer.parseInt(args[0]);
 		
-		// Startup Throttler Thread.
-		DecoratorThrottler throttler = plugin.getDecorationThrotters().get(myLocation.getWorld());
-		if (throttler == null) {
-			throttler = plugin.getDecorationThrotters().start(5, myLocation.getWorld());
+		// Startup Maff thread.
+		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
+		if (thread == null) {
+            thread = plugin.getThreadRegistry().start(5, myLocation.getWorld());
 		}	
 
 		// Single Chunk Generation using all ores in objects.yml (ores)
@@ -92,7 +92,7 @@ public class DecorateExecutor implements CommandExecutor {
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {								
 						if (!plugin.contains(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier())) {
-							throttler.offer(myOre, chunkX, chunkZ);
+                            thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 							plugin.put(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
 							((CustomOreDecorator)myOre).toDecorateCount++;
 						} else {
@@ -127,7 +127,7 @@ public class DecorateExecutor implements CommandExecutor {
 				int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
 				if (rand1 == rand2) {
 					if (!plugin.contains(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier())) {
-						throttler.offer(myOre, chunkX, chunkZ);
+						thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 						plugin.put(((Player)sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
 						((CustomOreDecorator)myOre).toDecorateCount++;
 					} else {
@@ -167,7 +167,7 @@ public class DecorateExecutor implements CommandExecutor {
 							int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
 							if (rand1 == rand2) {
 								if (!plugin.contains(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier())) {
-									throttler.offer(myOre, offsetX, offsetZ);
+									thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
 									plugin.put(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
 									((CustomOreDecorator)myOre).toDecorateCount++;
 								} else {
@@ -208,7 +208,7 @@ public class DecorateExecutor implements CommandExecutor {
 						int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
 						if (rand1 == rand2) {
 							if (!plugin.contains(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier())) {
-								throttler.offer(myOre, offsetX, offsetZ);
+                                thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
 								plugin.put(((Player)sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
 								((CustomOreDecorator)myOre).toDecorateCount++;
 							} else {

@@ -64,12 +64,10 @@ import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
-import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
-import net.morematerials.wgen.task.TaskRegistry;
-
-import org.bukkit.Chunk;
+import net.morematerials.wgen.task.BlockPlacer;
+import net.morematerials.wgen.task.ThreadRegistry;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -82,15 +80,16 @@ public class MoreMaterials extends JavaPlugin {
 	private UpdateManager updateManager;
 	private FurnaceRecipeManager furnaceRecipeManager;
 	private DecoratorRegistry decoratorRegistry;
-	private TaskRegistry decorationThrotters;
-	private List<String> decorateWorldList;
+	private ThreadRegistry maffThreads;
+    private List<String> decorateWorldList;
 	public boolean showDebug = false;
 	private Map<UUID, TLongObjectHashMap<List<String>>> worldsDecorated = new HashMap<>();
 
 	@Override
 	public void onDisable() {
 		save();
-		decorationThrotters.stopAll(true);
+		maffThreads.stopAll(true);
+        getServer().getScheduler().cancelTasks(this);
 	}
 
 	@Override
@@ -193,7 +192,9 @@ public class MoreMaterials extends JavaPlugin {
 		final DecoratorLoader loader = new DecoratorLoader(this);
 		loader.onEnable(getDataFolder());
 		loader.load();
-		decorationThrotters = new TaskRegistry(this);
+        final BlockPlacer placer = new BlockPlacer(this);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, placer, 0, 5);
+		maffThreads = new ThreadRegistry(this, placer);
 		
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
@@ -206,8 +207,8 @@ public class MoreMaterials extends JavaPlugin {
 		return decoratorRegistry;
 	}
 
-	public TaskRegistry getDecorationThrotters() {
-		return decorationThrotters;
+	public ThreadRegistry getThreadRegistry() {
+		return maffThreads;
 	}
 
 	public HandlerManager getHandlerManager() {

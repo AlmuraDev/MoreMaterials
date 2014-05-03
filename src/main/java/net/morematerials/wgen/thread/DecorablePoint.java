@@ -21,59 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.morematerials.wgen.task;
+package net.morematerials.wgen.thread;
 
+import com.flowpowered.math.vector.Vector3f;
 import net.morematerials.wgen.Decorator;
 import org.bukkit.World;
 
-public class DecorableEntry {
+public class DecorablePoint extends Vector3f {
     private final World world;
-	private final int cx, cz;
+    private final int cx, cz;
     private final Decorator decorator;
 
-	public DecorableEntry(World world, int cx, int cz, Decorator decorator) {
+    public DecorablePoint(World world, int cx, int cz, int bx, int by, int bz, Decorator decorator) {
+        super(bx, by, bz);
         this.world = world;
-		this.cx = cx;
-		this.cz = cz;
+        this.cx = cx;
+        this.cz = cz;
         this.decorator = decorator;
-	}
+    }
 
     public World getWorld() {
         return world;
     }
 
-	public int getChunkX() {
-		return cx;
-	}
+    public int getChunkX() {
+        return cx;
+    }
 
-	public int getChunkZ() {
-		return cz;
-	}
+    public int getChunkZ() {
+        return cz;
+    }
 
     public Decorator getDecorator() {
         return decorator;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final DecorableEntry that = (DecorableEntry) o;
-
-        return cx == that.cx && cz == that.cz && decorator.equals(that.decorator) && world.equals(that.world);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = world.hashCode();
-        result = 31 * result + cx;
-        result = 31 * result + cz;
-        result = 31 * result + decorator.hashCode();
-        return result;
     }
 }

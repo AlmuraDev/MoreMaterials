@@ -24,48 +24,43 @@
 package net.morematerials.wgen.task;
 
 import java.util.Queue;
-import java.util.Random;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.morematerials.MoreMaterials;
-import net.morematerials.wgen.Decorator;
-import org.bukkit.Chunk;
-import org.bukkit.World;
+import net.morematerials.wgen.ore.CustomOreDecorator;
+import net.morematerials.wgen.thread.DecorablePoint;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.getspout.spoutapi.block.SpoutBlock;
 
-public class DecoratorThrottler extends BukkitRunnable {
-	private static final Random RANDOM = new Random();
-	private final Queue<DecorableEntry> queue;
+public class BlockPlacer extends BukkitRunnable {
+	private final Queue<DecorablePoint> queue;
 	private final MoreMaterials plugin;
-	private final World world;
 	private int steps = 0;
 	public int speed = 15;
-	private boolean done, finished = false;
+	private boolean finished = false;
 
-	public DecoratorThrottler(MoreMaterials plugin, World world) {
+	public BlockPlacer(MoreMaterials plugin) {
 		this.plugin = plugin;
-		this.world = world;
-		queue = new LinkedBlockingQueue<>();
+		queue = new ConcurrentLinkedQueue<>();
 	}
 
 	@Override
 	public void run() {
 		while (++steps <= speed) {
-			final DecorableEntry entry = queue.poll();
-			if (entry != null) {
-				final Chunk chunk = world.getChunkAt(entry.getChunkX(), entry.getChunkZ());
-				entry.getDecorator().decorate(world, chunk, RANDOM);
+			final DecorablePoint entry = queue.poll();
+			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
+                if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), entry.getFloorX(), entry.getFloorY(), entry.getFloorZ())) {
+                    ((SpoutBlock) entry.getWorld().getBlockAt(entry.getFloorX(), entry.getFloorY(), entry.getFloorZ())).setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+                }
 			}
 		}
 		if (plugin.showDebug) {
-			if (queue.size()>1) {
+			if (queue.size() > 1) {
 				plugin.getLogger().info("Queue Remaining: " + queue.size());
-				done = false;
 				finished = false;
 			} else {
-				done = true;
-				if (done && !finished) {
-					plugin.getLogger().info("Decorate Task has completed.");
+				if (!finished) {
+					plugin.getLogger().info("All blocks have been placed.");
 					plugin.save();
 					finished = true;
 				}
@@ -74,31 +69,7 @@ public class DecoratorThrottler extends BukkitRunnable {
 		steps = 0;
 	}
 
-	public boolean offer(Decorator decorator, int chunkX, int chunkZ) {
-		final DecorableEntry entry = new DecorableEntry(decorator, chunkX, chunkZ);
-		return !queue.contains(entry) && queue.offer(new DecorableEntry(decorator, chunkX, chunkZ));
-	}
-
-	public boolean isQueued(Decorator decorator, int chunkX, int chunkZ) {
-		return queue.contains(new DecorableEntry(decorator, chunkX, chunkZ));
-	}
-
-	public boolean hasAnyQueued(int chunkX, int chunkZ) {
-		boolean any = false;
-		for (Decorator decorator : plugin.getDecoratorRegistry().getAll()) {
-			if (isQueued(decorator, chunkX, chunkZ)) {
-				any = true;
-				break;
-			}
-		}
-		return any;
-	}
-
-	public int getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(int newSpeed) {
-		speed = newSpeed;
-	}
+    public void offer(DecorableEntry decorated, int bx, int by, int bz) {
+        queue.offer(new DecorablePoint(decorated.getWorld(), decorated.getChunkX(), decorated.getChunkZ(), bx, by, bz, decorated.getDecorator()));
+    }
 }

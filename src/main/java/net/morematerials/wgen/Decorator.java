@@ -42,15 +42,8 @@ public abstract class Decorator {
 		return identifier;
 	}
 
-	/**
-	 * Returns whether the (@link org.bukkit.Chunk) contained in the {@link org.bukkit.World} should be decorated.
-	 *
-	 * @param world The world that holds the chunk
-	 * @param chunk The chunk to be decorated
-	 * @return true if can be decorated, false if not
-	 */
-	public boolean canDecorate(World world, Chunk chunk, int x, int y, int z) {
-		boolean check = chunk.getX() == (x >> 4) && (y <= 254 && y >= 1) && chunk.getZ() == (z >> 4);
+	public boolean canDecorate(World world, int cx, int cz, int bx, int by, int bz) {
+		boolean check = cx == (bx >> 4) && (by <= 254 && by >= 1) && cz == (bz >> 4);
 		if (!check) {
 			//System.out.println("BAD Coords: " + chunk.getX() + "/" + (x >> 4) + " // " + y + " // " + chunk.getZ() + "/" + (z >> 4));
 		} else {
@@ -59,8 +52,8 @@ public abstract class Decorator {
 		return check;
 	}
 
-	public void decorate(World world, int chunkX, int chunkZ, Random random) {
-		decorate(world, world.getChunkAt(chunkX, chunkZ), random);
+	public void decorate(World world, int cx, int cz, Random random) {
+		decorate(world, world.getChunkAt(cx, cz), random);
 	}
 
 	public abstract void decorate(World world, Chunk chunk, Random random);

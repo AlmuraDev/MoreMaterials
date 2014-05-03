@@ -28,8 +28,8 @@ import java.util.Random;
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.ore.CustomOreDecorator;
-import net.morematerials.wgen.task.DecoratorThrottler;
-
+import net.morematerials.wgen.task.BlockPlacer;
+import net.morematerials.wgen.thread.MaffThread;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,20 +47,13 @@ public class DecorateListener implements Listener {
 	@EventHandler
 	public void onChunkPopulate(ChunkPopulateEvent event) {		
 		if (plugin.getConfig().getBoolean("DecorateNewChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
-			DecoratorThrottler throttler = plugin.getDecorationThrotters().get(event.getWorld());
-			if (throttler == null) {
-				throttler = plugin.getDecorationThrotters().start(5, event.getWorld());
+			MaffThread thread = plugin.getThreadRegistry().get(event.getWorld());
+			if (thread == null) {
+                thread = plugin.getThreadRegistry().start(5, event.getWorld());
 			}
-			
-			if (plugin.containsAny(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ())) {
-				throttler.setSpeed(10); // Sets speed to 10 because this indicates a command is running creating new chunks.
-				return;
-			}
-			// Slow down Trottler thread.
-			throttler.setSpeed(10);
 			
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
-				if (throttler.isQueued(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
+				if (thread.isQueued(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre)) {
 					continue;
 				}
 				if (myOre instanceof CustomOreDecorator) {
@@ -73,7 +66,7 @@ public class DecorateListener implements Listener {
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
 					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
 					if (rand1 == rand2) {
-						if (throttler.offer(myOre, event.getChunk().getX(), event.getChunk().getZ())) {
+						if (thread.offer(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre)) {
 							// Save Information about placement
 							plugin.put(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre.getIdentifier());
 							
