@@ -79,13 +79,13 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 	}
 
 	@Override
-	public FileVisitResult visitFileFailed(Path path, IOException ioe) {
+	public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+		plugin.getDecoratorRegistry().addAll(createObjects(path.toFile()));
 		return FileVisitResult.TERMINATE;
 	}
 
 	@Override
-	public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
-		plugin.getDecoratorRegistry().addAll(createObjects(path.toFile()));
+	public FileVisitResult visitFileFailed(Path path, IOException ioe) {
 		return FileVisitResult.TERMINATE;
 	}
 
@@ -100,14 +100,14 @@ class FileLoadingVisitor extends SimpleFileVisitor<Path> {
 				//BLOCK SOURCE
 				final String initialRawBlockSource = replacePeriodWithBackslash(nameRaw);
 				final String initialBlockSource = replacePeriodWithBackslash(initialRawBlockSource);
-				final CustomBlock ore = MaterialData.getCustomBlock(initialBlockSource);			
+				final CustomBlock ore = MaterialData.getCustomBlock(initialBlockSource);
 				if (ore == null) {
 					plugin.getLogger().warning("The block source [" + initialBlockSource + "] is not a SpoutPlugin Custom Block. Skipping...");
 					continue;
 				}
 				//ATTRIBUTES
 				final ConfigurationSection blockSourceSection = oresSection.getConfigurationSection(nameRaw);
-				final String[] split = initialBlockSource.split("\\.");				
+				final String[] split = initialBlockSource.split("\\.");
 				final String identifier = split[split.length - 1];
 				final int decorateChance = blockSourceSection.getInt("decorate-chance", 0);
 				final int minHeight = blockSourceSection.getInt("min-height", 1);

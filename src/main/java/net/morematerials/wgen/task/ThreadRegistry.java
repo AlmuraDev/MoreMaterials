@@ -32,12 +32,12 @@ import org.bukkit.World;
 
 public class ThreadRegistry {
 	private final MoreMaterials plugin;
-    private final BlockPlacer placer;
+	private final BlockPlacer placer;
 	private final Map<World, MaffThread> threads = new HashMap<>();
 
 	public ThreadRegistry(MoreMaterials plugin, BlockPlacer placer) {
 		this.plugin = plugin;
-        this.placer = placer;
+		this.placer = placer;
 	}
 
 	public MaffThread get(World world) {
@@ -46,8 +46,8 @@ public class ThreadRegistry {
 
 	public MaffThread start(int tps, World world) {
 		final MaffThread thread = new MaffThread(plugin, placer, tps);
-        threads.put(world, thread);
-        thread.start();
+		threads.put(world, thread);
+		thread.start();
 		return thread;
 	}
 
@@ -58,7 +58,7 @@ public class ThreadRegistry {
 			return;
 		}
 
-        thread.terminate();
+		thread.terminate();
 	}
 
 	public void stopAll(boolean clear) {

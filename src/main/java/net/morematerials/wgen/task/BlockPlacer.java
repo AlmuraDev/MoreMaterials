@@ -35,8 +35,8 @@ import org.getspout.spoutapi.block.SpoutBlock;
 public class BlockPlacer extends BukkitRunnable {
 	private final Queue<DecorablePoint> queue;
 	private final MoreMaterials plugin;
-	private int steps = 0;
 	public int speed = 25;
+	private int steps = 0;
 	private boolean finished = false;
 
 	public BlockPlacer(MoreMaterials plugin) {
@@ -49,9 +49,9 @@ public class BlockPlacer extends BukkitRunnable {
 		while (++steps <= speed) {
 			final DecorablePoint entry = queue.poll();
 			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
-                if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), (int) entry.getX(), (int) entry.getY(), (int) entry.getZ())) {
-                    ((SpoutBlock) entry.getWorld().getBlockAt((int) entry.getX(), (int) entry.getY(), (int) entry.getZ())).setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
-                }
+				if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), (int) entry.getX(), (int) entry.getY(), (int) entry.getZ())) {
+					((SpoutBlock) entry.getWorld().getBlockAt((int) entry.getX(), (int) entry.getY(), (int) entry.getZ())).setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+				}
 			}
 		}
 		if (plugin.showDebug) {
@@ -69,7 +69,7 @@ public class BlockPlacer extends BukkitRunnable {
 		steps = 0;
 	}
 
-    public void offer(DecorableEntry decorated, int bx, int by, int bz) {
-        queue.offer(new DecorablePoint(decorated.getWorld(), decorated.getChunkX(), decorated.getChunkZ(), bx, by, bz, decorated.getDecorator()));
-    }
+	public void offer(DecorableEntry decorated, int bx, int by, int bz) {
+		queue.offer(new DecorablePoint(decorated.getWorld(), decorated.getChunkX(), decorated.getChunkZ(), bx, by, bz, decorated.getDecorator()));
+	}
 }

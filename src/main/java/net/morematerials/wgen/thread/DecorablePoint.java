@@ -28,31 +28,31 @@ import net.morematerials.wgen.Decorator;
 import org.bukkit.World;
 
 public class DecorablePoint extends Vector3f {
-    private final World world;
-    private final int cx, cz;
-    private final Decorator decorator;
+	private final World world;
+	private final int cx, cz;
+	private final Decorator decorator;
 
-    public DecorablePoint(World world, int cx, int cz, int bx, int by, int bz, Decorator decorator) {
-        super(bx, by, bz);
-        this.world = world;
-        this.cx = cx;
-        this.cz = cz;
-        this.decorator = decorator;
-    }
+	public DecorablePoint(World world, int cx, int cz, int bx, int by, int bz, Decorator decorator) {
+		super(bx, by, bz);
+		this.world = world;
+		this.cx = cx;
+		this.cz = cz;
+		this.decorator = decorator;
+	}
 
-    public World getWorld() {
-        return world;
-    }
+	public World getWorld() {
+		return world;
+	}
 
-    public int getChunkX() {
-        return cx;
-    }
+	public int getChunkX() {
+		return cx;
+	}
 
-    public int getChunkZ() {
-        return cz;
-    }
+	public int getChunkZ() {
+		return cz;
+	}
 
-    public Decorator getDecorator() {
-        return decorator;
-    }
+	public Decorator getDecorator() {
+		return decorator;
+	}
 }
