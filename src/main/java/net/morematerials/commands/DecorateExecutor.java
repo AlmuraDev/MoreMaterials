@@ -75,7 +75,7 @@ public class DecorateExecutor implements CommandExecutor {
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
 		if (thread == null) {
-            thread = plugin.getThreadRegistry().start(5, myLocation.getWorld());
+            thread = plugin.getThreadRegistry().start(50000, myLocation.getWorld());
 		}	
 
 		// Single Chunk Generation using all ores in objects.yml (ores)

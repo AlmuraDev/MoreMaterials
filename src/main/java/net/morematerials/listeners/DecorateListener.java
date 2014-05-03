@@ -51,15 +51,17 @@ public class DecorateListener implements Listener {
 			if (thread == null) {
                 thread = plugin.getThreadRegistry().start(5, event.getWorld());
 			}
-			
+			if (plugin.containsAny(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ())) {
+				plugin.getPlacer().speed=15; // Sets speed to 10 because this indicates a command is running creating new chunks.
+				return;
+			}
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (thread.isQueued(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre)) {
 					continue;
 				}
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
-					((CustomOreDecorator) myOre).toDecorateCount = 0;
-
+					((CustomOreDecorator) myOre).toDecorateCount = 0;					
 					// Set replacement ore type.
 					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 					//Normally the formula for inclusive low/high is nextInt(high - (low - 1) + 1 but seeing as low is always 1 and 1-1 is 0, we can omit that.

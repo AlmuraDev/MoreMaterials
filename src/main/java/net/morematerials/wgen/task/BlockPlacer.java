@@ -36,7 +36,7 @@ public class BlockPlacer extends BukkitRunnable {
 	private final Queue<DecorablePoint> queue;
 	private final MoreMaterials plugin;
 	private int steps = 0;
-	public int speed = 15;
+	public int speed = 25;
 	private boolean finished = false;
 
 	public BlockPlacer(MoreMaterials plugin) {

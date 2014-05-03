@@ -73,7 +73,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
 	
-	private HandlerManager handlerManager;
+	private BlockPlacer placer;
+	private HandlerManager handlerManager;	
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;
 	private AssetManager assetManager;
@@ -192,7 +193,7 @@ public class MoreMaterials extends JavaPlugin {
 		final DecoratorLoader loader = new DecoratorLoader(this);
 		loader.onEnable(getDataFolder());
 		loader.load();
-        final BlockPlacer placer = new BlockPlacer(this);
+        placer = new BlockPlacer(this);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, placer, 0, 5);
 		maffThreads = new ThreadRegistry(this, placer);
 		
@@ -316,5 +317,9 @@ public class MoreMaterials extends JavaPlugin {
 			} catch (Exception g) {
 			}
 		}
+	}
+	
+	public BlockPlacer getPlacer() {
+		return placer;
 	}
 }

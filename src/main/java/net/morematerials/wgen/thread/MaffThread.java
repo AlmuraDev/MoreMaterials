@@ -64,9 +64,9 @@ public class MaffThread extends Thread {
                     final int z = (entry.getChunkZ() << 4) + RANDOM.nextInt(16);
                     final int veinSize = RANDOM.nextInt(oreDecorator.getMaxVeinSize() - oreDecorator.getMinVeinSize()) + oreDecorator.getMinVeinSize();
                     final Vector3f point = ((CustomOreDecorator) entry.getDecorator()).calculatePoint(x, y, z, veinSize, RANDOM);
-                    plugin.getLogger().info("[MoreMaterials] Maff Thread -> Calculated: " + point);
+                    //plugin.getLogger().info("[MoreMaterials] Maff Thread -> Calculated: " + point);
                     replacer.offer(entry, point.getFloorX(), point.getFloorY(), point.getFloorZ());
-                }
+                }                
             }
             timer.sync();
         }
