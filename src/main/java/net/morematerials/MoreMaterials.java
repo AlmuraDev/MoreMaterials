@@ -23,8 +23,6 @@
  */
 package net.morematerials;
 
-import gnu.trove.map.hash.TLongObjectHashMap;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import gnu.trove.map.hash.TLongObjectHashMap;
 import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.DecorateExecutor;
 import net.morematerials.commands.GeneralExecutor;
@@ -53,14 +52,14 @@ import net.morematerials.handlers.PlaySoundHandler;
 import net.morematerials.handlers.PoisonHandler;
 import net.morematerials.handlers.RotateHandler;
 import net.morematerials.listeners.CustomListener;
-import net.morematerials.listeners.MMListener;
 import net.morematerials.listeners.DecorateListener;
+import net.morematerials.listeners.MMListener;
+import net.morematerials.manager.AssetManager;
 import net.morematerials.manager.FurnaceRecipeManager;
 import net.morematerials.manager.HandlerManager;
 import net.morematerials.manager.SmpManager;
 import net.morematerials.manager.UpdateManager;
 import net.morematerials.manager.UtilsManager;
-import net.morematerials.manager.AssetManager;
 import net.morematerials.metrics.Metrics;
 import net.morematerials.metrics.Metrics.Graph;
 import net.morematerials.metrics.Metrics.Plotter;
@@ -72,9 +71,8 @@ import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MoreMaterials extends JavaPlugin {
-	
 	private BlockPlacer placer;
-	private HandlerManager handlerManager;	
+	private HandlerManager handlerManager;
 	private SmpManager smpManager;
 	private UtilsManager utilsManager;
 	private AssetManager assetManager;
@@ -82,7 +80,7 @@ public class MoreMaterials extends JavaPlugin {
 	private FurnaceRecipeManager furnaceRecipeManager;
 	private DecoratorRegistry decoratorRegistry;
 	private ThreadRegistry maffThreads;
-    private List<String> decorateWorldList;
+	private List<String> decorateWorldList;
 	public boolean showDebug = false;
 	private Map<UUID, TLongObjectHashMap<List<String>>> worldsDecorated = new HashMap<>();
 
@@ -90,7 +88,7 @@ public class MoreMaterials extends JavaPlugin {
 	public void onDisable() {
 		save();
 		maffThreads.stopAll(true);
-        getServer().getScheduler().cancelTasks(this);
+		getServer().getScheduler().cancelTasks(this);
 	}
 
 	@Override
@@ -98,23 +96,23 @@ public class MoreMaterials extends JavaPlugin {
 		// Try to create the required folders.
 		File file;
 		this.getDataFolder().mkdirs();
-		String[] folders = { "materials", "handlers", "handlers/src", "handlers/bin", "cache" };
+		String[] folders = {"materials", "handlers", "handlers/src", "handlers/bin", "cache"};
 		for (String folder : folders) {
 			file = new File(this.getDataFolder(), folder);
 			if (!file.exists()) {
 				file.mkdirs();
 			}
 		}
-		
+
 		// Configuration
 		load();
 		decorateWorldList = this.getConfig().getStringList("DecorateWorlds");
-						
+
 		// Initialize all managers.
 		this.utilsManager = new UtilsManager(this);
 		this.assetManager = new AssetManager(this);
 		this.handlerManager = new HandlerManager(this);
-		
+
 		// Inject Handler Classes
 		this.handlerManager.inject(BombHandler.class);
 		this.handlerManager.inject(ChestHandler.class);
@@ -130,7 +128,7 @@ public class MoreMaterials extends JavaPlugin {
 		this.handlerManager.inject(PlaySoundHandler.class);
 		this.handlerManager.inject(PoisonHandler.class);
 		this.handlerManager.inject(RotateHandler.class);
-		
+
 		// Finish managers
 		this.furnaceRecipeManager = new FurnaceRecipeManager();
 		this.smpManager = new SmpManager(this);
@@ -150,7 +148,7 @@ public class MoreMaterials extends JavaPlugin {
 						return getSmpManager().getTotalMaterials();
 					}
 				});
-				
+
 				int totalPackages = 0;
 				// At last - this is interesting for the SMP creators, we can show which SMP files are used how often!
 				Graph packagesGraph = metrics.createGraph("Most used SMP packages");
@@ -175,7 +173,7 @@ public class MoreMaterials extends JavaPlugin {
 						return showPackages;
 					}
 				});
-				
+
 				metrics.start();
 				this.utilsManager.log("Stat tracking activated!");
 			} catch (Exception exception) {
@@ -193,10 +191,10 @@ public class MoreMaterials extends JavaPlugin {
 		final DecoratorLoader loader = new DecoratorLoader(this);
 		loader.onEnable(getDataFolder());
 		loader.load();
-        placer = new BlockPlacer(this);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, placer, 0, 5);
+		placer = new BlockPlacer(this);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, placer, 0, 5);
 		maffThreads = new ThreadRegistry(this, placer);
-		
+
 		// Register chat commands.
 		this.getCommand("mm").setExecutor(new GeneralExecutor(this));
 		this.getCommand("mmdecorate").setExecutor(new DecorateExecutor(this));
@@ -227,7 +225,7 @@ public class MoreMaterials extends JavaPlugin {
 	public AssetManager getAssetManager() {
 		return this.assetManager;
 	}
-	
+
 	public UpdateManager getUpdateManager() {
 		return this.updateManager;
 	}
@@ -235,7 +233,7 @@ public class MoreMaterials extends JavaPlugin {
 	public FurnaceRecipeManager getFurnaceRecipeManager() {
 		return this.furnaceRecipeManager;
 	}
-	
+
 	public List<String> getDecorateWorldList() {
 		return decorateWorldList;
 	}
@@ -244,7 +242,7 @@ public class MoreMaterials extends JavaPlugin {
 		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
 		if (chunksDecorated == null) {
 			chunksDecorated = new TLongObjectHashMap<>();
-			worldsDecorated.put(world.getUID(), chunksDecorated);			
+			worldsDecorated.put(world.getUID(), chunksDecorated);
 		}
 		final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
 		List<String> decorators = chunksDecorated.get(key);
@@ -254,7 +252,7 @@ public class MoreMaterials extends JavaPlugin {
 		}
 		decorators.add(decoratorID);
 	}
-	
+
 	public void remove(World world, int cx, int cz, String decoratorID) {
 		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
 		if (chunksDecorated != null) {
@@ -271,7 +269,7 @@ public class MoreMaterials extends JavaPlugin {
 			}
 		}
 	}
-	
+
 	public boolean containsAny(World world, int cx, int cz) {
 		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
 		if (chunksDecorated != null) {
@@ -292,7 +290,7 @@ public class MoreMaterials extends JavaPlugin {
 		}
 		return false;
 	}
-	
+
 	private void load() {
 		try {
 			worldsDecorated = SaveAndLoad.load("plugins/MoreMaterials/Wgen/Chunks.dat");
@@ -318,7 +316,7 @@ public class MoreMaterials extends JavaPlugin {
 			}
 		}
 	}
-	
+
 	public BlockPlacer getPlacer() {
 		return placer;
 	}
