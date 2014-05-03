@@ -47,6 +47,7 @@ public class ThreadRegistry {
 	public MaffThread start(int tps, World world) {
 		final MaffThread thread = new MaffThread(plugin, placer, tps);
         threads.put(world, thread);
+        thread.start();
 		return thread;
 	}
 
