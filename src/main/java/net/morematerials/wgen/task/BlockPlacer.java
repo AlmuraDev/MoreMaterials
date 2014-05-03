@@ -49,8 +49,8 @@ public class BlockPlacer extends BukkitRunnable {
 		while (++steps <= speed) {
 			final DecorablePoint entry = queue.poll();
 			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
-                if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), entry.getFloorX(), entry.getFloorY(), entry.getFloorZ())) {
-                    ((SpoutBlock) entry.getWorld().getBlockAt(entry.getFloorX(), entry.getFloorY(), entry.getFloorZ())).setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+                if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), (int) entry.getX(), (int) entry.getY(), (int) entry.getZ())) {
+                    ((SpoutBlock) entry.getWorld().getBlockAt((int) entry.getX(), (int) entry.getY(), (int) entry.getZ())).setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
                 }
 			}
 		}

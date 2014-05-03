@@ -133,11 +133,11 @@ public class CustomOreDecorator extends Decorator {
 	public void decorate(World world, Chunk chunk, Random random) {		
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
 		for (byte i = 0; i < veinsPerChunk; i++) {
-			final int x = (chunk.getX() << 4) + random.nextInt(16);
-			final int y = random.nextInt(maxHeight - minHeight) + minHeight;
-			final int z = (chunk.getZ() << 4) + random.nextInt(16);
+			final int bx = (chunk.getX() << 4) + random.nextInt(16);
+			final int by = random.nextInt(maxHeight - minHeight) + minHeight;
+			final int bz = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
-			placeOre(world, chunk.getX(), chunk.getZ(), x, y, z, veinSize, random);
+			placeOre(world, chunk.getX(), chunk.getZ(), bx, by, bz, veinSize, random);
 			//vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
 		}		
 	}
@@ -147,6 +147,17 @@ public class CustomOreDecorator extends Decorator {
 		return "CustomOreDecorator {identifier= " + getIdentifier() + ", ore= " + ore.getFullName() + ", minHeight= " + minHeight + ", maxHeight= " + maxHeight + ", minVeinSize= " + minVeinSize +
 				" maxVeinSize= " + maxVeinSize + ", minVeinsPerChunk= " + minVeinsPerChunk + ", maxVeinsPerChunk= " + maxVeinsPerChunk + "}";
 	}
+
+    private void placeOre(World world, int cx, int cz, int bx, int by, int bz, int veinSize, Random random) {
+        final Vector3f point = calculatePoint(bx, by, bz, veinSize, random);
+        if (point.equals(INVALID_POINT)) {
+            //do something, its bad
+        }
+
+        if (canDecorate(world, cx, cz, (int) point.getX(), (int) point.getY(), (int) point.getZ())) {
+            ((SpoutBlock) world.getBlockAt((int) point.getX(), (int) point.getY(), (int) point.getZ())).setCustomBlock(ore);
+        }
+    }
 
     public Vector3f calculatePoint(int bx, int by, int bz, int veinSize, Random random) {
         final float angle = random.nextFloat() * (float) Math.PI;
@@ -195,8 +206,21 @@ public class CustomOreDecorator extends Decorator {
         }
         return new Vector3f(-1, -1, -1);
     }
-	
-	private void vectorPlaceOre(World world, int cx, int cz, Vector3f origin, int veinSize, Random random) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void vectorPlaceOre(World world, int cx, int cz, Vector3f origin, int veinSize, Random random) {
         // Generate dimensions of box
         final float angle = random.nextFloat() * (float) TrigMath.PI;
         final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
@@ -234,8 +258,8 @@ public class CustomOreDecorator extends Decorator {
                                 if (dx + dy + dz < 1) {
                                     // If so, generate the ore block
                                     if (canDecorate(world, cx, cz, x, y, z)) {
-                                    	final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-										block.setCustomBlock(ore);
+                                        final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
+                                        block.setCustomBlock(ore);
                                     }
                                 }
                             }
@@ -243,20 +267,6 @@ public class CustomOreDecorator extends Decorator {
                     }
                 }
             }
-        }
-    }
-	
-	private void placeOre(World world, int cx, int cz, int bx, int by, int bz, int veinSize, Random random) {
-        final Vector3f point = calculatePoint(bx, by, bz, veinSize, random);
-        if (point.equals(INVALID_POINT)) {
-            //do something, its bad
-        }
-        final int floorX = point.getFloorX();
-        final int floorY = point.getFloorY();
-        final int floorZ = point.getFloorZ();
-
-        if (canDecorate(world, cx, cz, floorX, floorY, floorZ)) {
-            ((SpoutBlock) world.getBlockAt(floorX, floorY, floorZ)).setCustomBlock(ore);
         }
     }
 }
