@@ -318,6 +318,10 @@ public class MoreMaterials extends JavaPlugin {
 			}
 		}
 	}
+	
+	public int fileSize() {
+		return worldsDecorated.size();
+	}
 
 	public BlockPlacer getPlacer() {
 		return placer;

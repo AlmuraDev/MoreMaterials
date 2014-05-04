@@ -29,6 +29,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.thread.DecorablePoint;
+
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.getspout.spoutapi.block.SpoutBlock;
 
@@ -38,6 +40,7 @@ public class BlockPlacer extends BukkitRunnable {
 	public int speed = 4000;
 	private int steps = 0;
 	public boolean finished = false, paused = false, hasPauseRan = false;
+	public Player player;
 
 	public BlockPlacer(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -73,8 +76,11 @@ public class BlockPlacer extends BukkitRunnable {
 				finished = false;
 			} else {
 				if (!finished) {
-					plugin.getLogger().info("All blocks have been placed.");
+					plugin.getLogger().info("Queue Empty, All blocks have been placed.");
 					plugin.save();
+					if (player != null) {
+						player.sendMessage("[MoreMaterials] - All Decorations have completed.");
+					}
 					finished = true;
 				}
 			}

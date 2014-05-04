@@ -30,6 +30,7 @@ import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.thread.MaffThread;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -61,15 +62,15 @@ public class DecorateExecutor implements CommandExecutor {
 		// Setup command arguments
 		try {
 			par1 = args[0]; //Command or Radius
-			par2 = args[1]; //Ore Type or "All"
-			par3 = args[2]; //Decorate existing chunks.
+			par2 = args[1]; //Ore Type or "All" or chunkCoord X
+			par3 = args[2]; //Decorate existing chunks or ChunkCoord Z
 		} catch (Exception e) {
 			if (plugin.showDebug) {
 				System.out.println(e);
 				System.out.println("Par1: " + par1 + " Par2: " + par2 + " Par3: " + par3);
 			}
 		}
-	
+
 		if (par1 == null) {  // par1 cannot be null and continue.
 			sender.sendMessage("Invalid command syntax.");
 			return false;
@@ -116,19 +117,45 @@ public class DecorateExecutor implements CommandExecutor {
 			sender.sendMessage("[MoreMaterials] - Saved Processed queue to file system.");
 			return true;  // End Command.
 		}
-		
+
 		if (par1.equalsIgnoreCase("status")) {			
 			if (plugin.getPlacer() != null && plugin.getPlacer().queue != null) {	
-				sender.sendMessage("[MoreMaterials] - Block Placer queue remaining: " + plugin.getPlacer().queue.size());			
+				sender.sendMessage("[MoreMaterials] - Block Placer queue remaining: [" + ChatColor.AQUA + plugin.getPlacer().queue.size() + ChatColor.RESET + "].");
+				//sender.sendMessage("[MoreMaterials] - Chunk.dat entires: " + plugin.fileSize());
+				return true;  // End Command.
+			}
+		}
+
+		if (par1.equalsIgnoreCase("check")) {
+			final int checkX;
+			final int checkZ;
+			if (par2.equalsIgnoreCase("this") || par2 == null) {
+				checkX = ((Player)sender).getLocation().getChunk().getX();
+				checkZ = ((Player)sender).getLocation().getChunk().getZ();
+			} else {
+				checkX = Integer.parseInt(par2);
+				checkZ = Integer.parseInt(par3);
+			}
+			if (plugin.containsAny(((Player)sender).getWorld(), checkX, checkZ)) {
+				sender.sendMessage("[MoreMaterials] - Chunk already decorated.");
+			} else {
+				sender.sendMessage("[MoreMaterials] - Chunk has not been decorated.");
 			}
 			return true;  // End Command.
+		}
+		
+		if (par1.equalsIgnoreCase("displayores")) {
+			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
+				sender.sendMessage("[MoreMaterials] - Ore: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
+			}
+			return true; //End Command.
 		}
 
 		// Setup current location, chunk and radius values.
 		final Location myLocation = ((Player) sender).getLocation();
 		final int chunkX = myLocation.getChunk().getX();
 		final int chunkZ = myLocation.getChunk().getZ();
-		final int radius = Integer.parseInt(args[0]);
+		final int radius = Integer.parseInt(par1);
 
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
@@ -155,12 +182,8 @@ public class DecorateExecutor implements CommandExecutor {
 					rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
 					rand2 = ((CustomOreDecorator) myOre).getDecorateChance();
 
-					if (rand1 == rand2) {
-						if (par3.equalsIgnoreCase("true")) {
-							canPlace = !plugin.contains(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
-						} else {
-							canPlace = !plugin.containsAny(((Player) sender).getWorld(), chunkX, chunkZ);
-						}						
+					if (rand1 == rand2) {						
+						canPlace = !plugin.contains(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());						
 						if (canPlace) {
 							thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 							plugin.put(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
@@ -179,7 +202,7 @@ public class DecorateExecutor implements CommandExecutor {
 						if (plugin.showDebug) {					
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
-						sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
+						sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 					}
 				}
 			}
@@ -222,7 +245,7 @@ public class DecorateExecutor implements CommandExecutor {
 					if (plugin.showDebug) {					
 						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 					}
-					sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
+					sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 				}
 			}
 		}
@@ -246,11 +269,7 @@ public class DecorateExecutor implements CommandExecutor {
 							rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
 							rand2 = ((CustomOreDecorator) myOre).getDecorateChance();
 							if (rand1 == rand2) {
-								if (par3.equalsIgnoreCase("true")) {
-									canPlace = !plugin.contains(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
-								} else {
-									canPlace = !plugin.containsAny(((Player) sender).getWorld(), offsetX, offsetZ);
-								}		
+								canPlace = !plugin.contains(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
 								if (canPlace) {
 									thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
 									plugin.put(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
@@ -271,7 +290,7 @@ public class DecorateExecutor implements CommandExecutor {
 						if (plugin.showDebug) {					
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
-						sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
+						sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 					}
 				}
 			}
@@ -319,11 +338,14 @@ public class DecorateExecutor implements CommandExecutor {
 					if (plugin.showDebug) {					
 						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 					}
-					sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
+					sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 				}
 			}
 		}
 		sender.sendMessage("[MoreMaterials] - command completed sucessfully.");
+		if (plugin.getPlacer() != null) {
+			plugin.getPlacer().player = Bukkit.getPlayer(sender.getName());
+		}
 		return true;
 	}
 }
