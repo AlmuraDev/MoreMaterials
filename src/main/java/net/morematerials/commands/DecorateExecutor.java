@@ -64,7 +64,31 @@ public class DecorateExecutor implements CommandExecutor {
 			}
 			return true;  // End Command.
 		}
+		
+		if (myDebug.equalsIgnoreCase("pause")) {
+			plugin.getPlacer().pause();
+			if (!plugin.showDebug) {
+				sender.sendMessage("[MoreMaterials] - Block Placer Paused");
+			}
+			return true;  // End Command.
+		}
 
+		if (myDebug.equalsIgnoreCase("resume")) {
+			plugin.getPlacer().resume();
+			if (!plugin.showDebug) {
+				sender.sendMessage("[MoreMaterials] - Block Placer Resumed");
+			}
+			return true;  // End Command.
+		}
+		
+		if (myDebug.equalsIgnoreCase("save")) {
+			plugin.save();
+			if (!plugin.showDebug) {
+				sender.sendMessage("[MoreMaterials] - Saved Processed queue to file system.");
+			}
+			return true;  // End Command.
+		}
+		
 		// Setup current location, chunk and radius values.
 		final Location myLocation = ((Player) sender).getLocation();
 		final int chunkX = myLocation.getChunk().getX();

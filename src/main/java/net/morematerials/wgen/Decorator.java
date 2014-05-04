@@ -45,9 +45,9 @@ public abstract class Decorator {
 	public boolean canDecorate(World world, int cx, int cz, int bx, int by, int bz) {
 		boolean check = (cx == (bx >> 4) && (by <= 254 && by >= 1) && cz == (bz >> 4));
 		if (!check) {
-			//System.out.println("BAD Coords: " + chunk.getX() + "/" + (x >> 4) + " // " + y + " // " + chunk.getZ() + "/" + (z >> 4));
+			//System.out.println("[MoreMaterials] - BAD Coords: " + cx + "/" + (bx >> 4) + " // " + by + " // " + cz + "/" + (bz >> 4));
 		} else {
-			//System.out.println("Good Coords: " + chunk.getX() + "/" + (x >> 4) + " // " + y + " // " + chunk.getZ() + "/" + (z >> 4));
+			//System.out.println("[MoreMaterials] - Good Coords: " + cx + "/" + (bx >> 4) + " // " + by + " // " + cz + "/" + (bz >> 4));
 		}
 		return check;
 	}

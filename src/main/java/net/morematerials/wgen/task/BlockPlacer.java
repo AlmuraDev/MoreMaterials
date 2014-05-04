@@ -35,7 +35,7 @@ import org.getspout.spoutapi.block.SpoutBlock;
 public class BlockPlacer extends BukkitRunnable {
 	private final Queue<DecorablePoint> queue;
 	private final MoreMaterials plugin;
-	public int speed = 25;
+	public int speed = 1000;
 	private int steps = 0;
 	private boolean finished = false, paused = false, hasPauseRan = false;
 
@@ -87,6 +87,7 @@ public class BlockPlacer extends BukkitRunnable {
 	}
 
 	public void pause() {
+		System.out.println("PAUSED!!!!");
 		paused = true;
 		hasPauseRan = false;
 	}
