@@ -255,6 +255,19 @@ public class MoreMaterials extends JavaPlugin {
 		decorators.add(decoratorID);
 	}
 
+	public TLongObjectHashMap<List<String>> getChunkDecorations(World world, int cx, int cz) {
+		return worldsDecorated.get(world.getUID());
+	}
+
+	public List<String> getDecorationsInChunk(World world, int cx, int cz) {
+		final TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
+		if (chunksDecorated != null) {
+			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
+			return chunksDecorated.get(key);
+		}
+		return null;
+	}
+
 	public void remove(World world, int cx, int cz, String decoratorID) {
 		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
 		if (chunksDecorated != null) {
