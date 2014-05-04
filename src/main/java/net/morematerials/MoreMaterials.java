@@ -244,7 +244,7 @@ public class MoreMaterials extends JavaPlugin {
 	public Map<UUID, TLongObjectHashMap<List<String>>> getWorldsDecorated() {
 		return Collections.unmodifiableMap(worldsDecorated);
 	}
-	
+
 	public void put(World world, int cx, int cz, String decoratorID) {
 		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
 		if (chunksDecorated == null) {
@@ -260,7 +260,7 @@ public class MoreMaterials extends JavaPlugin {
 		decorators.add(decoratorID);
 	}
 
-	public TLongObjectHashMap<List<String>> getChunkDecorations(World world, int cx, int cz) {
+	public TLongObjectHashMap<List<String>> getChunkDecorations(World world) {
 		return worldsDecorated.get(world.getUID());
 	}
 
