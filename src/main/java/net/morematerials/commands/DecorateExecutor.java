@@ -52,7 +52,7 @@ public class DecorateExecutor implements CommandExecutor {
 	private String par1, par2, par3, par4, par5;
 	private boolean canPlace = false;
 	private int rand1, rand2, offsetX, offsetZ;
-	private Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = new HashMap<>();
+	public Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = new HashMap<>();
 
 	public DecorateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -169,7 +169,7 @@ public class DecorateExecutor implements CommandExecutor {
 		final int radius = Integer.parseInt(par1);
 
 		// Determine already decorated into our own map.
-		final Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = plugin.getWorldsDecorated();
+		alreadyDecorated = plugin.getWorldsDecorated();
 		System.out.println("Size: " + alreadyDecorated.get(world.getUID()).size());
 		
 		// Startup Maff thread.
