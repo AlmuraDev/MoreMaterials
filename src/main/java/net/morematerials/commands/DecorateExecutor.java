@@ -64,10 +64,10 @@ public class DecorateExecutor implements CommandExecutor {
 			plugin.getLogger().severe("This command is only available to logged in players!");
 			return true;
 		}
-		
+
 		// Command Structure
 		final World world = ((Player)sender).getWorld();
-		
+
 		// Setup command arguments
 		try {
 			par1 = args[0]; //Command or Radius
@@ -316,6 +316,7 @@ public class DecorateExecutor implements CommandExecutor {
 					}
 					if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
 						if (plugin.showDebug) {
+							System.out.println("AlreadyDecorated Queue Size: " + alreadyDecorated.get(world.getUID()).size());
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
 						sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
