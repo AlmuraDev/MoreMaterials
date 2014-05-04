@@ -241,8 +241,8 @@ public class MoreMaterials extends JavaPlugin {
 		return decorateWorldList;
 	}
 
-	public Map<UUID, TLongObjectHashMap<List<String>>> getWorldsDecorated() {
-		return Collections.unmodifiableMap(worldsDecorated);
+	public Map<UUID, TLongObjectHashMap<List<String>>> cloneWorldsDecorated() {
+		return new HashMap<>(worldsDecorated);
 	}
 
 	public void put(World world, int cx, int cz, String decoratorID) {

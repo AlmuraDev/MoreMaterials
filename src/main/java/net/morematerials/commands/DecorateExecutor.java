@@ -172,7 +172,8 @@ public class DecorateExecutor implements CommandExecutor {
 		final int radius = Integer.parseInt(par1);
 
 		// Determine already decorated into our own map.
-		alreadyDecorated = plugin.getWorldsDecorated();
+		alreadyDecorated = plugin.cloneWorldsDecorated();
+		System.out.println("Size: " + alreadyDecorated.get(world.getUID()).size());
 		
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
