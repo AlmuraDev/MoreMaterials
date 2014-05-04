@@ -24,6 +24,7 @@
 package net.morematerials.wgen.thread;
 
 import java.util.Random;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.flowpowered.math.vector.Vector3i;
@@ -63,9 +64,10 @@ public class MaffThread extends Thread {
 					final int y = RANDOM.nextInt(oreDecorator.getMaxHeight() - oreDecorator.getMinHeight()) + oreDecorator.getMinHeight();
 					final int z = (entry.getChunkZ() << 4) + RANDOM.nextInt(16);
 					final int veinSize = RANDOM.nextInt(oreDecorator.getMaxVeinSize() - oreDecorator.getMinVeinSize()) + oreDecorator.getMinVeinSize();
-					final Vector3i point = ((CustomOreDecorator) entry.getDecorator()).calculatePoint(x, y, z, veinSize, RANDOM);
-					//plugin.getLogger().info("[MoreMaterials] Maff Thread -> Calculated: " + point);
-					replacer.offer(entry, point.getX(), point.getY(), point.getZ());
+					for (Vector3i point : ((CustomOreDecorator) entry.getDecorator()).calculatePoint(x, y, z, veinSize, RANDOM)) {
+						//plugin.getLogger().info("[MoreMaterials] Maff Thread -> Calculated: " + point);
+						replacer.offer(entry, point.getX(), point.getY(), point.getZ());
+					}
 				}
 			}
 			timer.sync();

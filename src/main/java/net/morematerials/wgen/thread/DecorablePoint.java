@@ -23,7 +23,6 @@
  */
 package net.morematerials.wgen.thread;
 
-import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector3i;
 import net.morematerials.wgen.Decorator;
 import org.bukkit.World;

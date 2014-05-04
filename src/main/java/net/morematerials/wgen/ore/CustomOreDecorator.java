@@ -26,6 +26,8 @@ package net.morematerials.wgen.ore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import com.flowpowered.math.GenericMath;
@@ -119,56 +121,6 @@ public class CustomOreDecorator extends Decorator {
 				" maxVeinSize= " + maxVeinSize + ", minVeinsPerChunk= " + minVeinsPerChunk + ", maxVeinsPerChunk= " + maxVeinsPerChunk + "}";
 	}
 
-	private void vectorPlaceOre(World world, int cx, int cz, Vector3f origin, int veinSize, Random random) {
-		// Generate dimensions of box
-		final float angle = random.nextFloat() * (float) TrigMath.PI;
-		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
-		// Generate box min and max corner coordinates
-		final Vector3f min = origin.sub(offset.getX() + 8, random.nextInt(3) + 2, offset.getY() + 8);
-		//final Vector3f min = origin.sub(offset.getX(), random.nextInt(3) + 2, offset.getY());  // Old Line
-		final Vector3f max = origin.add(offset.getX() + 8, random.nextInt(3) + 2, offset.getY() + 8);
-		// Generate an ore sphere on each block on the diagonal from min to max
-		for (int count = 0; count <= veinSize; count++) {
-			// Calculate the percent of the count so far
-			final int percent = count / veinSize;
-			// Get the center point, which is on the diagonal in between the min and max corners
-			final Vector3f center = GenericMath.lerp(min, max, percent);
-			// Calculate the size of the ore sphere so that it increases as we approach the middle
-			final float size = ((TrigMath.sin(percent * TrigMath.PI) + 1) * random.nextFloat() * veinSize / 16 + 1) / 2;
-			// Compute the start and end point of the ore sphere
-			final Vector3i start = center.sub(size, size, size).toInt();
-			final Vector3i end = center.add(size, size, size).toInt();
-			// Iterate inside the volume we just defined
-			for (int x = start.getX(); x <= end.getX(); x++) {
-				// Get the distance from the center on x, normalized
-				float dx = (x + 0.5f - center.getX()) / size;
-				dx *= dx;
-				if (dx < 1) {
-					// Get the distance from the center on y, normalized
-					for (int y = start.getY(); y <= end.getY(); y++) {
-						float dy = (y + 0.5f - center.getY()) / size;
-						dy *= dy;
-						if (dx + dy < 1) {
-							// Get the distance from the center on z, normalized
-							for (int z = start.getZ(); z <= end.getZ(); z++) {
-								float dz = (z + 0.5f - center.getZ()) / size;
-								dz *= dz;
-								// Check if we are in the ore sphere
-								if (dx + dy + dz < 1) {
-									// If so, generate the ore block
-									if (canDecorate(world, cx, cz, x, y, z)) {
-										final SpoutBlock block = (SpoutBlock) world.getBlockAt(x, y, z);
-										block.setCustomBlock(ore);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	@Override
 	public void decorate(World world, Chunk chunk, Random random) {
 		final int veinsPerChunk = random.nextInt(maxVeinsPerChunk - minVeinsPerChunk) + maxVeinsPerChunk;
@@ -185,23 +137,21 @@ public class CustomOreDecorator extends Decorator {
 
 
 	private void placeOre(World world, int cx, int cz, int bx, int by, int bz, int veinSize, Random random) {
-		final Vector3i point = calculatePoint(bx, by, bz, veinSize, random);
-		if (point.equals(INVALID_POINT)) {
-			return;
-		}
-
-		if (canDecorate(world, cx, cz, point.getX(), point.getY(), point.getZ())) {
-			final SpoutBlock block = (SpoutBlock) world.getBlockAt(point.getX(), point.getY(), point.getZ());
-			boolean shouldPlace = replaceables.contains(block.getType()) && block.getCustomBlock() == null;
-			if (!shouldPlace) {
-				//System.out.println("Could not populate: " + x + "/" + y + "/" + z + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
-			} else {
-				((SpoutBlock) world.getBlockAt(point.getX(), point.getY(), point.getZ())).setCustomBlock(ore);
+		for (Vector3i point : calculatePoint(bx, by, bz, veinSize, random)) {
+			if (canDecorate(world, cx, cz, point.getX(), point.getY(), point.getZ())) {
+				final SpoutBlock block = (SpoutBlock) world.getBlockAt(point.getX(), point.getY(), point.getZ());
+				boolean shouldPlace = replaceables.contains(block.getType()) && block.getCustomBlock() == null;
+				if (!shouldPlace) {
+					//System.out.println("Could not populate: " + x + "/" + y + "/" + z + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
+				} else {
+					((SpoutBlock) world.getBlockAt(point.getX(), point.getY(), point.getZ())).setCustomBlock(ore);
+				}
 			}
 		}
 	}
 
-	public Vector3i calculatePoint(int bx, int by, int bz, int veinSize, Random random) {
+	public List<Vector3i> calculatePoint(int bx, int by, int bz, int veinSize, Random random) {
+		final List<Vector3i> orePoints = new LinkedList<>();
 		final float angle = random.nextFloat() * (float) Math.PI;
 		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
 		final float x1 = ((bx + 8) + offset.getX());
@@ -238,7 +188,7 @@ public class CustomOreDecorator extends Decorator {
 								float sizeZ = (z + 0.5f - seedZ) / size;
 								sizeZ *= sizeZ;
 								if (sizeX + sizeY + sizeZ < 1) {
-									return new Vector3i(x, y, z);
+									orePoints.add(new Vector3i(x, y, z));
 								}
 							}
 						}
@@ -246,8 +196,6 @@ public class CustomOreDecorator extends Decorator {
 				}
 			}
 		}
-		return new Vector3i(-1, -1, -1);
+		return orePoints;
 	}
-
-
 }
