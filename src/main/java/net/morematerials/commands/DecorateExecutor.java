@@ -208,7 +208,7 @@ public class DecorateExecutor implements CommandExecutor {
 							((CustomOreDecorator) myOre).toDecorateCount++;
 						} else {
 							if (plugin.showDebug) {
-								//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + chunkX + " / " + chunkZ + " is already decorated.");
+								plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + chunkX + " / " + chunkZ + " is already decorated.");
 							}
 						}
 					} else {
