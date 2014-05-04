@@ -23,7 +23,13 @@
  */
 package net.morematerials.commands;
 
+import gnu.trove.map.hash.TLongObjectHashMap;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.wgen.Decorator;
@@ -34,6 +40,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,6 +52,7 @@ public class DecorateExecutor implements CommandExecutor {
 	private String par1, par2, par3, par4, par5;
 	private boolean canPlace = false;
 	private int rand1, rand2, offsetX, offsetZ;
+	private Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = new HashMap<>();
 
 	public DecorateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -53,6 +61,7 @@ public class DecorateExecutor implements CommandExecutor {
 	@SuppressWarnings("unused")
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// Command Structure
+		final World world = ((Player)sender).getWorld();
 		// /mmpopulate intRadius CustomOreName OverPopulate
 		if (!(sender instanceof Player)) {
 			plugin.getLogger().severe("This command is only available to logged in players!");
@@ -150,13 +159,18 @@ public class DecorateExecutor implements CommandExecutor {
 			}
 			return true; //End Command.
 		}
-
+		
+		
+		
 		// Setup current location, chunk and radius values.
 		final Location myLocation = ((Player) sender).getLocation();
 		final int chunkX = myLocation.getChunk().getX();
 		final int chunkZ = myLocation.getChunk().getZ();
 		final int radius = Integer.parseInt(par1);
 
+		// Determine already decorated into our own map.
+		final Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = plugin.getWorldsDecorated();
+		
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
 		if (thread == null) {
@@ -182,8 +196,12 @@ public class DecorateExecutor implements CommandExecutor {
 					rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
 					rand2 = ((CustomOreDecorator) myOre).getDecorateChance();
 
-					if (rand1 == rand2) {						
-						canPlace = !plugin.contains(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());						
+					if (rand1 == rand2) {
+						if (par3.equalsIgnoreCase("true")) {
+							canPlace = !plugin.contains(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
+						} else {
+							canPlace = !this.hasOres(world, chunkX, chunkZ);
+						}
 						if (canPlace) {
 							thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 							plugin.put(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
@@ -199,7 +217,7 @@ public class DecorateExecutor implements CommandExecutor {
 						}
 					}
 					if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
-						if (plugin.showDebug) {					
+						if (plugin.showDebug) {
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
 						sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
@@ -225,8 +243,8 @@ public class DecorateExecutor implements CommandExecutor {
 					if (par3.equalsIgnoreCase("true")) {
 						canPlace = !plugin.contains(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
 					} else {
-						canPlace = !plugin.containsAny(((Player) sender).getWorld(), chunkX, chunkZ);
-					}		
+						canPlace = !this.hasOres(world, chunkX, chunkZ);
+					}
 					if (canPlace) {
 						thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 						plugin.put(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
@@ -242,7 +260,7 @@ public class DecorateExecutor implements CommandExecutor {
 					}
 				}
 				if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
-					if (plugin.showDebug) {					
+					if (plugin.showDebug) {
 						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 					}
 					sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
@@ -269,7 +287,11 @@ public class DecorateExecutor implements CommandExecutor {
 							rand1 = RANDOM.nextInt(((CustomOreDecorator) myOre).getDecorateChance()) + 1;
 							rand2 = ((CustomOreDecorator) myOre).getDecorateChance();
 							if (rand1 == rand2) {
-								canPlace = !plugin.contains(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
+								if (par3.equalsIgnoreCase("true")) {
+									canPlace = !plugin.contains(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
+								} else {
+									canPlace = !this.hasOres(world, offsetX, offsetZ);
+								}
 								if (canPlace) {
 									thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
 									plugin.put(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
@@ -287,7 +309,7 @@ public class DecorateExecutor implements CommandExecutor {
 						}
 					}
 					if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
-						if (plugin.showDebug) {					
+						if (plugin.showDebug) {
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
 						sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
@@ -316,7 +338,7 @@ public class DecorateExecutor implements CommandExecutor {
 							if (par3.equalsIgnoreCase("true")) {
 								canPlace = !plugin.contains(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
 							} else {
-								canPlace = !plugin.containsAny(((Player) sender).getWorld(), offsetX, offsetZ);
+								canPlace = !this.hasOres(world, offsetX, offsetZ);
 							}		
 							if (canPlace) {
 								thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
@@ -335,7 +357,7 @@ public class DecorateExecutor implements CommandExecutor {
 					}
 				}
 				if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
-					if (plugin.showDebug) {					
+					if (plugin.showDebug) {
 						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 					}
 					sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
@@ -347,5 +369,14 @@ public class DecorateExecutor implements CommandExecutor {
 			plugin.getPlacer().player = Bukkit.getPlayer(sender.getName());
 		}
 		return true;
+	}
+	
+	public boolean hasOres(World world, int cx, int cz) {
+		TLongObjectHashMap<List<String>> chunksDecorated = alreadyDecorated.get(world.getUID());
+		if (chunksDecorated != null) {
+			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
+			return chunksDecorated.get(key) != null;
+		}
+		return false;
 	}
 }
