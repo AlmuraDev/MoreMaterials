@@ -37,7 +37,7 @@ public class BlockPlacer extends BukkitRunnable {
 	private final MoreMaterials plugin;
 	public int speed = 25;
 	private int steps = 0;
-	private boolean finished = false;
+	private boolean finished = false, paused = false, hasPauseRan = false;
 
 	public BlockPlacer(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -46,6 +46,13 @@ public class BlockPlacer extends BukkitRunnable {
 
 	@Override
 	public void run() {
+		if (paused) {
+			if (!hasPauseRan) {
+				plugin.getLogger().info("Setting custom blocks has been paused. Queue remaining: " + queue.size());
+				hasPauseRan = true;
+			}
+			return;
+		}
 		while (++steps <= speed) {
 			final DecorablePoint entry = queue.poll();
 			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
@@ -77,5 +84,13 @@ public class BlockPlacer extends BukkitRunnable {
 
 	public void offer(DecorableEntry decorated, int bx, int by, int bz) {
 		queue.offer(new DecorablePoint(decorated.getWorld(), decorated.getChunkX(), decorated.getChunkZ(), bx, by, bz, decorated.getDecorator()));
+	}
+
+	public void pause() {
+		paused = true;
+	}
+
+	public void resume() {
+		paused = false;
 	}
 }
