@@ -26,6 +26,7 @@ package net.morematerials;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,6 +241,10 @@ public class MoreMaterials extends JavaPlugin {
 		return decorateWorldList;
 	}
 
+	public Map<UUID, TLongObjectHashMap<List<String>>> getWorldsDecorated() {
+		return Collections.unmodifiableMap(worldsDecorated);
+	}
+	
 	public void put(World world, int cx, int cz, String decoratorID) {
 		TLongObjectHashMap<List<String>> chunksDecorated = worldsDecorated.get(world.getUID());
 		if (chunksDecorated == null) {
