@@ -30,6 +30,7 @@ import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.thread.MaffThread;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -59,15 +60,16 @@ public class DecorateExecutor implements CommandExecutor {
 
 		// Setup command arguments
 		try {
-			String par1 = args[0]; //Command or Radius
-			String par2 = args[1]; //Custom Ore Name
-			String par3 = args[2]; //Over decorate
-			//String par4 = args[3];
-			//String par5 = args[4];
+			par1 = args[0]; //Command or Radius
+			par2 = args[1]; //Ore Type or "All"
+			par3 = args[2]; //Decorate existing chunks.
 		} catch (Exception e) {
-			// one of these failed to parse.
+			if (plugin.showDebug) {
+				System.out.println(e);
+				System.out.println("Par1: " + par1 + " Par2: " + par2 + " Par3: " + par3);
+			}
 		}
-
+	
 		if (par1 == null) {  // par1 cannot be null and continue.
 			sender.sendMessage("Invalid command syntax.");
 			return false;
@@ -86,20 +88,39 @@ public class DecorateExecutor implements CommandExecutor {
 		}
 
 		if (par1.equalsIgnoreCase("pause")) {
-			plugin.getPlacer().pause();
-			sender.sendMessage("[MoreMaterials] - Block Placer Paused");
+			if (!plugin.getPlacer().paused) {
+				plugin.getPlacer().pause();
+				sender.sendMessage("[MoreMaterials] - Block Placer Paused, queue remaining: " + plugin.getPlacer().queue.size());
+			} else {
+				sender.sendMessage("[MoreMaterials] - Block Placer already Paused");
+			}
 			return true;  // End Command.
 		}
 
 		if (par1.equalsIgnoreCase("resume")) {
-			plugin.getPlacer().resume();
-			sender.sendMessage("[MoreMaterials] - Block Placer Resumed");
+			if (plugin.getPlacer().paused) {
+				plugin.getPlacer().resume();
+				sender.sendMessage("[MoreMaterials] - Block Placer Resumed");
+			} else {
+				if (plugin.getPlacer().queue.size() > 0) {
+					sender.sendMessage("[MoreMaterials] - Block Placer is already running.");
+				} else {
+					sender.sendMessage("[MoreMaterials] - Block Placer is already running but queue is empty.");
+				}
+			}
 			return true;  // End Command.
 		}
 
 		if (par1.equalsIgnoreCase("save")) {
 			plugin.save();
 			sender.sendMessage("[MoreMaterials] - Saved Processed queue to file system.");
+			return true;  // End Command.
+		}
+		
+		if (par1.equalsIgnoreCase("status")) {			
+			if (plugin.getPlacer() != null && plugin.getPlacer().queue != null) {	
+				sender.sendMessage("[MoreMaterials] - Block Placer queue remaining: " + plugin.getPlacer().queue.size());			
+			}
 			return true;  // End Command.
 		}
 
@@ -154,17 +175,20 @@ public class DecorateExecutor implements CommandExecutor {
 							//plugin.getLogger().info("Offer to Queue: [" + myOre.getIdentifier() + "] failed chance calculation for manual decorate. Chance: " + rand1 + "/" + rand2);
 						}
 					}
-					if (plugin.showDebug) {
-						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+					if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
+						if (plugin.showDebug) {					
+							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+						}
+						sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
 					}
 				}
 			}
 		}
 
 		// Single Chunk Generation specified by arg[1]
-		if (par2.equalsIgnoreCase("all") && radius == 0) {
+		if (!par2.equalsIgnoreCase("all") && radius == 0) {
 			System.out.println("Zero Radius Detected");
-			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);
+			Decorator myOre = this.plugin.getDecoratorRegistry().get(par2);
 			if (myOre instanceof CustomOreDecorator) {
 				// Tracking
 				((CustomOreDecorator) myOre).toDecorateCount = 0;
@@ -194,8 +218,11 @@ public class DecorateExecutor implements CommandExecutor {
 						//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " failed chance calculation for manual decorate. Chance: " + rand1 + "/" + rand2);
 					}
 				}
-				if (plugin.showDebug) {
-					plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+				if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
+					if (plugin.showDebug) {					
+						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+					}
+					sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
 				}
 			}
 		}
@@ -240,17 +267,19 @@ public class DecorateExecutor implements CommandExecutor {
 							}
 						}
 					}
-					if (plugin.showDebug) {
-						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+					if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
+						if (plugin.showDebug) {					
+							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+						}
+						sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
 					}
-					sender.sendMessage("[MoreMaterials] -  Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 				}
 			}
 		}
 
 		// Multi-Chunk Generation using specified args[1] ore.
-		if (par2.equalsIgnoreCase("all") && radius >= 1) {
-			Decorator myOre = this.plugin.getDecoratorRegistry().get(args[1]);
+		if (!par2.equalsIgnoreCase("all") && radius >= 1) {
+			Decorator myOre = this.plugin.getDecoratorRegistry().get(par2);
 			if (myOre instanceof CustomOreDecorator) {
 				// Tracking
 				((CustomOreDecorator) myOre).toDecorateCount = 0;
@@ -286,11 +315,15 @@ public class DecorateExecutor implements CommandExecutor {
 						}
 					}
 				}
-				if (plugin.showDebug) {
-					plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+				if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
+					if (plugin.showDebug) {					
+						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
+					}
+					sender.sendMessage("[MoreMaterials] - Queued Generation: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier());
 				}
 			}
 		}
+		sender.sendMessage("[MoreMaterials] - command completed sucessfully.");
 		return true;
 	}
 }

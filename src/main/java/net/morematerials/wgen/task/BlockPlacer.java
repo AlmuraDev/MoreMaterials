@@ -33,11 +33,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.getspout.spoutapi.block.SpoutBlock;
 
 public class BlockPlacer extends BukkitRunnable {
-	private final Queue<DecorablePoint> queue;
+	public final Queue<DecorablePoint> queue;
 	private final MoreMaterials plugin;
 	public int speed = 4000;
 	private int steps = 0;
-	private boolean finished = false, paused = false, hasPauseRan = false;
+	public boolean finished = false, paused = false, hasPauseRan = false;
 
 	public BlockPlacer(MoreMaterials plugin) {
 		this.plugin = plugin;
