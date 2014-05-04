@@ -52,7 +52,7 @@ public class DecorateExecutor implements CommandExecutor {
 	private String par1, par2, par3, par4, par5;
 	private boolean canPlace = false;
 	private int rand1, rand2, offsetX, offsetZ;
-	public Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = new HashMap<>();
+	private Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = new HashMap<>();
 
 	public DecorateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
@@ -131,7 +131,7 @@ public class DecorateExecutor implements CommandExecutor {
 		if (par1.equalsIgnoreCase("status")) {			
 			if (plugin.getPlacer() != null) {
 				sender.sendMessage("[MoreMaterials] - Block Placer queue remaining: [" + ChatColor.AQUA + plugin.getPlacer().queue.size() + ChatColor.RESET + "].");
-				//sender.sendMessage("[MoreMaterials] - Chunk.dat entires: " + plugin.fileSize());
+				sender.sendMessage("[MoreMaterials] - Chunk.dat entires for this world: " + plugin.worldsDecorated.get(world.getUID()).size());
 				return true;  // End Command.
 			}
 		}
@@ -171,7 +171,6 @@ public class DecorateExecutor implements CommandExecutor {
 
 		// Determine already decorated into our own map.
 		alreadyDecorated = plugin.getWorldsDecorated();
-		System.out.println("Size: " + alreadyDecorated.get(world.getUID()).size());
 		
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
@@ -379,10 +378,7 @@ public class DecorateExecutor implements CommandExecutor {
 			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
 			final List<String> decorationsInChunk = chunksDecorated.get(key);
 			return decorationsInChunk != null && !decorationsInChunk.isEmpty();
-		} else {
-			System.out.println("ChunksDecorated = false");
 		}
-		System.out.println("hasOres returned false");
 		return false;
 	}
 }

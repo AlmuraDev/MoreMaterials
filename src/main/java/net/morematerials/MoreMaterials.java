@@ -85,7 +85,7 @@ public class MoreMaterials extends JavaPlugin {
 	private ThreadRegistry maffThreads;
 	private List<String> decorateWorldList;
 	public boolean showDebug = false;
-	private Map<UUID, TLongObjectHashMap<List<String>>> worldsDecorated = new HashMap<>();
+	public Map<UUID, TLongObjectHashMap<List<String>>> worldsDecorated = new HashMap<>();
 
 	@Override
 	public void onDisable() {
