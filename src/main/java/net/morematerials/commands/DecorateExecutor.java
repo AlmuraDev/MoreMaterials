@@ -51,24 +51,23 @@ public class DecorateExecutor implements CommandExecutor {
 	private MoreMaterials plugin;
 	private String par1, par2, par3, par4, par5;
 	private boolean canPlace = false;
-	private int rand1, rand2, offsetX, offsetZ;
+	private int rand1, rand2, offsetX, offsetZ, totalDecorated;
 	private Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = new HashMap<>();
 
 	public DecorateExecutor(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
 
-	@SuppressWarnings("unused")
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// /mmpopulate intRadius CustomOreName OverPopulate
 		if (!(sender instanceof Player)) {
 			plugin.getLogger().severe("This command is only available to logged in players!");
 			return true;
 		}
-
+		
 		// Command Structure
 		final World world = ((Player)sender).getWorld();
-
+		
 		// Setup command arguments
 		try {
 			par1 = args[0]; //Command or Radius
@@ -81,19 +80,22 @@ public class DecorateExecutor implements CommandExecutor {
 			}
 		}
 
+		// Count variables
+		totalDecorated = 0;
+		
 		if (par1 == null) {  // par1 cannot be null and continue.
-			sender.sendMessage("Invalid command syntax.");
+			sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Invalid command syntax.");
 			return false;
 		}
 
 		// Handler triggering of debug mode.
 		if (par1.equalsIgnoreCase("debug")) {
 			if (!plugin.showDebug) {
-				sender.sendMessage("[MoreMaterials] - Decorator Debug On");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Decorator Debug On");
 				plugin.showDebug = true;
 			} else {
 				plugin.showDebug = false;
-				sender.sendMessage("[MoreMaterials] - Decorator Debug Off");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Decorator Debug Off");
 			}
 			return true;  // End Command.
 		}
@@ -101,9 +103,9 @@ public class DecorateExecutor implements CommandExecutor {
 		if (par1.equalsIgnoreCase("pause")) {
 			if (!plugin.getPlacer().paused) {
 				plugin.getPlacer().pause();
-				sender.sendMessage("[MoreMaterials] - Block Placer Paused, queue remaining: " + plugin.getPlacer().queue.size());
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Block Placer Paused, queue remaining: " + plugin.getPlacer().queue.size());
 			} else {
-				sender.sendMessage("[MoreMaterials] - Block Placer already Paused");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Block Placer already Paused");
 			}
 			return true;  // End Command.
 		}
@@ -111,12 +113,12 @@ public class DecorateExecutor implements CommandExecutor {
 		if (par1.equalsIgnoreCase("resume")) {
 			if (plugin.getPlacer().paused) {
 				plugin.getPlacer().resume();
-				sender.sendMessage("[MoreMaterials] - Block Placer Resumed");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Block Placer Resumed");
 			} else {
 				if (plugin.getPlacer().queue.size() > 0) {
-					sender.sendMessage("[MoreMaterials] - Block Placer is already running.");
+					sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Block Placer is already running.");
 				} else {
-					sender.sendMessage("[MoreMaterials] - Block Placer is already running but queue is empty.");
+					sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Block Placer is already running but queue is empty.");
 				}
 			}
 			return true;  // End Command.
@@ -124,14 +126,14 @@ public class DecorateExecutor implements CommandExecutor {
 
 		if (par1.equalsIgnoreCase("save")) {
 			plugin.save();
-			sender.sendMessage("[MoreMaterials] - Saved Processed queue to file system.");
+			sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Saved Processed queue to file system.");
 			return true;  // End Command.
 		}
 
 		if (par1.equalsIgnoreCase("status")) {			
 			if (plugin.getPlacer() != null) {
-				sender.sendMessage("[MoreMaterials] - Block Placer queue remaining: [" + ChatColor.AQUA + plugin.getPlacer().queue.size() + ChatColor.RESET + "].");
-				sender.sendMessage("[MoreMaterials] - Chunk.dat entires for this world: " + plugin.worldsDecorated.get(world.getUID()).size());
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Block Placer queue remaining: [" + ChatColor.AQUA + plugin.getPlacer().queue.size() + ChatColor.RESET + "].");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Chunk.dat entires for this world: " + plugin.worldsDecorated.get(world.getUID()).size());
 				return true;  // End Command.
 			}
 		}
@@ -147,16 +149,16 @@ public class DecorateExecutor implements CommandExecutor {
 				checkZ = Integer.parseInt(par3);
 			}
 			if (plugin.containsAny(((Player)sender).getWorld(), checkX, checkZ)) {
-				sender.sendMessage("[MoreMaterials] - Chunk already decorated.");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Chunk already decorated.");
 			} else {
-				sender.sendMessage("[MoreMaterials] - Chunk has not been decorated.");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Chunk has not been decorated.");
 			}
 			return true;  // End Command.
 		}
 		
 		if (par1.equalsIgnoreCase("displayores")) {
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
-				sender.sendMessage("[MoreMaterials] - Ore: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
+				sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Ore: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 			}
 			return true; //End Command.
 		}
@@ -180,7 +182,7 @@ public class DecorateExecutor implements CommandExecutor {
 
 		//Filter invalid command syntax.
 		if (par2 == null || par3 == null) {
-			sender.sendMessage("Invalid command syntax.");
+			sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Invalid command syntax.");
 			return false;
 		}
 
@@ -207,6 +209,7 @@ public class DecorateExecutor implements CommandExecutor {
 							thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 							plugin.put(world, chunkX, chunkZ, myOre.getIdentifier());
 							((CustomOreDecorator) myOre).toDecorateCount++;
+							totalDecorated++;
 						} else {
 							if (plugin.showDebug) {
 								plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + chunkX + " / " + chunkZ + " is already decorated.");
@@ -221,7 +224,7 @@ public class DecorateExecutor implements CommandExecutor {
 						if (plugin.showDebug) {
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
-						sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
+						sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 					}
 				}
 			}
@@ -250,6 +253,7 @@ public class DecorateExecutor implements CommandExecutor {
 						thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
 						plugin.put(world, chunkX, chunkZ, myOre.getIdentifier());
 						((CustomOreDecorator) myOre).toDecorateCount++;
+						totalDecorated++;
 					} else {
 						if (plugin.showDebug) {
 							//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + chunkX + " / " + chunkZ + " is already decorated.");
@@ -264,7 +268,7 @@ public class DecorateExecutor implements CommandExecutor {
 					if (plugin.showDebug) {
 						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 					}
-					sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
+					sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 				}
 			}
 		}
@@ -297,6 +301,7 @@ public class DecorateExecutor implements CommandExecutor {
 									thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
 									plugin.put(world, offsetX, offsetZ, myOre.getIdentifier());
 									((CustomOreDecorator) myOre).toDecorateCount++;
+									totalDecorated++;
 								} else {
 									if (plugin.showDebug) {
 										//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + offsetX + " / " + offsetZ + " is already decorated.");
@@ -313,7 +318,7 @@ public class DecorateExecutor implements CommandExecutor {
 						if (plugin.showDebug) {
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
-						sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
+						sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 					}
 				}
 			}
@@ -345,6 +350,7 @@ public class DecorateExecutor implements CommandExecutor {
 								thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
 								plugin.put(world, offsetX, offsetZ, myOre.getIdentifier());
 								((CustomOreDecorator) myOre).toDecorateCount++;
+								totalDecorated++;
 							} else {
 								if (plugin.showDebug) {
 									//plugin.getLogger().info("Offer to Queue: " + myOre.getIdentifier() + " at: " + offsetX + " / " + offsetZ + " is already decorated.");
@@ -361,11 +367,11 @@ public class DecorateExecutor implements CommandExecutor {
 					if (plugin.showDebug) {
 						plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 					}
-					sender.sendMessage("[MoreMaterials] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
+					sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");
 				}
 			}
 		}
-		sender.sendMessage("[MoreMaterials] - command completed sucessfully.");
+		sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - command completed sucessfully.  Queued Chunks: " + totalDecorated);
 		if (plugin.getPlacer() != null) {
 			plugin.getPlacer().player = Bukkit.getPlayer(sender.getName());
 		}
