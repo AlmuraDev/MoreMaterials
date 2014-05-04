@@ -375,7 +375,8 @@ public class DecorateExecutor implements CommandExecutor {
 		TLongObjectHashMap<List<String>> chunksDecorated = alreadyDecorated.get(world.getUID());
 		if (chunksDecorated != null) {
 			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
-			return chunksDecorated.get(key) != null;
+			final List<String> decorationsInChunk = chunksDecorated.get(key);
+			return decorationsInChunk != null && !decorationsInChunk.isEmpty();
 		}
 		return false;
 	}
