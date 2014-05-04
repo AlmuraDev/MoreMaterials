@@ -88,6 +88,7 @@ public class BlockPlacer extends BukkitRunnable {
 
 	public void pause() {
 		paused = true;
+		hasPauseRan = false;
 	}
 
 	public void resume() {
