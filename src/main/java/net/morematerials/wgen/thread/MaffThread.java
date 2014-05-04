@@ -23,8 +23,6 @@
  */
 package net.morematerials.wgen.thread;
 
-import java.util.Random;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.flowpowered.math.vector.Vector3i;
@@ -57,13 +55,13 @@ public class MaffThread extends Thread {
 			final DecorableEntry entry = queue.poll();
 			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
 				final CustomOreDecorator oreDecorator = (CustomOreDecorator) entry.getDecorator();
-				final int veinsPerChunk = RANDOM.nextInt(oreDecorator.getMaxVeinsPerChunk() - oreDecorator.getMinVeinsPerChunk()) + oreDecorator.getMaxVeinsPerChunk();
+				final int veinsPerChunk = MoreMaterials.RANDOM.nextInt(oreDecorator.getMaxVeinsPerChunk() - oreDecorator.getMinVeinsPerChunk()) + oreDecorator.getMaxVeinsPerChunk();
 				for (byte i = 0; i < veinsPerChunk; i++) {
-					final int x = (entry.getChunkX() << 4) + RANDOM.nextInt(16);
-					final int y = RANDOM.nextInt(oreDecorator.getMaxHeight() - oreDecorator.getMinHeight()) + oreDecorator.getMinHeight();
-					final int z = (entry.getChunkZ() << 4) + RANDOM.nextInt(16);
-					final int veinSize = RANDOM.nextInt(oreDecorator.getMaxVeinSize() - oreDecorator.getMinVeinSize()) + oreDecorator.getMinVeinSize();
-					for (Vector3i point : ((CustomOreDecorator) entry.getDecorator()).calculatePoints(x, y, z, veinSize, RANDOM)) {
+					final int x = (entry.getChunkX() << 4) + MoreMaterials.RANDOM.nextInt(16);
+					final int y = MoreMaterials.RANDOM.nextInt(oreDecorator.getMaxHeight() - oreDecorator.getMinHeight()) + oreDecorator.getMinHeight();
+					final int z = (entry.getChunkZ() << 4) + MoreMaterials.RANDOM.nextInt(16);
+					final int veinSize = MoreMaterials.RANDOM.nextInt(oreDecorator.getMaxVeinSize() - oreDecorator.getMinVeinSize()) + oreDecorator.getMinVeinSize();
+					for (Vector3i point : ((CustomOreDecorator) entry.getDecorator()).calculatePoints(x, y, z, veinSize, MoreMaterials.RANDOM)) {
 						//plugin.getLogger().info("[MoreMaterials] Maff Thread -> Calculated: " + point);
 						replacer.offer(entry, point.getX(), point.getY(), point.getZ());
 					}
