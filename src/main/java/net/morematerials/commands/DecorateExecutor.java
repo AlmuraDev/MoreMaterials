@@ -60,13 +60,14 @@ public class DecorateExecutor implements CommandExecutor {
 
 	@SuppressWarnings("unused")
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		// Command Structure
-		final World world = ((Player)sender).getWorld();
 		// /mmpopulate intRadius CustomOreName OverPopulate
 		if (!(sender instanceof Player)) {
 			plugin.getLogger().severe("This command is only available to logged in players!");
 			return true;
 		}
+
+		// Command Structure
+		final World world = ((Player)sender).getWorld();
 
 		// Setup command arguments
 		try {
@@ -128,7 +129,7 @@ public class DecorateExecutor implements CommandExecutor {
 		}
 
 		if (par1.equalsIgnoreCase("status")) {			
-			if (plugin.getPlacer() != null && plugin.getPlacer().queue != null) {	
+			if (plugin.getPlacer() != null) {
 				sender.sendMessage("[MoreMaterials] - Block Placer queue remaining: [" + ChatColor.AQUA + plugin.getPlacer().queue.size() + ChatColor.RESET + "].");
 				//sender.sendMessage("[MoreMaterials] - Chunk.dat entires: " + plugin.fileSize());
 				return true;  // End Command.
@@ -205,7 +206,7 @@ public class DecorateExecutor implements CommandExecutor {
 						}
 						if (canPlace) {
 							thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
-							plugin.put(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
+							plugin.put(world, chunkX, chunkZ, myOre.getIdentifier());
 							((CustomOreDecorator) myOre).toDecorateCount++;
 						} else {
 							if (plugin.showDebug) {
@@ -242,13 +243,13 @@ public class DecorateExecutor implements CommandExecutor {
 				rand2 = ((CustomOreDecorator) myOre).getDecorateChance();
 				if (rand1 == rand2) {
 					if (par3.equalsIgnoreCase("true")) {
-						canPlace = !plugin.contains(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
+						canPlace = !plugin.contains(world, chunkX, chunkZ, myOre.getIdentifier());
 					} else {
 						canPlace = !this.hasOres(world, chunkX, chunkZ);
 					}
 					if (canPlace) {
 						thread.offer(myLocation.getWorld(), chunkX, chunkZ, myOre);
-						plugin.put(((Player) sender).getWorld(), chunkX, chunkZ, myOre.getIdentifier());
+						plugin.put(world, chunkX, chunkZ, myOre.getIdentifier());
 						((CustomOreDecorator) myOre).toDecorateCount++;
 					} else {
 						if (plugin.showDebug) {
@@ -295,7 +296,7 @@ public class DecorateExecutor implements CommandExecutor {
 								}
 								if (canPlace) {
 									thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
-									plugin.put(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
+									plugin.put(world, offsetX, offsetZ, myOre.getIdentifier());
 									((CustomOreDecorator) myOre).toDecorateCount++;
 								} else {
 									if (plugin.showDebug) {
@@ -343,7 +344,7 @@ public class DecorateExecutor implements CommandExecutor {
 							}		
 							if (canPlace) {
 								thread.offer(myLocation.getWorld(), offsetX, offsetZ, myOre);
-								plugin.put(((Player) sender).getWorld(), offsetX, offsetZ, myOre.getIdentifier());
+								plugin.put(world, offsetX, offsetZ, myOre.getIdentifier());
 								((CustomOreDecorator) myOre).toDecorateCount++;
 							} else {
 								if (plugin.showDebug) {
