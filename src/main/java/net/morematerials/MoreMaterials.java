@@ -194,7 +194,7 @@ public class MoreMaterials extends JavaPlugin {
 		loader.onEnable(getDataFolder());
 		loader.load();
 		placer = new BlockPlacer(this);
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, placer, 0, 5);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, placer, 0, 20);
 		maffThreads = new ThreadRegistry(this, placer);
 
 		// Register chat commands.

@@ -35,7 +35,7 @@ import org.getspout.spoutapi.block.SpoutBlock;
 public class BlockPlacer extends BukkitRunnable {
 	private final Queue<DecorablePoint> queue;
 	private final MoreMaterials plugin;
-	public int speed = 1000;
+	public int speed = 4000;
 	private int steps = 0;
 	private boolean finished = false, paused = false, hasPauseRan = false;
 
@@ -60,7 +60,7 @@ public class BlockPlacer extends BukkitRunnable {
 					final SpoutBlock block = (SpoutBlock) entry.getWorld().getBlockAt(entry.getX(), entry.getY(), entry.getZ());
 					boolean shouldPlace = ((CustomOreDecorator) entry.getDecorator()).getReplaceables().contains(block.getType()) && block.getCustomBlock() == null;
 					if (!shouldPlace) {
-						//System.out.println("Could not populate: " + x + "/" + y + "/" + z + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
+						//plugin.getLogger().info("Could not populate: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ() + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
 					} else {
 						block.setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
 					}
@@ -87,7 +87,6 @@ public class BlockPlacer extends BukkitRunnable {
 	}
 
 	public void pause() {
-		System.out.println("PAUSED!!!!");
 		paused = true;
 		hasPauseRan = false;
 	}
