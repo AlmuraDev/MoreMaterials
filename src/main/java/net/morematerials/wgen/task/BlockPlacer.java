@@ -49,8 +49,14 @@ public class BlockPlacer extends BukkitRunnable {
 		while (++steps <= speed) {
 			final DecorablePoint entry = queue.poll();
 			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
-				if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), (int) entry.getX(), (int) entry.getY(), (int) entry.getZ())) {
-					((SpoutBlock) entry.getWorld().getBlockAt((int) entry.getX(), (int) entry.getY(), (int) entry.getZ())).setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+				if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), entry.getX(), entry.getY(), entry.getZ())) {
+					final SpoutBlock block = (SpoutBlock) entry.getWorld().getBlockAt(entry.getX(), entry.getY(), entry.getZ());
+					boolean shouldPlace = ((CustomOreDecorator) entry.getDecorator()).getReplaceables().contains(block.getType()) && block.getCustomBlock() == null;
+					if (!shouldPlace) {
+						//System.out.println("Could not populate: " + x + "/" + y + "/" + z + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
+					} else {
+						block.setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+					}
 				}
 			}
 		}

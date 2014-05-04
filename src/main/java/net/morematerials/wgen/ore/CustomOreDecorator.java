@@ -48,7 +48,6 @@ import org.getspout.spoutapi.material.CustomBlock;
  * This class mimics the behavior of ore veins found in caves.
  */
 public class CustomOreDecorator extends Decorator {
-	private static final Vector3i INVALID_POINT = new Vector3i(-1, -1, -1);
 	private final CustomBlock ore;
 	private final ArrayList<Material> replaceables;
 	private final int decorateChance;
@@ -130,14 +129,13 @@ public class CustomOreDecorator extends Decorator {
 			final int bz = (chunk.getZ() << 4) + random.nextInt(16);
 			final int veinSize = random.nextInt(maxVeinSize - minVeinSize) + minVeinSize;
 			placeOre(world, chunk.getX(), chunk.getZ(), bx, by, bz, veinSize, random);
-			//vectorPlaceOre(world, chunk, new Vector3f(x, y, z), veinSize, random);
 		}
 	}
 
 
 
 	private void placeOre(World world, int cx, int cz, int bx, int by, int bz, int veinSize, Random random) {
-		for (Vector3i point : calculatePoint(bx, by, bz, veinSize, random)) {
+		for (Vector3i point : calculatePoints(bx, by, bz, veinSize, random)) {
 			if (canDecorate(world, cx, cz, point.getX(), point.getY(), point.getZ())) {
 				final SpoutBlock block = (SpoutBlock) world.getBlockAt(point.getX(), point.getY(), point.getZ());
 				boolean shouldPlace = replaceables.contains(block.getType()) && block.getCustomBlock() == null;
@@ -150,7 +148,7 @@ public class CustomOreDecorator extends Decorator {
 		}
 	}
 
-	public List<Vector3i> calculatePoint(int bx, int by, int bz, int veinSize, Random random) {
+	public List<Vector3i> calculatePoints(int bx, int by, int bz, int veinSize, Random random) {
 		final List<Vector3i> orePoints = new LinkedList<>();
 		final float angle = random.nextFloat() * (float) Math.PI;
 		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);

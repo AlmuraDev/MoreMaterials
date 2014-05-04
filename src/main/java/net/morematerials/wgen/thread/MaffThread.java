@@ -36,7 +36,6 @@ import net.morematerials.wgen.task.DecorableEntry;
 import org.bukkit.World;
 
 public class MaffThread extends Thread {
-	private static final Random RANDOM = new Random();
 	private final MoreMaterials plugin;
 	private final BlockPlacer replacer;
 	private final Timer timer;
@@ -64,7 +63,7 @@ public class MaffThread extends Thread {
 					final int y = RANDOM.nextInt(oreDecorator.getMaxHeight() - oreDecorator.getMinHeight()) + oreDecorator.getMinHeight();
 					final int z = (entry.getChunkZ() << 4) + RANDOM.nextInt(16);
 					final int veinSize = RANDOM.nextInt(oreDecorator.getMaxVeinSize() - oreDecorator.getMinVeinSize()) + oreDecorator.getMinVeinSize();
-					for (Vector3i point : ((CustomOreDecorator) entry.getDecorator()).calculatePoint(x, y, z, veinSize, RANDOM)) {
+					for (Vector3i point : ((CustomOreDecorator) entry.getDecorator()).calculatePoints(x, y, z, veinSize, RANDOM)) {
 						//plugin.getLogger().info("[MoreMaterials] Maff Thread -> Calculated: " + point);
 						replacer.offer(entry, point.getX(), point.getY(), point.getZ());
 					}
