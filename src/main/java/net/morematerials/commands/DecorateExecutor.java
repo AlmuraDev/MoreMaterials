@@ -170,6 +170,7 @@ public class DecorateExecutor implements CommandExecutor {
 
 		// Determine already decorated into our own map.
 		final Map<UUID, TLongObjectHashMap<List<String>>> alreadyDecorated = plugin.getWorldsDecorated();
+		System.out.println("Size: " + alreadyDecorated.get(world.getUID()).size());
 		
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
@@ -377,7 +378,10 @@ public class DecorateExecutor implements CommandExecutor {
 			final long key = (((long) cx) << 32) | (((long) cz) & 0xFFFFFFFFL);
 			final List<String> decorationsInChunk = chunksDecorated.get(key);
 			return decorationsInChunk != null && !decorationsInChunk.isEmpty();
+		} else {
+			System.out.println("ChunksDecorated = false");
 		}
+		System.out.println("hasOres returned false");
 		return false;
 	}
 }
