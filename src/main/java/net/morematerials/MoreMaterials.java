@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -242,7 +243,24 @@ public class MoreMaterials extends JavaPlugin {
 	}
 
 	public Map<UUID, TLongObjectHashMap<List<String>>> cloneWorldsDecorated() {
-		return new HashMap<>(worldsDecorated);
+		final Map<UUID, TLongObjectHashMap<List<String>>> cloned = new HashMap<>();
+
+		for (Map.Entry<UUID, TLongObjectHashMap<List<String>>> entry : worldsDecorated.entrySet()) {
+			final TLongObjectHashMap<List<String>> chunksCloned = new TLongObjectHashMap<>();
+
+			for (Long chunkEntry : entry.getValue().keys()) {
+				final List<String> decorationsCloned = new LinkedList<>();
+
+				for (String stringEntry : entry.getValue().get(chunkEntry)) {
+					decorationsCloned.add(stringEntry);
+				}
+
+				chunksCloned.put(chunkEntry, decorationsCloned);
+			}
+
+			cloned.put(entry.getKey(), chunksCloned);
+		}
+		return cloned;
 	}
 
 	public void put(World world, int cx, int cz, String decoratorID) {
