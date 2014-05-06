@@ -49,12 +49,9 @@ public class DecorateListener implements Listener {
 		if (plugin.getConfig().getBoolean("DecorateNewChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
 			MaffThread thread = plugin.getThreadRegistry().get(event.getWorld());
 			if (thread == null) {
-                thread = plugin.getThreadRegistry().start(5, event.getWorld());
+				thread = plugin.getThreadRegistry().start(50000, event.getWorld());
 			}
-			if (plugin.containsAny(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ())) {
-				plugin.getPlacer().speed=15; // Sets speed to 10 because this indicates a command is running creating new chunks.
-				return;
-			}
+
 			for (Decorator myOre : plugin.getDecoratorRegistry().getAll()) {
 				if (thread.isQueued(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre)) {
 					continue;
@@ -66,17 +63,14 @@ public class DecorateListener implements Listener {
 					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 					//Normally the formula for inclusive low/high is nextInt(high - (low - 1) + 1 but seeing as low is always 1 and 1-1 is 0, we can omit that.
 					int rand1 = RANDOM.nextInt(((CustomOreDecorator)myOre).getDecorateChance()) + 1;
-					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();					
+					int rand2 = ((CustomOreDecorator)myOre).getDecorateChance();
 					if (rand1 == rand2) {
-						if (thread.offer(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre)) {
-							// Save Information about placement
-							plugin.put(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre.getIdentifier());
-							
-							// Count total chunks to populate.
-							((CustomOreDecorator) myOre).toDecorateCount++;
-							if (plugin.showDebug) {
-								//plugin.getLogger().info("Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
-							}
+						thread.offer(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre);
+						plugin.put(event.getWorld(), event.getChunk().getX(), event.getChunk().getZ(), myOre.getIdentifier());
+						// Count total chunks to populate.
+						((CustomOreDecorator) myOre).toDecorateCount++;
+						if (plugin.showDebug) {
+							plugin.getLogger().info("Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
 						}
 					} else {
 						if (plugin.showDebug) {
@@ -88,11 +82,11 @@ public class DecorateListener implements Listener {
 			}
 		} 
 	}
-	
+
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event) {	 // Don't try and decorate new chunks here.	
 		if (plugin.getConfig().getBoolean("DecorateExistingChunks") && !event.isNewChunk() && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
-		// TODO:
+			// TODO:
 		}
 	}
 }

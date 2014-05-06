@@ -184,6 +184,10 @@ public class MoreMaterials extends JavaPlugin {
 				this.utilsManager.log("Stat tracking error!", Level.SEVERE);
 			}
 		}
+		
+		if (this.getConfig().getBoolean("DebugMode")) {
+			showDebug = true;
+		}
 
 		// Registered events.
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);

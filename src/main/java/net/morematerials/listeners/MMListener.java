@@ -25,14 +25,15 @@ package net.morematerials.listeners;
 
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.MMCustomBlock;
-
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -47,7 +48,8 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class MMListener implements Listener {
 	
 	private MoreMaterials plugin;
-
+	private String fullName;
+	
 	public MMListener(MoreMaterials plugin) {
 		this.plugin = plugin;
 	}
@@ -71,7 +73,40 @@ public class MMListener implements Listener {
 			this.plugin.getHandlerManager().triggerHandlers("HoldBlockBreak", ((GenericCustomItem) stack.getMaterial()).getCustomId(), event);
 		}
 	}
-	
+		
+	@EventHandler
+	public void InventoryCraft(CraftItemEvent event) {
+		if (event.getInventory().getResult() == null) {
+			return;
+		}
+
+		Player player = (Player) event.getWhoClicked();
+
+		// Getting the object we want to craft.
+		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getInventory().getResult());
+		if (spoutItemStack != null) {
+			if (spoutItemStack.isCustomBlock() || spoutItemStack.isCustomItem()) {
+				fullName = ((GenericCustomItem) spoutItemStack.getMaterial()).getFullName();
+				if (fullName == null) {
+					fullName = ((GenericCustomBlock) spoutItemStack.getMaterial()).getFullName();
+				}
+
+				String pluginName = fullName.split("\\.")[0];
+				if (pluginName.equalsIgnoreCase("MoreMaterials")) {
+					String smpName = fullName.split("\\.")[1];
+					String smpItem = fullName.split("\\.")[2];
+					String permissionName = smpName + "." + smpItem;
+
+					if (!player.hasPermission("morematerials.craft") || !player.hasPermission("morematerials.craft." + permissionName)) {
+						player.sendMessage("You do not have permission to craft: " + permissionName);
+						event.setCancelled(true);
+						return;
+					}
+				}
+			}
+		}
+	}
+
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		// The click events for hold item.

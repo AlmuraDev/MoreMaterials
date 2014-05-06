@@ -51,7 +51,9 @@ public class BlockPlacer extends BukkitRunnable {
 	public void run() {
 		if (paused) {
 			if (!hasPauseRan) {
-				plugin.getLogger().info("Setting custom blocks has been paused. Queue remaining: " + queue.size());
+				if (plugin.showDebug) { 
+					plugin.getLogger().info("Setting custom blocks has been paused. Queue remaining: " + queue.size());
+				}
 				hasPauseRan = true;
 			}
 			return;
@@ -65,6 +67,9 @@ public class BlockPlacer extends BukkitRunnable {
 					if (!shouldPlace) {
 						//plugin.getLogger().info("Could not populate: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ() + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
 					} else {
+						if (plugin.showDebug) {
+							plugin.getLogger().severe("Placed Ore at: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ());
+						}
 						block.setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
 					}
 				}
