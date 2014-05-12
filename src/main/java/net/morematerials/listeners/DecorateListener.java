@@ -70,7 +70,7 @@ public class DecorateListener implements Listener {
 						// Count total chunks to populate.
 						((CustomOreDecorator) myOre).toDecorateCount++;
 						if (plugin.showDebug) {
-							plugin.getLogger().info("Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
+							//plugin.getLogger().info("Queue Generation of Chunk at: X: " + event.getChunk().getX() + " Z: " + event.getChunk().getZ() + " with ore: " + myOre.getIdentifier());
 						}
 					} else {
 						if (plugin.showDebug) {

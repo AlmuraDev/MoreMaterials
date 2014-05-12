@@ -173,7 +173,9 @@ public class DecorateExecutor implements CommandExecutor {
 
 		// Determine already decorated into our own map.
 		alreadyDecorated = plugin.cloneWorldsDecorated();
-		System.out.println("Size: " + alreadyDecorated.get(world.getUID()).size());
+		if (alreadyDecorated.get(world.getUID()) != null) {
+			System.out.println("Size: " + alreadyDecorated.get(world.getUID()).size());
+		}
 		
 		// Startup Maff thread.
 		MaffThread thread = plugin.getThreadRegistry().get(myLocation.getWorld());
@@ -232,8 +234,7 @@ public class DecorateExecutor implements CommandExecutor {
 		}
 
 		// Single Chunk Generation specified by arg[1]
-		if (!par2.equalsIgnoreCase("all") && radius == 0) {
-			System.out.println("Zero Radius Detected");
+		if (!par2.equalsIgnoreCase("all") && radius == 0) {			
 			Decorator myOre = this.plugin.getDecoratorRegistry().get(par2);
 			if (myOre instanceof CustomOreDecorator) {
 				// Tracking
@@ -317,7 +318,9 @@ public class DecorateExecutor implements CommandExecutor {
 					}
 					if (((CustomOreDecorator) myOre).toDecorateCount > 0) {
 						if (plugin.showDebug) {
-							System.out.println("AlreadyDecorated Queue Size: " + alreadyDecorated.get(world.getUID()).size());
+							if (alreadyDecorated.get(world.getUID()) != null) {
+								System.out.println("AlreadyDecorated Queue Size: " + alreadyDecorated.get(world.getUID()).size());
+							}
 							plugin.getLogger().info("Queue Generation: " + ((CustomOreDecorator) myOre).toDecorateCount + " of: " + myOre.getIdentifier());
 						}
 						sender.sendMessage("[" + ChatColor.DARK_RED + "MoreMaterials" + ChatColor.RESET + "] - Queued Generation of: [" + ChatColor.AQUA + ((CustomOreDecorator) myOre).toDecorateCount + ChatColor.RESET + "] chunk(s) of: [" + ChatColor.DARK_AQUA + myOre.getIdentifier() + ChatColor.RESET + "].");

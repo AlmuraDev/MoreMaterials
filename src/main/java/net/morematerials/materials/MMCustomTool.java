@@ -80,6 +80,7 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 		if (this.config.contains("Handlers")) {
 			this.registerHandlers();
 		}
+		//configureModifiers();  // Doesn't work.
 	}
 	
 	private void registerHandlers() {
@@ -122,6 +123,7 @@ public class MMCustomTool extends GenericCustomTool implements CustomFuel, Custo
 				
 				if (material instanceof Block) {
 					this.setStrengthModifier((Block) material, Float.parseFloat(blockInfo[1]));
+					System.out.println("HHHH Got yere");
 				}
 			}
 		}

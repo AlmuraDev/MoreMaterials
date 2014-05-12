@@ -114,6 +114,7 @@ public class CustomShapeShape extends GenericBlockDesign {
 					Float.parseFloat("0" + coordLine[2])
 				);
 			}
+			//setLightSource(i,0,1,0);
 			setQuad(quad);
 			i++;
 		}

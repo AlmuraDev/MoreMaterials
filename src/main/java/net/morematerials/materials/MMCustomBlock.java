@@ -43,8 +43,8 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	private String smpName;
 	private YamlConfiguration config;
 	private MoreMaterials plugin;
-	private Boolean itemDropRequired;
 	private Integer burnTime, speedMultiplier, jumpMultiplier;
+	private List<?> requiredTools;
 
 	@SuppressWarnings("unchecked")
 	public static MMCustomBlock create(MoreMaterials plugin, YamlConfiguration yaml, String smpName, String matName) {
@@ -96,10 +96,7 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 		
 		// Set the blocks lightlevel
 		this.setLightLevel(this.config.getInt("LightLevel", 0));
-		
-		// Does this object require an tool to be dropped.
-		this.itemDropRequired = this.config.getBoolean("ItemDropRequired", false);
-		
+
 		// Walk Speed Multiplier
 		this.speedMultiplier = this.config.getInt("Walkspeed", 1);
 		
@@ -110,6 +107,10 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 		if (this.config.contains("Handlers")) {
 			this.registerHandlers();
 		}
+		
+		// Required Tools
+		this.requiredTools = this.config.getList("RequiredTools");		
+		
 	}
 	
 	private void registerHandlers() {
@@ -159,10 +160,6 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	public String getMaterialName() {
 		return this.materialName;
 	}
-
-	public Boolean getItemDropRequired() {
-		return this.itemDropRequired;
-	}
 	
 	public Integer getBurnTime() {
 		return this.burnTime;
@@ -194,5 +191,10 @@ public class MMCustomBlock extends GenericCustomBlock implements CustomFuel, Cus
 	
 	public void setJumpMultiplier(int newJumpHeight) {
 		this.jumpMultiplier = newJumpHeight;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getRequiredTools() {
+		return (List<String>) requiredTools;
 	}
 }

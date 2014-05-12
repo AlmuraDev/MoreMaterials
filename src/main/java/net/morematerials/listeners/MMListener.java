@@ -81,6 +81,10 @@ public class MMListener implements Listener {
 		}
 
 		Player player = (Player) event.getWhoClicked();
+		
+		if (player.hasPermission("morematerials.craft")) {
+			return; // has permission to craf this.
+		}
 
 		// Getting the object we want to craft.
 		SpoutItemStack spoutItemStack = new SpoutItemStack(event.getInventory().getResult());
@@ -97,7 +101,7 @@ public class MMListener implements Listener {
 					String smpItem = fullName.split("\\.")[2];
 					String permissionName = smpName + "." + smpItem;
 
-					if (!player.hasPermission("morematerials.craft") || !player.hasPermission("morematerials.craft." + permissionName)) {
+					if (!player.hasPermission("morematerials.craft." + permissionName)) {
 						player.sendMessage("You do not have permission to craft: " + permissionName);
 						event.setCancelled(true);
 						return;

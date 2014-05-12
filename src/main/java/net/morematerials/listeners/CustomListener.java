@@ -23,11 +23,14 @@
  */
 package net.morematerials.listeners;
 
+import java.util.List;
+
 import net.morematerials.MoreMaterials;
 import net.morematerials.materials.CustomFuel;
 import net.morematerials.materials.MMCustomBlock;
 import net.morematerials.materials.MMCustomTool;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -45,6 +48,7 @@ import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
+import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomTool;
 import org.getspout.spoutapi.player.SpoutPlayer;
 import org.getspout.spoutapi.sound.SoundEffect;
@@ -91,7 +95,6 @@ public class CustomListener implements Listener {
 		// Check for durability and ItemDropRequired.
 		if (player.getItemInHand() != null) {
 			SpoutItemStack stack = new SpoutItemStack(player.getItemInHand());
-			
 			// Check for ItemDropRequired
 			Object block = null;		 
 			 try {
@@ -100,30 +103,38 @@ public class CustomListener implements Listener {
 					// Catch Chunk Regen Exception and ignore it
 					return;
 				}
-			
-			if (block instanceof GenericCustomBlock) {
-				GenericCustomBlock customBlock = (GenericCustomBlock) block;
-				Object material = this.plugin.getSmpManager().getMaterial(customBlock.getCustomId());
-				
-				// Make sure this is an MoreMaterials block.
-				if (material != null && material instanceof MMCustomBlock) {
-					if (((MMCustomBlock) material).getItemDropRequired()) {
-						// Forbid tools without modifier
-						Boolean prevent = !(stack.getMaterial() instanceof GenericCustomTool);
-						if (!prevent) {
-							prevent = ((GenericCustomTool) stack.getMaterial()).getStrengthModifier(customBlock) <= 1.0;
-						}
-						
-						if (prevent) {
-							event.setCancelled(true);
-							SpoutBlock spoutBlock = (SpoutBlock) event.getBlock();
-							spoutBlock.setType(org.bukkit.Material.AIR);
-							spoutBlock.setCustomBlock(null);
-						}
-					}
-				}
-			}
-			
+
+			 if (block instanceof GenericCustomBlock) {
+				 GenericCustomBlock customBlock = (GenericCustomBlock) block;
+				 Object material = this.plugin.getSmpManager().getMaterial(customBlock.getCustomId());
+
+				 // Make sure this is an MoreMaterials block.
+				 if (material != null && material instanceof MMCustomBlock) {
+					 List<String> requiredTools = ((MMCustomBlock) material).getRequiredTools();
+					 if (requiredTools != null) {
+
+						 // Convert list to all lower case
+						 for(int i=0,l=requiredTools.size();i<l;++i)
+						 {
+						   requiredTools.set(i, requiredTools.get(i).toLowerCase());
+						 }
+
+						 String mmToolName;
+						 if (stack.getMaterial() instanceof GenericCustomTool) {
+							 mmToolName = ((GenericCustomItem) stack.getMaterial()).getFullName().split("\\.")[2];
+						 } else {
+							 mmToolName = stack.getMaterial().getNotchianName();
+						 }
+
+						 if (!requiredTools.contains(mmToolName.toLowerCase())) { //Required Tool Not Found
+							 player.sendMessage("Requires a special tool: " + ChatColor.LIGHT_PURPLE + requiredTools);
+							 event.setCancelled(true);
+							 return; // Return to prevent durability change on custom tool.
+						 }
+					 }
+				 }
+			 }
+
 			if (stack.isCustomItem() && stack.getMaterial() instanceof GenericCustomTool) {
 				GenericCustomTool tool = (GenericCustomTool) stack.getMaterial();
 				
