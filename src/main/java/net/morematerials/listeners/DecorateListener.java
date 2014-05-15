@@ -30,8 +30,10 @@ import net.morematerials.wgen.Decorator;
 import net.morematerials.wgen.ore.CustomOreDecorator;
 import net.morematerials.wgen.task.BlockPlacer;
 import net.morematerials.wgen.thread.MaffThread;
+
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
@@ -44,8 +46,8 @@ public class DecorateListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler
-	public void onChunkPopulate(ChunkPopulateEvent event) {		
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onChunkPopulate(ChunkPopulateEvent event) {
 		if (plugin.getConfig().getBoolean("DecorateNewChunks") && plugin.getDecorateWorldList().contains(event.getWorld().getName())) {
 			MaffThread thread = plugin.getThreadRegistry().get(event.getWorld());
 			if (thread == null) {
@@ -58,7 +60,7 @@ public class DecorateListener implements Listener {
 				}
 				if (myOre instanceof CustomOreDecorator) {
 					// Tracking
-					((CustomOreDecorator) myOre).toDecorateCount = 0;					
+					((CustomOreDecorator) myOre).toDecorateCount = 0;
 					// Set replacement ore type.
 					((CustomOreDecorator) myOre).replace(Material.STONE, Material.DIRT, Material.GRAVEL);
 					//Normally the formula for inclusive low/high is nextInt(high - (low - 1) + 1 but seeing as low is always 1 and 1-1 is 0, we can omit that.

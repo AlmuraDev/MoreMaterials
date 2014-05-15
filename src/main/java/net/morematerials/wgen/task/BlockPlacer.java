@@ -32,6 +32,7 @@ import net.morematerials.wgen.thread.DecorablePoint;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.getspout.spout.block.SpoutCraftBlock;
 import org.getspout.spoutapi.block.SpoutBlock;
 
 public class BlockPlacer extends BukkitRunnable {
@@ -61,16 +62,25 @@ public class BlockPlacer extends BukkitRunnable {
 		while (++steps <= speed) {
 			final DecorablePoint entry = queue.poll();
 			if (entry != null && entry.getDecorator() instanceof CustomOreDecorator) {
-				if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), entry.getX(), entry.getY(), entry.getZ())) {
-					final SpoutBlock block = (SpoutBlock) entry.getWorld().getBlockAt(entry.getX(), entry.getY(), entry.getZ());
-					boolean shouldPlace = ((CustomOreDecorator) entry.getDecorator()).getReplaceables().contains(block.getType()) && block.getCustomBlock() == null;
-					if (!shouldPlace) {
-						//plugin.getLogger().info("Could not populate: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ() + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
-					} else {
+				if (entry.getDecorator().canDecorate(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), entry.getX(), entry.getY(), entry.getZ())) {		 
+					try { // Cath exception that can be thrown if blacker is ahead of SpoutcraftPlugin's creation of SpoutBlock objects.
+						final SpoutBlock block = (SpoutBlock) entry.getWorld().getBlockAt(entry.getX(), entry.getY(), entry.getZ());	
+						boolean shouldPlace = ((CustomOreDecorator) entry.getDecorator()).getReplaceables().contains(block.getType()) && block.getCustomBlock() == null;
+						if (!shouldPlace) {
+							//plugin.getLogger().info("Could not populate: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ() + "Block Type: " + block.getType().name() + " Custom: " + block.getCustomBlock());
+						} else {
+							if (plugin.showDebug) {
+								//plugin.getLogger().severe("Placed Ore at: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ());
+							}
+							block.setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+						}	
+					} catch (Exception exception) {
+						// Catch Chunk Regen Exception and ignore it
+						plugin.remove(entry.getWorld(), entry.getChunkX(), entry.getChunkZ(), entry.getDecorator().getIdentifier());
 						if (plugin.showDebug) {
-							//plugin.getLogger().severe("Placed Ore at: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ());
+							//plugin.getLogger().severe("Could not place Ore at: " + entry.getX() + "/" + entry.getY() + "/" + entry.getZ() + " because SpoutcraftPlugin doesn't have the block object yet for this location.");
 						}
-						block.setCustomBlock(((CustomOreDecorator) entry.getDecorator()).getOre());
+						continue;
 					}
 				}
 			}
