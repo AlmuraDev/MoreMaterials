@@ -151,7 +151,7 @@ public class CustomOreDecorator extends Decorator {
 	public List<Vector3i> calculatePoints(int bx, int by, int bz, int veinSize, Random random) {
 		final List<Vector3i> orePoints = new LinkedList<>();
 		final float angle = random.nextFloat() * (float) Math.PI;
-		final Vector2f offset = Vector2f.createDirection(angle).mul(veinSize).div(8);
+		final Vector2f offset = Vector2f.createDirectionRad(angle).mul(veinSize).div(8);
 		final float x1 = ((bx + 8) + offset.getX());
 		final float x2 = ((bx + 8) - offset.getX());
 		final float z1 = ((bz + 8) + offset.getY());
