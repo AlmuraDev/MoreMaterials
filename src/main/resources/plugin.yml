@@ -5,6 +5,7 @@ authors: [AlmuraDev, IceReaper, Znickq]
 website: http://www.morematerials.net
 
 depend: [Spout]
+softdepend: [Jobs]
 main: ${mainClass}
 
 commands:
@@ -14,6 +15,7 @@ commands:
   mmdecorate:
     description: Decorate Chunk base command.
     usage: /<command> [radius] [customOre] [replaceOre]
+    permission: morematerials.decorate
   mmdebug:
     description: Show information about current material.
     usage: /<command>
@@ -29,6 +31,7 @@ permissions:
     children:
       morematerials.admin: true
       morematerials.craft: true
+      morematerials.decorate: true
       morematerials.handlers.bomb: true
       morematerials.handlers.chest: true
       morematerials.handlers.chunkregen: true
@@ -47,6 +50,9 @@ permissions:
     default: op
   morematerials.admin:
     description: Access to commands.
+    default: op
+  morematerials.decorate:
+    description: Access to mmdecorate command.
     default: op
   morematerials.handlers.bomb:
     description: allows user to utilize built-in bomb handler.

@@ -40,11 +40,14 @@ import net.morematerials.commands.DebugExecutor;
 import net.morematerials.commands.DecorateExecutor;
 import net.morematerials.commands.GeneralExecutor;
 import net.morematerials.commands.GiveExecutor;
+import net.morematerials.handlers.BiomeInformationHandler;
 import net.morematerials.handlers.BombHandler;
 import net.morematerials.handlers.ChestHandler;
 import net.morematerials.handlers.ChunkRegenerateHandler;
+import net.morematerials.handlers.ClearCustomDataHandler;
 import net.morematerials.handlers.CommandHandler;
 import net.morematerials.handlers.ConsumeHandler;
+import net.morematerials.handlers.FeedAnimalHandler;
 import net.morematerials.handlers.FireBallHandler;
 import net.morematerials.handlers.GiveHandler;
 import net.morematerials.handlers.HealHandler;
@@ -53,6 +56,7 @@ import net.morematerials.handlers.ItemReturnHandler;
 import net.morematerials.handlers.LightningHandler;
 import net.morematerials.handlers.PlaySoundHandler;
 import net.morematerials.handlers.PoisonHandler;
+import net.morematerials.handlers.RakeHandler;
 import net.morematerials.handlers.RotateHandler;
 import net.morematerials.listeners.CustomListener;
 import net.morematerials.listeners.DecorateListener;
@@ -70,6 +74,7 @@ import net.morematerials.wgen.DecoratorLoader;
 import net.morematerials.wgen.DecoratorRegistry;
 import net.morematerials.wgen.task.BlockPlacer;
 import net.morematerials.wgen.task.ThreadRegistry;
+
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -86,6 +91,7 @@ public class MoreMaterials extends JavaPlugin {
 	private ThreadRegistry maffThreads;
 	private List<String> decorateWorldList;
 	public boolean showDebug = false;
+	public boolean jobsEnabled = false;
 	public Map<UUID, TLongObjectHashMap<List<String>>> worldsDecorated = new HashMap<>();
 
 	@Override
@@ -118,11 +124,14 @@ public class MoreMaterials extends JavaPlugin {
 		this.handlerManager = new HandlerManager(this);
 
 		// Inject Handler Classes
+		this.handlerManager.inject(BiomeInformationHandler.class);
 		this.handlerManager.inject(BombHandler.class);
 		this.handlerManager.inject(ChestHandler.class);
 		this.handlerManager.inject(ChunkRegenerateHandler.class);
+		this.handlerManager.inject(ClearCustomDataHandler.class);
 		this.handlerManager.inject(CommandHandler.class);
 		this.handlerManager.inject(ConsumeHandler.class);
+		this.handlerManager.inject(FeedAnimalHandler.class);
 		this.handlerManager.inject(FireBallHandler.class);
 		this.handlerManager.inject(GiveHandler.class);
 		this.handlerManager.inject(HealHandler.class);
@@ -131,6 +140,7 @@ public class MoreMaterials extends JavaPlugin {
 		this.handlerManager.inject(LightningHandler.class);
 		this.handlerManager.inject(PlaySoundHandler.class);
 		this.handlerManager.inject(PoisonHandler.class);
+		this.handlerManager.inject(RakeHandler.class);
 		this.handlerManager.inject(RotateHandler.class);
 
 		// Finish managers
@@ -188,6 +198,10 @@ public class MoreMaterials extends JavaPlugin {
 		if (this.getConfig().getBoolean("DebugMode")) {
 			showDebug = true;
 		}
+		
+		if (this.getConfig().getBoolean("Jobs")) {
+            jobsEnabled = true;
+        }
 
 		// Registered events.
 		this.getServer().getPluginManager().registerEvents(new MMListener(this), this);

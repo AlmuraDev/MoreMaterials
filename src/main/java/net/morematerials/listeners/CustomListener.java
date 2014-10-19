@@ -135,8 +135,8 @@ public class CustomListener implements Listener {
 				 }
 			 }
 
-			if (stack.isCustomItem() && stack.getMaterial() instanceof GenericCustomTool) {
-				GenericCustomTool tool = (GenericCustomTool) stack.getMaterial();
+			if (stack.isCustomItem() && stack.getMaterial() instanceof GenericCustomTool) {				
+			    GenericCustomTool tool = (GenericCustomTool) stack.getMaterial();
 				
 				// Do durability stuff durability.
 				if (tool.getMaxDurability() == 0) {

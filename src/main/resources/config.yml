@@ -2,6 +2,7 @@ Metrics: true
 DecorateExistingChunks: false
 DecorateNewChunks: false
 DebugMode: false
+Jobs: true
 DecorateWorlds:
     - world
     - otherworld

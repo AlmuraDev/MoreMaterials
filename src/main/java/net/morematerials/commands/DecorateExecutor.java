@@ -64,6 +64,11 @@ public class DecorateExecutor implements CommandExecutor {
 			plugin.getLogger().severe("This command is only available to logged in players!");
 			return true;
 		}
+		
+		if (!(sender.hasPermission("morematerials.decorate"))) {
+		    sender.sendMessage("Access Denied.  Invalid permissions.");
+		    return true;
+		}
 
 		// Command Structure
 		final World world = ((Player)sender).getWorld();
